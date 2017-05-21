@@ -1,12 +1,10 @@
 CONFIG_FILE = 'config.txt'
-
 MARKDOWNDIR = 'markdowndir'
 HTMLDIR = 'htmldir'
 TEMPLATE = 'template'
 REPLACE = 'replace'
 MD = 'md'
 MD_HTML = 'md_html'
-
 REPLACE_PATTERN_REGEX = r'<!--:: () ::-->'
 
 import os
@@ -145,30 +143,55 @@ def load_template(template_path, replace_path):
 
                 # NEEDS KEY SYNTAX CHECK LATER
                 replace_pattern[key] = value
+    except:
+        print("ERROR: failed to load template and replace pattern files")
+        exit(1)
 
+    print('INFO: success to load template and replace-pattern file')
     return (template, replace_pattern)
 
 def convert(config, template, replace_pattern):
-    md = markdown.Markdown()
+    try:
+        for (markdown_path, html_path) in config[MD_HTML]:
+            with open(markdown_path, 'r') as fin:
+                markdown_text = fin.read()
 
-    for (markdown_path, html_path) in config[MD_HTML]:
-        with open(markdown_path, 'r') as fin:
-            markdown_text = fin.read()
-        html_text = md.convert(markdown_text)
+            html_text = markdown_2_html(markdown_text, template, replace_pattern)
+
+            with open(html_path, 'w') as fout:
+                fout.write(html_text)
+    except:
+        print('ERROR: failed convert')
+        exit(1)
+
+def markdown_2_html(markdown_text, template, replace_pattern):
     # convert markdown to html
+    md = markdown.Markdown()
+    html_text = md.convert(markdown_text)
 
     # include html to template
 
     # replace
 
-    # write to file
+    return html_text
+
+def copy_other_files(config):
     pass
 
-def markdown_2_html(markdown_text, template_text, replace_pattern):
-    return 'html_text'
+def check_html(config):
+    pass
 
 if __name__ == '__main__':
+    # PRE PROCESS
     cd_to_script_path()
     config = read_config(CONFIG_FILE)
     check_file_exists(config)
-    print(config)
+
+    # CONVERT MARKDOWN AND MAKE HTML PAGES
+    template_path = config[TEMPLATE]
+    replace_path = config[REPLACE]
+    (template, replace_pattern) = load_template(template_path, replace_path)
+    convert(config, template, replace_pattern)
+    copy_other_files(config)
+
+    # POST PROCESS
