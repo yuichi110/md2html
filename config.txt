@@ -1,0 +1,9 @@
+markdowndir : mds
+homepagedir : hp
+
+template : template.html
+css : template.css
+replace : replace.txt
+
+md : 01.md, index.html
+md : 02.md, html02.html
