@@ -1,21 +1,36 @@
 CONFIG_FILE = 'config.txt'
 
-def check_python_env():
-    try:
-        import platform
-        version = platform.python_version()
-        if not version.startswith('3.'):
-            raise
-        import markdown
-    except:
-        print('ERROR: This script requires python3 and markdown module')
-        exit(1)
+MARKDOWNDIR = 'markdowndir'
+HTMLDIR = 'htmldir'
+TEMPLATE = 'template'
+REPLACE = 'replace'
+MD = 'md'
+MD_HTML = 'md_html'
 
-    print('INFO: python env is OK')
+REPLACE_PATTERN_REGEX = r'<!--:: () ::-->'
+
+import os
+import os.path as path
+import platform
+
+try:
+    if not platform.python_version().startswith('3.'):
+        raise
+    import markdown
+except:
+    print('ERROR: This script requires python3 and markdown module')
+    exit(1)
+print('INFO: Python env is OK')
+
+def cd_to_script_path():
+    absfilepath = os.path.abspath(__file__)
+    absdirpath = path.dirname(absfilepath)
+    os.chdir(absdirpath)
+    print('INFO: move to "{}".'.format(absdirpath))
 
 def read_config(config_file):
     config = {}
-    config['md'] = []
+    config[MD_HTML] = []
 
     warning_message = 'WARNING: line "{}" has problem'
     def parse_line(line):
@@ -32,14 +47,14 @@ def read_config(config_file):
         key = line[:i].strip()
         value = line[i+1:].strip()
 
-        if key == 'md':
+        if key == MD:
             if value.count(',') != 1:
                 print(warning_message.format(line))
                 return
             i = value.find(',')
             markdown_file = value[:i].strip()
             html_file = value[i+1:].strip()
-            config['md'].append((markdown_file, html_file))
+            config[MD_HTML].append((markdown_file, html_file))
             return
 
         if key in config:
@@ -53,48 +68,107 @@ def read_config(config_file):
             for line in fin:
                 parse_line(line)
 
-        keys = ['markdowndir', 'homepagedir', 'template', 'css', 'replace', 'md']
+        keys = [MARKDOWNDIR, HTMLDIR, TEMPLATE, REPLACE]
         for key in keys:
             if key not in config:
                 print('WARNING: config file need to have key "{}"'.format(key))
                 raise
 
-    except:
-        print('ERROR: Unable to load config file "{}"'.formt(CONFIG_FILE))
+    except Exception as e:
+        print('ERROR: Unable to load config file "{}"'.format(CONFIG_FILE))
+        print(e)
         exit(1)
 
     print('INFO: config syntax is OK')
     return config
 
 def check_file_exists(config):
-    import os
-    import os.path as path
-
     try:
-        top_dirs = [config['markdowndir'], config['homepagedir']]
-        for directory in top_dirs:
+        # TOP Directory
+        for dir_key in [MARKDOWNDIR, HTMLDIR]:
+            directory = config[dir_key]
             if not path.isdir(directory):
                 print('WARNING: directory "{}" doesn\'t exist'.format(directory))
-                raise
+                if not path.isfile(directory):
+                    print('INFO: create directory "{}"'.format(directory))
+                    os.mkdir(directory)
+                else:
+                    print('WARNING: non directory file "{}" exists'.format(directory))
+                    raise()
+            absdirpath = os.path.abspath(directory)
+            config[dir_key] = absdirpath
 
-        os.chdir(config['markdowndir'])
-        md_setting_files = [config['template'], config['css'], config['replace']]
-        for setting_file in md_setting_files:
-            if not path.isfile(setting_file):
+        # Seting files
+        markdown_dir = config[MARKDOWNDIR]
+        html_dir = config[HTMLDIR]
+        for setting_key in [TEMPLATE, REPLACE]:
+            absfilepath = path.join(markdown_dir, config[setting_key])
+            if not path.isfile(absfilepath):
                 print('WARNING: setting file "{}" doesn\'t exist'.format(setting_file))
                 raise
-        for (markdown, html) in config['md']:
-            if not path.isfile(markdown):
-                print('WARNING: markdown file "{}" doesn\'t exist'.format(markdown))
+            config[setting_key] = absfilepath
+
+        # Markdown files
+        abspath_list = []
+        for (markdown_file, html_file) in config[MD_HTML]:
+            absfilepath_md = path.join(markdown_dir, markdown_file)
+            absfilepath_html = path.join(html_dir, html_file)
+            if not path.isfile(absfilepath_md):
+                print('WARNING: markdown file "{}" doesn\'t exist'.format(markdown_file))
                 raise
-        os.chdir('../')
+            abspath_list.append((absfilepath_md, absfilepath_html))
+        config[MD_HTML] = abspath_list
 
     except:
         print("ERROR: file doesn't exist")
         exit(1)
 
+    print('INFO: files are exist')
+
+def load_template(template_path, replace_path):
+    try:
+        with open(template_path, 'r') as fin:
+            template = fin.read()
+
+        replace_pattern = {}
+        with open(replace_path, 'r') as fin:
+            for line in fin:
+                line = line.strip()
+
+                if ',' not in line:
+                    print('WARNING: TEMPLATE has problem')
+                    continue
+
+                i = line.find(',')
+                key = line[:i].strip()
+                value = line[i+1:].strip()
+
+                # NEEDS KEY SYNTAX CHECK LATER
+                replace_pattern[key] = value
+
+    return (template, replace_pattern)
+
+def convert(config, template, replace_pattern):
+    md = markdown.Markdown()
+
+    for (markdown_path, html_path) in config[MD_HTML]:
+        with open(markdown_path, 'r') as fin:
+            markdown_text = fin.read()
+        html_text = md.convert(markdown_text)
+    # convert markdown to html
+
+    # include html to template
+
+    # replace
+
+    # write to file
+    pass
+
+def markdown_2_html(markdown_text, template_text, replace_pattern):
+    return 'html_text'
+
 if __name__ == '__main__':
-    check_python_env()
+    cd_to_script_path()
     config = read_config(CONFIG_FILE)
-    print(config)
     check_file_exists(config)
+    print(config)
