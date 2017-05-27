@@ -12,7 +12,8 @@
     <title>{{ TITLE }}</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./assets/css/blog.css" rel="stylesheet">
+    <link href="./assets/css/codehilite.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="./assets/blog.css" rel="stylesheet">

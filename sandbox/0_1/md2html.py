@@ -11,6 +11,7 @@ import os.path as path
 import shutil
 import re
 import markdown as markdown_mod
+import bs4
 
 ###################
 ### Version 0.1 ###
@@ -306,6 +307,22 @@ class Md2Html_v0_1:
 
             return _file_content[file_path]
 
+        def add_bootstrap_class(html):
+            soup = bs4.BeautifulSoup(html, 'html.parser')
+
+            # IMAGE
+            tags = soup.find_all('img')
+            for tag in tags:
+                if tag.has_attr('class'):
+                    attr_list = tag['class']
+                    if 'img-responsive' not in attr_list:
+                        attr_list.append('img-responsive')
+                        tag['class'] = attr_list
+                else:
+                    tag['class'] = 'img-responsive'
+
+            return soup.prettify(soup.original_encoding)
+
         def replace_keywords(html_text, path_replace):
             replace_text = get_file_content(path_replace)
             try:
@@ -322,10 +339,8 @@ class Md2Html_v0_1:
                 new_line = line
                 m = r.search(line)
                 if m:
-                    print('find tag at {}'.format(line))
                     keyword = m.group(1)
                     if keyword in replace_dict:
-                        print('has keyword')
                         new_line = line.replace(m.group(0), replace_dict[keyword])
                 new_lines.append(new_line)
 
@@ -347,10 +362,14 @@ class Md2Html_v0_1:
                 dict_md = self.dict_markdown[markdown]
 
                 # CONVERT
-                md = markdown_mod.Markdown()
                 path_md = dict_md['markdown']
                 text_md = get_file_content(path_md)
-                content_html = md.convert(text_md)
+                content_html = markdown_mod.markdown(text_md, extensions=[
+                'markdown.extensions.fenced_code',
+                'markdown.extensions.codehilite'])
+
+                #content_html = md.convert(text_md)
+                content_html = add_bootstrap_class(content_html)
                 content_html = '\n<!-- GENERATED HTML START -->\n {} \n<!-- GENERATED HTML END -->\n'.format(content_html)
                 logging.debug('    convert done')
 
