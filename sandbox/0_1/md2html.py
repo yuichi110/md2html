@@ -1,40 +1,6 @@
-'''
-This program will generate html webpage from markdown files and template.
-It requires
- - python3
- - markdown module (able to install via pip)
-
-Example:
-    $ python md2html.py -v <PROGRAM_VERSION> -c <CONFIG_PATH> -l <LOGGING_LEVEL> -f <LOGGING_FILE>
-
-Supported version:
- - 0.1
-
-Author : Yuichi Ito
-Version : 0.1
-'''
-
 # LOGGING FUNCTION BEFORE LOGGING MODULE SETUP
 def print_logging(message):
     print('PRINT : ' + message)
-
-# CHECK ENVIRONMENT
-import platform
-if not platform.python_version().startswith('3.'):
-    print_logging('Python must be version 3')
-    exit(1)
-try:
-    import markdown as markdown_mod
-    #import jinja2
-except:
-    print_logging('Unable to import markdown module. please install them via pip')
-    exit(1)
-print_logging('Python env is OK')
-
-
-############
-### MAIN ###
-############
 
 import logging
 import argparse
@@ -44,20 +10,7 @@ import os
 import os.path as path
 import shutil
 import re
-
-def get_args():
-    description = '''description'''
-    parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('-v', '--version', help='software version. supported "0.1"', required=True)
-    parser.add_argument('-c', '--config', help='configuration file name', required=True)
-    args = parser.parse_args()
-    return (args.version, args.config)
-
-def get_instance(version, config_path):
-    if version == '0.1':
-        return Md2Html_v0_1(config_path)
-    else:
-        raise
+import markdown as markdown_mod
 
 ###################
 ### Version 0.1 ###
@@ -65,21 +18,28 @@ def get_instance(version, config_path):
 
 CONFIG_TEMPLATE_V0_1 = '''[basic]
 version : 0.1
-logging_level : INFO
-logging_file : False
-logfile : log.out
+
+[logging]
+level : DEBUG
+write_to_file : False
+file : log.out
 
 [directory]
 markdown : markdown
 html : html
+template : template
 
 [template]
-template : template.html
-replace : replace.txt
+template : TEMPLATE.template
+replace : REPLACE.replace
 
-[md_html]
-01.md : index.html
-02.md : html02.html
+[01.md]
+html : index.html
+
+[02.md]
+html : 02.html
+template : 02.template
+replace : 02.replace
 '''
 
 class Md2Html_v0_1:
@@ -188,6 +148,7 @@ class Md2Html_v0_1:
 
         # CHECK CONFIG EXISTS
         if not path.exists(self.config_file):
+            print_logging('config file {} doesn\'t exit. create sample'.format(self.config))
             with open(self.config_file, 'w') as fout:
                 fout.write(CONFIG_TEMPLATE_V0_1)
             exit(1)
@@ -320,14 +281,14 @@ class Md2Html_v0_1:
                     logging.info('html directory "{}" doesn\'t exist. create'.format(dir_html))
                     os.mkdir(dir_html)
                 else:
-                    print('WARNING: non directory file "{}" exists'.format(dir_html))
+                    logging.warning('non directory file "{}" exists'.format(dir_html))
                     raise
             else:
                 logging.info('html directory "{}" exist'.format(dir_html))
 
         except Exception as e:
-            print(e)
-            print("ERROR: file doesn't exist")
+            logging.critical(e)
+            logging.critical("ERROR: file doesn't exist")
             exit(1)
 
         logging.info('all directories and files in config exist.')
@@ -345,23 +306,38 @@ class Md2Html_v0_1:
 
             return _file_content[file_path]
 
-        def replace_keywords(html_text, replace_text):
+        def replace_keywords(html_text, path_replace):
+            replace_text = get_file_content(path_replace)
             try:
                 replace_dict = {}
                 exec(replace_text, locals(), replace_dict)
             except Exception as e:
-                logging.warning('message')
+                logging.warning('Unable to load replace definition file "{}". please check format'.format(path_replace))
                 raise
 
-            print('replace_dict = {}'.format(replace_dict))
+            r = re.compile(r'{{\s+(\w+)\s+}}')
 
-
+            new_lines = []
             for line in html_text.split('\n'):
-                pass
+                new_line = line
+                m = r.search(line)
+                if m:
+                    print('find tag at {}'.format(line))
+                    keyword = m.group(1)
+                    if keyword in replace_dict:
+                        print('has keyword')
+                        new_line = line.replace(m.group(0), replace_dict[keyword])
+                new_lines.append(new_line)
 
-            return html_text
+            return '\n'.join(new_lines)
 
         def all_keywords_changed(html_text):
+            r = re.compile(r'{{\s+(\w+)\s+}}')
+            for line in html_text.split('\n'):
+                m = r.search(line)
+                if m:
+                    logging.warning('find unreplaced keyword at "{}"'.format(line))
+                    return False
             return True
 
         try:
@@ -369,7 +345,6 @@ class Md2Html_v0_1:
             for markdown in markdowns:
                 logging.info('start converting {}.'.format(markdown))
                 dict_md = self.dict_markdown[markdown]
-                print(dict_md)
 
                 # CONVERT
                 md = markdown_mod.Markdown()
@@ -394,14 +369,13 @@ class Md2Html_v0_1:
                 # REPLACE
                 if 'replace' in dict_md:
                     path_replace = dict_md['replace']
-                    json_text = get_file_content(path_replace)
-                    html = replace_keywords(html, json_text)
+                    html = replace_keywords(html, path_replace)
 
                 path_replace = self.dict_markdown['replace']
-                json_text = get_file_content(path_replace)
-                html = replace_keywords(html, json_text)
+                html = replace_keywords(html, path_replace)
 
                 if not all_keywords_changed(html):
+                    logging.warning('template "{}" for markdown "{}"'.format(path_template, path_md))
                     raise
                 logging.debug('   replace done')
 
@@ -413,7 +387,7 @@ class Md2Html_v0_1:
             logging.info('all markdown convert done')
 
         except Exception as e:
-            logging.debug('Failed converting from markdown to html. {}'.format(e))
+            logging.critical('Failed converting from markdown to html. {}'.format(e))
             exit(1)
 
     def __copy_other_files(self):
@@ -451,11 +425,13 @@ class Md2Html_v0_1:
             logging.critical('Copy files fail')
             exit(1)
 
-
     def __check_html(self):
         pass
 
+
+###########
+### RUN ###
+###########
+
 if __name__ == '__main__':
-    (version, config_path) = get_args()
-    m2h = get_instance(version, config_path)
-    m2h.run()
+    Md2Html_v0_1('config.conf').run()
