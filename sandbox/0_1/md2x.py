@@ -12,6 +12,7 @@ import shutil
 import re
 import markdown as markdown_mod
 import bs4
+import pdfkit
 
 ###################
 ### Version 0.1 ###
@@ -48,24 +49,30 @@ class Md2Html_v0_1:
     def __init__(self, config_path):
         self.config_path = config_path
 
+        # basic
+        self.bootstrap = False
+
+        # directory
         self.dir_markdown = None
         self.dir_output = None
         self.dir_template = None
         self.dir_pdf = None
 
+        # template and markdown
         self.conv_template = None
         self.conv_replace = None
         self.conv_markdown_dict = {}
 
+        # pdf
         self.pdf_output = None
-        self.pdf_css = None
+        self.pdf_css = []
         self.pdf_dpi = None
         self.pdf_markdowns = []
 
-        # VERSION
+        # VAL
         self.VERSION = '0.1'
-        self.TYPE_HTML = 'HTML'
-        self.TYPE_PDF = 'PDF'
+        self.TYPE_HTML = 'html'
+        self.TYPE_PDF = 'pdf'
 
     def run(self):
         self.cd_to_script_dir()
@@ -80,7 +87,7 @@ class Md2Html_v0_1:
         elif output_type == 'pdf':
             output_type = self.TYPE_PDF
         else:
-            print_logging('Critical : section [output_type] must be "html" or "pdf"')
+            print_logging('Critical : option output_type at section [basic] must be "html" or "pdf"')
             print_logging('abort')
             exit(1)
 
@@ -91,24 +98,21 @@ class Md2Html_v0_1:
         if(output_type == self.TYPE_PDF):
             self.load_pdf_section(config)
 
-        '''
         # CHECK FILES
-        self.check_directory_exists(output_type)
-        self.check_template_files()
-        self.check_markdown_files()
+        self.check_directory_exist(output_type)
+        self.check_template_exist()
+        self.check_markdown_exist(output_type)
         if(output_type == self.TYPE_PDF):
-            self.check_pdf_files()
+            self.check_pdf_exist()
 
-        # DEBUG
-        self.dump_loaded_config()
 
         # CONVERT
         if(output_type == self.TYPE_HTML):
-            self.convert_markdown_2_html()
+            self.convert_html()
             self.copy_other_files()
         elif(output_type == self.TYPE_PDF):
-            self.convert_markdown_2_pdf()
-        '''
+            #self.convert_pdf()
+            pass
 
 
     def cd_to_script_dir(self):
@@ -177,6 +181,16 @@ class Md2Html_v0_1:
             version = config.get('basic', 'version')
             output_type = config.get('basic', 'output_type')
             print_logging('loading [basic] section success')
+
+            if config.has_option('basic', 'bootstrap'):
+                bootstrap = config.get('basic', 'bootstrap').upper()
+                if bootstrap == 'TRUE':
+                    self.bootstrap = True
+                elif wtf == 'FALSE':
+                    self.bootstrap = False
+                else:
+                    print_logging('   option bootstrap at section [basic] must be "True" or "False"')
+                    raise
 
             if version != self.VERSION:
                 print_logging('    found version mismatch')
@@ -350,7 +364,8 @@ class Md2Html_v0_1:
                     logging.debug('        {} : {}'.format(key, value))
                 logging.info('    section [{}] : success'.format(markdown_section))
 
-            self.dict_markdown = dict_markdown
+
+            self.conv_markdown_dict = dict_markdown
 
         except Exception as e:
             logging.critical('    {}'.format(e))
@@ -369,10 +384,13 @@ class Md2Html_v0_1:
                 output = path.join(self.dir_output, output)
             self.pdf_output = output
 
-            css = config.get('pdf', 'css')
-            if not path.isabs(css):
+            css_str = config.get('pdf', 'css')
+            css_files = []
+            for css in css_str.split(','):
+                css = css.strip()
                 css = path.join(self.dir_pdf, css)
-            self.pdf_css = output
+                css_files.append(css)
+            self.pdf_css = css_files
 
             dpi = config.get('pdf', 'dpi')
             self.pdf_dpi = int(dpi)
@@ -383,11 +401,11 @@ class Md2Html_v0_1:
                 markdown = markdown.strip()
                 markdown_path = path.join(self.dir_markdown, markdown)
                 markdowns.append((markdown, markdown_path))
-            self.markdowns = markdowns
+            self.pdf_markdowns = markdowns
 
         except Exception as e:
             logging.critical('    {}'.format(e))
-            logging.critical('load [pdf] section : start')
+            logging.critical('load [pdf] section : fail')
             logging.critical('abort')
             exit(1)
 
@@ -395,193 +413,355 @@ class Md2Html_v0_1:
         logging.debug('    css : {}'.format(self.pdf_css))
         logging.debug('    dpi : {}'.format(self.pdf_dpi))
         logging.debug('    markdowns : [')
-        for markdown in self.markdowns:
+        for markdown in self.pdf_markdowns:
             logging.debug('        {},'.format(markdown))
         logging.debug('    ]')
         logging.info('load [pdf] section : success')
 
 
-    def __dump(self):
-        logging.debug('    self.config_file = {}'.format(self.config_file))
-        logging.debug('    self.dir_markdown = {}'.format(self.dir_markdown))
-        logging.debug('    self.dir_html = {}'.format(self.dir_html))
-        logging.debug('{}'.format(self.dict_markdown))
-        #logging.debug('    self.tpt_template = {}'.format(self.tpt_template))
-        #logging.debug('    self.template_text = {}'.format(self.template_text))
-        #logging.debug('    self.tpt_replace = {}'.format(self.tpt_replace))
-        #logging.debug('    self.replace_dict = {}'.format(self.replace_dict))
-        #logging.debug('    self.mdhtml = [')
-        #for item in self.mdhtml:
-        #    logging.debug('        {},'.format(item))
-        #logging.debug('    ]')
+    ########################
+    ### CHECK FILE EXIST ###
+    ########################
 
-    '''
-    def get_config(self, )
-    def __load_config(self):
-        print_logging('loading config start')
-
-
-
-
-        # CHECK CONFIG EXISTS
-        if not path.exists(self.config_file):
-            print_logging('config file {} doesn\'t exit. create sample'.format(self.config))
-            with open(self.config_file, 'w') as fout:
-                fout.write(CONFIG_TEMPLATE_V0_1)
-            exit(1)
-        print_logging('config file {} exist.'.format(self.config_file))
-
-
-        loaded_logging_setting = False
+    def check_directory_exist(self, output_type):
+        logging.info('check all directory exist : start')
         try:
-
-
-            # VERSION CHECK
-
-
-            # LOGGING
-            set_logging(config)
-            loaded_logging_setting = True
-
-
-            # Directory
-
-
-            # Template
-            abs_template = config.get('template', 'template')
-            if not path.isabs(abs_template):
-                abs_template = path.join(self.dir_template, abs_template)
-
-            abs_replace = config.get('template', 'replace')
-            if not path.isabs(abs_replace):
-                abs_replace = path.join(self.dir_template, abs_replace)
-            logging.info('loading [template] section done')
-
-            # Markdown
-
-
-        except Exception as e:
-            if loaded_logging_setting:
-                logging.critical('loading config fail. {}'.format(e))
-            else:
-                print_logging('loading config fail. {}'.format(e))
-            exit(1)
-
-        logging.info('loading all sections success')
-    '''
-
-
-    def __check_file_exists(self):
-        try:
-            # Template Directory
-            dir_template = self.dir_template
-            if not path.isdir(dir_template):
-                logging.warning('template directory "{}" doesn\'t exist'.format(dir_template))
-                raise
-            logging.info('template directory "{}" exist'.format(dir_template))
-
-            if not path.isfile(self.dict_markdown['template']):
-                logging.warning('general template file "{}" doesn\'t exist'.format(self.dict_markdown['template']))
-                raise
-            logging.info('general template file "{}" exist'.format(self.dict_markdown['template']))
-
-            if not path.isfile(self.dict_markdown['replace']):
-                logging.warning('general replace file "{}" doesn\'t exist'.format(self.dict_markdown['replace']))
-                raise
-            logging.info('general replace file "{}" exist'.format(self.dict_markdown['replace']))
-
             # Markdown Directory
             dir_markdown = self.dir_markdown
             if not path.isdir(dir_markdown):
-                logging.warning('directory "{}" doesn\'t exist'.format(dir_markdown))
+                logging.warning('    markdown : not exist')
+                logging.warning('    {}'.format(dir_markdown))
                 raise
-            logging.info('markdown directory "{}" exist'.format(dir_markdown))
+            logging.info('    markdown : exist')
 
-            # Markdown Files and it's templates
-            markdowns = filter(lambda text : text.endswith('.md'), self.dict_markdown.keys())
-            for markdown in markdowns:
-                for (key, value) in self.dict_markdown[markdown].items():
+            # HTML Directory
+            dir_output = self.dir_output
+            if not path.isdir(dir_output):
+                if not path.isfile(dir_output):
+                    logging.info('    output : not exist. create')
+                    logging.info('    {}'.format(dir_output))
+                    os.mkdir(dir_output)
+                else:
+                    logging.warning('    output : directory not exist. but file exist.')
+                    logging.warning('    {}'.format(dir_output))
+                    raise
+            else:
+                logging.info('    output : exist'.format())
+
+            # Template Directory
+            dir_template = self.dir_template
+            if not path.isdir(dir_template):
+                logging.warning('    template : not exist')
+                logging.warning('    {}'.format(dir_template))
+                raise
+            logging.info('    template : exist')
+
+            # PDF Directory
+            if(output_type == self.TYPE_PDF):
+                dir_pdf = self.dir_pdf
+                if not path.isdir(dir_pdf):
+                    logging.warning('    pdf : not exist')
+                    logging.warning('    {}'.format(dir_pdf))
+                    raise
+                logging.info('    pdf : exist')
+
+        except Exception as e:
+            logging.critical('    {}'.format(e))
+            logging.critical('check all directory exist : fail')
+            logging.critical('abort')
+            exit(1)
+
+        logging.info('check all directory exist : success')
+
+    def check_template_exist(self):
+        logging.info('check basic template exist : start')
+        try:
+            template = self.conv_template
+            if not path.isfile(template):
+                logging.warning('   template : not exit')
+                logging.warning('   {}'.format(template))
+                raise
+            logging.info('    template : exist')
+
+            replace = self.conv_replace
+            if not path.isfile(replace):
+                logging.warning('   replace : not exit')
+                logging.warning('   {}'.format(replace))
+                raise
+            logging.info('    replace : exist')
+
+        except Exception as e:
+            logging.critical('    {}'.format(e))
+            logging.critical('check basic template exist : fail')
+            logging.critical('abort')
+            exit(1)
+
+        logging.info('check basic template exist : success')
+
+    def check_markdown_exist(self, output_type):
+        logging.info('check markdown files exist : start')
+        try:
+            for (name, mapping) in self.conv_markdown_dict.items():
+                logging.info('    check markdown "{}"'.format(name))
+                for (key, value) in mapping.items():
                     if key == 'html':
                         continue
                     if not path.isfile(value):
-                        logging.warning('"{}" doesn\'t exist.'.format(value))
-                        logging.warning('please check config section "[{}]" and files'.format(markdown))
+                        logging.warning('        {} : not exist.'.format(key))
+                        logging.warning('        {}'.format(value))
                         raise
-                logging.info('all files for "{}" exist'.format(markdown))
-            logging.info('template and markdown files are exist')
+                    logging.info('        {} : exist.'.format(key))
 
-            # HTML Directory
-            dir_html = self.dir_html
-            if not path.isdir(dir_html):
-                if not path.isfile(dir_html):
-                    logging.info('html directory "{}" doesn\'t exist. create'.format(dir_html))
-                    os.mkdir(dir_html)
-                else:
-                    logging.warning('non directory file "{}" exists'.format(dir_html))
-                    raise
-            else:
-                logging.info('html directory "{}" exist'.format(dir_html))
+            if(output_type == self.TYPE_PDF):
+                logging.info('    check pdf markdowns')
+                for (md_name, md_path) in self.pdf_markdowns:
+                    if not path.isfile(md_path):
+                        logging.warning('        {} : not exist.'.format(md_name))
+                        logging.warning('        {}'.format(md_path))
+                        raise
+                    logging.info('        {} : exist'.format(md_name))
 
         except Exception as e:
-            logging.critical(e)
-            logging.critical("ERROR: file doesn't exist")
+            logging.critical('    {}'.format(e))
+            logging.critical('check markdown files exist : fail')
+            logging.critical('abort')
             exit(1)
 
-        logging.info('all directories and files in config exist.')
+        logging.info('check markdown files exist : success')
+
+    def check_pdf_exist(self):
+        logging.info('check pdf files exist : start')
+        try:
+            logging.info('    check css files')
+            for css in self.pdf_css:
+                if not path.isfile(css):
+                    logging.warning('        {} : not exist.'.format(css))
+                    raise
+                logging.info('        {} : exist'.format(css))
+
+        except Exception as e:
+            logging.critical('    {}'.format(e))
+            logging.critical('check pdf files exist : fail')
+            logging.critical('abort')
+            exit(1)
+
+        logging.info('check pdf files exist : success')
 
 
-    def __convert_from_markdown_to_html(self):
+    ###############
+    ### CONVERT ###
+    ###############
 
-        logging.info('start converting.')
+    def convert_html(self):
+        logging.info('convert html : start')
+        try:
+            for (markdown, d) in self.conv_markdown_dict.items():
+                logging.info('    markdown : {}'.format(markdown))
 
-        _file_content = {}
-        def get_file_content(file_path):
-            if file_path not in _file_content:
-                with open(file_path, 'r') as fin:
-                    _file_content[file_path] = fin.read()
+                path_markdown = d['markdown']
+                path_html = d['html']
+                path_template = self.conv_template
+                if 'template' in d:
+                    path_template = d['template']
+                path_replaces = [self.conv_replace]
+                if 'replace' in d:
+                    path_replaces.insert(0, d['replace'])
+                logging.debug(('        load path info : success'))
 
-            return _file_content[file_path]
+                # markdown html
+                text_markdown = self.read_file(path_markdown)
+                html_markdown = self.convert_markdown_to_html(text_markdown)
+                if self.bootstrap:
+                    html_markdown = self.modify_html_bootstrap(html_markdown)
+                logging.debug(('        convert markdown to content html : success'))
 
-        def add_bootstrap_class(html):
-            soup = bs4.BeautifulSoup(html, 'html.parser')
+                # include markdown html to template html
+                html_template = self.get_template_html(path_template)
+                html = self.modify_html_include_markdown_html(html_markdown, html_template)
+                logging.debug(('        include content html to template html : success'))
 
-            # IMAGE
-            tags = soup.find_all('img')
-            for tag in tags:
-                if tag.has_attr('class'):
-                    attr_list = tag['class']
-                    if 'img-responsive' not in attr_list:
-                        attr_list.append('img-responsive')
-                        tag['class'] = attr_list
+                # replace keywords
+                for replace in path_replaces:
+                    html = self.modify_html_keyword(html, replace)
+                all_changed = self.check_all_keywords_changed(html)
+                if not all_changed:
+                    raise
+                logging.debug(('        replayce keywords : success'))
+
+
+                # write
+                with open(path_html, 'w') as fout:
+                    fout.write(html)
+                logging.debug(('        write to file : success'))
+
+        except Exception as e:
+            logging.critical('   {}'.format(e))
+            logging.info('convert html : fail')
+            exit(1)
+
+        logging.info('convert html : success')
+
+
+    def convert_pdf(self):
+        try:
+            for (markdown, path_markdown) in self.pdf_markdowns:
+                template = self.conv_template
+                path_replaces = [self.conv_replace]
+                if markdown in self.conv_markdown_dict:
+                    d = self.conv_markdown_dict[markdown]
+                    if 'template' in d:
+                        path_template = d['template']
+                    if 'replace' in d:
+                        path_replaces.insert(0, d['replace'])
+
+                # markdown html
+                text_markdown = self.read_file(path_markdown)
+                html_markdown = self.convert_markdown_to_html(text_markdown)
+                if self.bootstrap:
+                    html_markdown = self.modify_html_bootstrap(html_markdown)
+
+                # include
+                html_template = self.get_template_html(path_template)
+                html = modify_html_include_markdown_html(html_markdown, html_template)
+
+                # replace
+                for replace in path_replaces:
+                    html = modify_html_keyword(html, replace)
+                all_changed = check_all_keywords_changed(html)
+                if not all_changed:
+                    raise
+
+                # change URL to local
+                basedir = ''
+                html = self.modify_html_url_localize(html, basedir)
+
+                # change html to pdf
+                binary = convert_html_to_pdf(self, html)
+
+        except Exception as e:
+            exit(1)
+
+
+    def copy_other_files(self):
+        try:
+            dir_markdown = self.dir_markdown
+            dir_output = self.dir_output
+            files = os.listdir(dir_markdown)
+
+            def is_copy_target(file_name):
+                if file_name.endswith('.md'):
+                    return False
+                if file_name in ['.DS_Store']:
+                    return False
+                return True
+
+            files = filter(is_copy_target, files)
+            for file_name in files:
+                src_path = path.join(dir_markdown, file_name)
+                dst_path = path.join(dir_output, file_name)
+
+                if path.isfile(src_path):
+                    shutil.copyfile(src_path, dst_path)
+                elif path.isdir(src_path):
+                    if path.isfile(dst_path):
+                        os.remove(dst_path)
+                    elif path.isdir(dst_path):
+                        shutil.rmtree(dst_path)
+                    shutil.copytree(src_path, dst_path)
                 else:
-                    tag['class'] = 'img-responsive'
+                    raise
 
-            return soup.prettify(soup.original_encoding)
+                print(src_path, dst_path)
+        except Exception as e:
+            logging.warning(e)
+            logging.critical('Copy files fail')
+            exit(1)
 
-        def replace_keywords(html_text, path_replace):
-            replace_text = get_file_content(path_replace)
-            try:
-                replace_dict = {}
-                exec(replace_text, locals(), replace_dict)
-            except Exception as e:
-                logging.warning('Unable to load replace definition file "{}". please check format'.format(path_replace))
-                raise
 
-            r = re.compile(r'{{\s+(\w+)\s+}}')
+    ######################
+    ### CONVERT HELPER ###
+    ######################
 
-            new_lines = []
-            for line in html_text.split('\n'):
-                new_line = line
-                m = r.search(line)
-                if m:
-                    keyword = m.group(1)
-                    if keyword in replace_dict:
-                        new_line = line.replace(m.group(0), replace_dict[keyword])
-                new_lines.append(new_line)
+    def read_file(self, file_path):
+        if not hasattr(self, '_file_cache'):
+            self._file_cache = {}
 
-            return '\n'.join(new_lines)
+        if file_path not in self._file_cache:
+            with open(file_path, 'r') as fin:
+                self._file_cache[file_path] = fin.read()
 
-        def all_keywords_changed(html_text):
+        return self._file_cache[file_path]
+
+
+    def convert_markdown_to_html(self, markdown_text):
+        extensions=[
+            'markdown.extensions.fenced_code',
+            'markdown.extensions.codehilite'
+        ]
+
+        html = markdown_mod.markdown(markdown_text, extensions=extensions)
+        return html
+
+
+    def modify_html_bootstrap(self, html):
+        soup = bs4.BeautifulSoup(html, 'html.parser')
+
+        # IMAGE
+        tags = soup.find_all('img')
+        for tag in tags:
+            if tag.has_attr('class'):
+                attr_list = tag['class']
+                if 'img-responsive' not in attr_list:
+                    attr_list.append('img-responsive')
+                    tag['class'] = attr_list
+            else:
+                tag['class'] = 'img-responsive'
+
+        return soup.prettify(soup.original_encoding)
+
+
+    def get_template_html(self, path_template):
+        html = self.read_file(path_template)
+        if '{{ MARKDOWN }}' not in html:
+            logging.warning('template "{}" doesn\'t have {{ MARKDOWN }}'.format(path_template))
+            raise
+
+        return html
+
+
+    def modify_html_include_markdown_html(self, markdown_html, template_html):
+        html = template_html.replace('{{ MARKDOWN }}', markdown_html)
+        return html
+
+
+    def modify_html_keyword(self, html, replace_path):
+
+        r = re.compile(r'{{\s+(\w+)\s+}}')
+        def replace_line(line, replace_dict):
+            m = r.search(line)
+            if m:
+                keyword = m.group(1)
+                if keyword in replace_dict:
+                    line = line.replace(m.group(0), replace_dict[keyword])
+            return line
+
+        # Load replace pattern
+        replace_text = self.read_file(replace_path)
+        replace_dict = {}
+        exec(replace_text, locals(), replace_dict)
+
+        # Replace line
+        new_lines = []
+        for line in html.split('\n'):
+            new_lines.append(replace_line(line, replace_dict))
+
+        # make new html
+        html = '\n'.join(new_lines)
+        return html
+
+
+    def check_all_keywords_changed(self, html_text):
+        try:
             r = re.compile(r'{{\s+(\w+)\s+}}')
             for line in html_text.split('\n'):
                 m = r.search(line)
@@ -589,6 +769,20 @@ class Md2Html_v0_1:
                     logging.warning('find unreplaced keyword at "{}"'.format(line))
                     return False
             return True
+
+        except Exception as e:
+            exit(1)
+
+    def convert_html_to_pdf(self, html):
+
+        return 'pdf'
+
+    def modify_html_url_localize(self, html, basedir):
+
+        return html
+
+
+    def __convert_from_markdown_to_html(self):
 
         try:
             markdowns = filter(lambda text : text.endswith('.md'), self.dict_markdown.keys())
@@ -644,40 +838,6 @@ class Md2Html_v0_1:
             logging.critical('Failed converting from markdown to html. {}'.format(e))
             exit(1)
 
-    def __copy_other_files(self):
-        try:
-            dir_markdown = self.dir_markdown
-            dir_html = self.dir_html
-            files = os.listdir(dir_markdown)
-
-            def is_copy_target(file_name):
-                if file_name.endswith('.md'):
-                    return False
-                if file_name in ['.DS_Store']:
-                    return False
-                return True
-
-            files = filter(is_copy_target, files)
-            for file_name in files:
-                src_path = path.join(dir_markdown, file_name)
-                dst_path = path.join(dir_html, file_name)
-
-                if path.isfile(src_path):
-                    shutil.copyfile(src_path, dst_path)
-                elif path.isdir(src_path):
-                    if path.isfile(dst_path):
-                        os.remove(dst_path)
-                    elif path.isdir(dst_path):
-                        shutil.rmtree(dst_path)
-                    shutil.copytree(src_path, dst_path)
-                else:
-                    raise
-
-                print(src_path, dst_path)
-        except Exception as e:
-            logging.warning(e)
-            logging.critical('Copy files fail')
-            exit(1)
 
     def __check_html(self):
         pass
@@ -691,8 +851,8 @@ def run():
     Md2Html_v0_1('html.conf').run()
     print('\n\n\n')
     Md2Html_v0_1('print.conf').run()
-    print('\n\n\n')
-    Md2Html_v0_1('pdf.conf').run()
+    #print('\n\n\n')
+    #Md2Html_v0_1('pdf.conf').run()
 
 def test():
     pass
