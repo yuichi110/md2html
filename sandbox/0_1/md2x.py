@@ -186,7 +186,7 @@ class Md2Html_v0_1:
                 bootstrap = config.get('basic', 'bootstrap').upper()
                 if bootstrap == 'TRUE':
                     self.bootstrap = True
-                elif wtf == 'FALSE':
+                elif bootstrap == 'FALSE':
                     self.bootstrap = False
                 else:
                     print_logging('   option bootstrap at section [basic] must be "True" or "False"')
@@ -588,6 +588,8 @@ class Md2Html_v0_1:
                     raise
                 logging.debug(('        replayce keywords : success'))
 
+                html = self.prettify_html(html, 4)
+                logging.debug(('        format html : success'))
 
                 # write
                 with open(path_html, 'w') as fout:
@@ -730,6 +732,10 @@ class Md2Html_v0_1:
 
 
     def modify_html_include_markdown_html(self, markdown_html, template_html):
+        before = '\n<!-- GENERATED HTML START -->\n'
+        after = '\n<!-- GENERATED HTML END -->\n'
+        markdown_html = '{}{}{}'.format(before, markdown_html, after)
+
         html = template_html.replace('{{ MARKDOWN }}', markdown_html)
         return html
 
@@ -773,8 +779,30 @@ class Md2Html_v0_1:
         except Exception as e:
             exit(1)
 
-    def convert_html_to_pdf(self, html):
+    def prettify_html(self, html, indent_width):
+        soup = bs4.BeautifulSoup(html, 'html.parser')
+        html = soup.prettify(soup.original_encoding)
+        return html
 
+    def convert_html_to_pdf(self, html):
+        '''
+        import pdfkit
+        #pdfkit.from_url("http://google.com", "out.pdf")
+
+        options = {
+            'page-size': 'A4',
+            'margin-top': '0.1in',
+            'margin-right': '0.1in',
+            'margin-bottom': '0.1in',
+            'margin-left': '0.1in',
+            'encoding': "UTF-8",
+            'no-outline': None,
+            'dpi':512
+        }
+
+        css = '/Users/yuichi/Git/md2x/sandbox/0_1/pdf/style.css'
+        pdfkit.from_string(text, 'test_output.pdf', options=options, css=css)
+        '''
         return 'pdf'
 
     def modify_html_url_localize(self, html, basedir):
