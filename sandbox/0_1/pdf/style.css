@@ -5,3 +5,11 @@ body {
   color: #333;
   background-color: #fff;
 }
+
+h1 {
+  page-break-before: always;
+}
+
+h2 {
+  page-break-before: always;
+}

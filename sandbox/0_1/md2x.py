@@ -111,8 +111,7 @@ class Md2Html_v0_1:
             self.convert_html()
             self.copy_other_files()
         elif(output_type == self.TYPE_PDF):
-            #self.convert_pdf()
-            pass
+            self.convert_pdf()
 
 
     def cd_to_script_dir(self):
@@ -598,50 +597,66 @@ class Md2Html_v0_1:
 
         except Exception as e:
             logging.critical('   {}'.format(e))
-            logging.info('convert html : fail')
+            logging.critical('convert html : fail')
             exit(1)
 
         logging.info('convert html : success')
 
 
     def convert_pdf(self):
+        logging.info('convert pdf : start')
         try:
+            html_sum = ''
+
             for (markdown, path_markdown) in self.pdf_markdowns:
-                template = self.conv_template
+                logging.info('    markdown : {}'.format(markdown))
+
                 path_replaces = [self.conv_replace]
                 if markdown in self.conv_markdown_dict:
                     d = self.conv_markdown_dict[markdown]
-                    if 'template' in d:
-                        path_template = d['template']
                     if 'replace' in d:
                         path_replaces.insert(0, d['replace'])
+                logging.debug(('        load path info : success'))
 
                 # markdown html
                 text_markdown = self.read_file(path_markdown)
-                html_markdown = self.convert_markdown_to_html(text_markdown)
+                html = self.convert_markdown_to_html(text_markdown)
                 if self.bootstrap:
-                    html_markdown = self.modify_html_bootstrap(html_markdown)
-
-                # include
-                html_template = self.get_template_html(path_template)
-                html = modify_html_include_markdown_html(html_markdown, html_template)
+                    html = self.modify_html_bootstrap(html_markdown)
+                logging.debug(('        convert markdown to content html : success'))
 
                 # replace
                 for replace in path_replaces:
-                    html = modify_html_keyword(html, replace)
-                all_changed = check_all_keywords_changed(html)
+                    html = self.modify_html_keyword(html, replace)
+                all_changed = self.check_all_keywords_changed(html)
                 if not all_changed:
                     raise
+                logging.debug(('        replayce keywords : success'))
 
                 # change URL to local
-                basedir = ''
+                basedir = path.dirname(path_markdown)
                 html = self.modify_html_url_localize(html, basedir)
+                logging.debug(('        change image url to local : success'))
 
-                # change html to pdf
-                binary = convert_html_to_pdf(self, html)
+                html_sum = '{}\n\n<!-- page -->\n\n{}'.format(html_sum, html)
+
+            # include html_sum to template
+            path_template = self.conv_template
+            html_template = self.get_template_html(path_template)
+            html_pdf = self.modify_html_include_markdown_html(html_sum, html_template)
+            logging.debug(('        include content html to template html : success'))
+
+            #print(html_pdf)
+            self.convert_html_to_pdf(html_pdf, self.pdf_output)
+            logging.debug(('        convert html to pdf : success'))
 
         except Exception as e:
+            logging.critical('    {}'.format(e))
+            logging.critical('convert pdf : fail')
+            logging.critical('abort')
             exit(1)
+
+        logging.info('convert pdf : success')
 
 
     def copy_other_files(self):
@@ -784,11 +799,7 @@ class Md2Html_v0_1:
         html = soup.prettify(soup.original_encoding)
         return html
 
-    def convert_html_to_pdf(self, html):
-        '''
-        import pdfkit
-        #pdfkit.from_url("http://google.com", "out.pdf")
-
+    def convert_html_to_pdf(self, html, pdf_path):
         options = {
             'page-size': 'A4',
             'margin-top': '0.1in',
@@ -797,78 +808,29 @@ class Md2Html_v0_1:
             'margin-left': '0.1in',
             'encoding': "UTF-8",
             'no-outline': None,
-            'dpi':512
+            'dpi':self.pdf_dpi
         }
+        css = self.pdf_css
+        pdfkit.from_string(html, pdf_path, options=options, css=css)
 
-        css = '/Users/yuichi/Git/md2x/sandbox/0_1/pdf/style.css'
-        pdfkit.from_string(text, 'test_output.pdf', options=options, css=css)
-        '''
-        return 'pdf'
 
     def modify_html_url_localize(self, html, basedir):
 
-        return html
+        def get_abspath(relative_path):
+            p1 = path.join(basedir, relative_path)
+            abs_path = path.abspath(p1)
+            return abs_path
 
+        soup = bs4.BeautifulSoup(html, 'html.parser')
 
-    def __convert_from_markdown_to_html(self):
+        #IMAGE
+        tags = soup.find_all('img')
+        for tag in tags:
+            if tag.has_attr('src'):
+                abspath = get_abspath(tag['src'])
+                tag['src'] = abspath
 
-        try:
-            markdowns = filter(lambda text : text.endswith('.md'), self.dict_markdown.keys())
-            for markdown in markdowns:
-                logging.info('start converting {}.'.format(markdown))
-                dict_md = self.dict_markdown[markdown]
-
-                # CONVERT
-                path_md = dict_md['markdown']
-                text_md = get_file_content(path_md)
-                content_html = markdown_mod.markdown(text_md, extensions=[
-                'markdown.extensions.fenced_code',
-                'markdown.extensions.codehilite'])
-
-                #content_html = md.convert(text_md)
-                content_html = add_bootstrap_class(content_html)
-                content_html = '\n<!-- GENERATED HTML START -->\n {} \n<!-- GENERATED HTML END -->\n'.format(content_html)
-                logging.debug('    convert done')
-
-                # TEMPLATE
-                path_template = dict_md.get('template', self.dict_markdown['template'])
-                template_text = get_file_content(path_template)
-                if '{{ MARKDOWN }}' not in template_text:
-                    logging.warning('template "{}" doesn\'t have {{ MARKDOWN }}'.format(path_template))
-                    raise
-                logging.debug('   load template done')
-
-                # INCLUDE
-                html = template_text.replace('{{ MARKDOWN }}', content_html)
-                logging.debug('   include done')
-
-                # REPLACE
-                if 'replace' in dict_md:
-                    path_replace = dict_md['replace']
-                    html = replace_keywords(html, path_replace)
-
-                path_replace = self.dict_markdown['replace']
-                html = replace_keywords(html, path_replace)
-
-                if not all_keywords_changed(html):
-                    logging.warning('template "{}" for markdown "{}"'.format(path_template, path_md))
-                    raise
-                logging.debug('   replace done')
-
-                path_html = dict_md['html']
-                with open(path_html, 'w') as fout:
-                    fout.write(html)
-
-                logging.info('convert markdown [{}] done'.format(markdown))
-            logging.info('all markdown convert done')
-
-        except Exception as e:
-            logging.critical('Failed converting from markdown to html. {}'.format(e))
-            exit(1)
-
-
-    def __check_html(self):
-        pass
+        return soup.prettify(soup.original_encoding)
 
 
 ###########
@@ -879,8 +841,8 @@ def run():
     Md2Html_v0_1('html.conf').run()
     print('\n\n\n')
     Md2Html_v0_1('print.conf').run()
-    #print('\n\n\n')
-    #Md2Html_v0_1('pdf.conf').run()
+    print('\n\n\n')
+    Md2Html_v0_1('pdf.conf').run()
 
 def test():
     pass
