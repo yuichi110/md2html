@@ -839,10 +839,10 @@ class Md2Html_v0_1:
 
 def run():
     Md2Html_v0_1('html.conf').run()
-    print('\n\n\n')
-    Md2Html_v0_1('print.conf').run()
-    print('\n\n\n')
-    Md2Html_v0_1('pdf.conf').run()
+    #print('\n\n\n')
+    #Md2Html_v0_1('print.conf').run()
+    #print('\n\n\n')
+    #Md2Html_v0_1('pdf.conf').run()
 
 def test():
     pass

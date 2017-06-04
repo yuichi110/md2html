@@ -31,11 +31,11 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item active" href="#">Home</a>
-          <a class="blog-nav-item" href="#">New features</a>
-          <a class="blog-nav-item" href="#">Press</a>
-          <a class="blog-nav-item" href="#">New hires</a>
-          <a class="blog-nav-item" href="#">About</a>
+          <a class="blog-nav-item active" href="./">Home</a>
+          <a class="blog-nav-item" href="./download.html">Download</a>
+          <a class="blog-nav-item" href="./about.html">About</a>
+          <a class="blog-nav-item" href="http://www.yuichi.com/">GC</a>
+          <a class="blog-nav-item" href="http://www.yuichi.com/bio.html"></a>
         </nav>
       </div>
     </div>
@@ -70,12 +70,12 @@
           <div class="sidebar-module">
             <h4>Archives</h4>
             <ol class="list-unstyled">
-              <li><a href="#">March 2014</a></li>
-              <li><a href="#">February 2014</a></li>
-              <li><a href="#">January 2014</a></li>
-              <li><a href="#">December 2013</a></li>
-              <li><a href="#">November 2013</a></li>
-              <li><a href="#">October 2013</a></li>
+              <li><a href="./01.html">Python</a></li>
+              <li><a href="./02.html">目次</a></li>
+              <li><a href="./03.html">インストールと実行</a></li>
+              <li><a href="./04.html">概要</a></li>
+              <li><a href="./05.html">型と変数</a></li>
+              <li><a href="./06.html">制御構造</a></li>
               <li><a href="#">September 2013</a></li>
               <li><a href="#">August 2013</a></li>
               <li><a href="#">July 2013</a></li>
