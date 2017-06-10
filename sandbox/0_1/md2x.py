@@ -106,15 +106,18 @@ class Md2Html_v0_1:
         # CONVERT
         if self.TYPE_HTML in output_types:
             self.convert_html()
+
+        '''
         if self.TYPE_PRINT in output_types:
             self.convert_print()
         if self.TYPE_PDF in output_types:
             self.convert_pdf()
         if self.type_PDF_ALL in output_types:
             self.convert_pdf()
-
         self.copy_other_files()
+        '''
         logging.info('CONVERSION FINISHED WITHOUT PROBLEMS!!')
+
 
 
     def cd_to_script_dir(self):
@@ -192,7 +195,7 @@ class Md2Html_v0_1:
             # OUTPUT TYPE CHECK
             output_type_str = config.get('basic', 'output_type')
             output_types = []
-            for output_type in output_types_str.split(','):
+            for output_type in output_type_str.split(','):
                 output_type = output_type.strip().lower()
                 if output_type in [self.TYPE_HTML, self.TYPE_PRINT, self.TYPE_PDF, self.TYPE_PDF_ALL]:
                     if output_type not in output_types:
@@ -202,13 +205,13 @@ class Md2Html_v0_1:
                 print_logging('    needs "html" or "print" or "pdf" or "pdf_all"')
                 raise
 
-            print_logging('loading [basic] section success')
-
         except Exception as e:
             print_logging('    {}'.format(e))
             print_logging('load config [basic] section : fail')
             exit(1)
 
+        print_logging('   config version : {}'.format(version))
+        print_logging('   output types : {}'.format(output_types))
         print_logging('load config [basic] section : success')
         return output_types
 
@@ -270,7 +273,7 @@ class Md2Html_v0_1:
 
 
     def load_bootstrap_section(self, config):
-        logging.info('load [bootstrap] section : start')
+        logging.info('load config [bootstrap] section : start')
 
         def get_bool(text):
             text = text.upper()
@@ -284,28 +287,28 @@ class Md2Html_v0_1:
 
         try:
             if not config.has_section('bootstrap'):
-                logging.info('load [bootstrap] section : does not exist. skip')
+                logging.info('load config [bootstrap] section : does not exist. skip')
                 return
 
             if config.has_option('bootstrap', 'html'):
                 self.bootstrap_html = get_bool(config.get('bootstrap', 'html'))
             if config.has_option('bootstrap', 'print'):
-                self.bootstrap_html = get_bool(config.get('bootstrap', 'print'))
+                self.bootstrap_print = get_bool(config.get('bootstrap', 'print'))
             if config.has_option('bootstrap', 'pdf'):
-                self.bootstrap_html = get_bool(config.get('bootstrap', 'pdf'))
+                self.bootstrap_pdf = get_bool(config.get('bootstrap', 'pdf'))
             if config.has_option('bootstrap', 'pdf_all'):
-                self.bootstrap_html = get_bool(config.get('bootstrap', 'pdf_all'))
+                self.bootstrap_pdf_all = get_bool(config.get('bootstrap', 'pdf_all'))
 
         except Exception as e:
-            logging_critical('    {}'.format(e))
-            logging_critical('load config [bootstrap] section : fail')
+            logging.critical('    {}'.format(e))
+            logging.critical('load config [bootstrap] section : fail')
             exit(1)
 
         logging.debug('   html : {}'.format(self.bootstrap_html))
-        logging.debug('   html : {}'.format(self.bootstrap_print))
-        logging.debug('   html : {}'.format(self.bootstrap_pdf))
-        logging.debug('   html : {}'.format(self.bootstrap_pdf_all))
-        logging.info('load [bootstrap] section : start')
+        logging.debug('   print : {}'.format(self.bootstrap_print))
+        logging.debug('   pdf : {}'.format(self.bootstrap_pdf))
+        logging.debug('   pdf_all : {}'.format(self.bootstrap_pdf_all))
+        logging.info('load config [bootstrap] section : success')
 
 
     def load_directory_section(self, config, output_types):
@@ -370,12 +373,15 @@ class Md2Html_v0_1:
             logging.critical('abort')
             exit(1)
 
-        logging.debug('    template : "{}"'.format(self.conv_template))
+        logging.debug('    template html : "{}"'.format(self.conv_template_html))
+        logging.debug('    template print : "{}"'.format(self.conv_template_print))
+        logging.debug('    template pdf : "{}"'.format(self.conv_template_pdf))
+        logging.debug('    template pdf_all : "{}"'.format(self.conv_template_pdf_all))
         logging.debug('    replace : "{}"'.format(self.conv_replace))
         logging.info('load config [template] section : success')
 
 
-    def load_markdown_sections(self, config, output_type):
+    def load_markdown_sections(self, config, output_types):
         logging.info('load config markdown sections : start')
         try:
             dict_markdown = {}
@@ -441,7 +447,7 @@ class Md2Html_v0_1:
     def load_pdf_section(self, config, output_types):
         logging.info('load [pdf] section : start')
         try:
-            if (TYPE_PDF not in output_types) and (TYPE_PDF_ALL not in output_types):
+            if (self.TYPE_PDF not in output_types) and (self.TYPE_PDF_ALL not in output_types):
                 logging.info('load [pdf] section : output type does not have pdf and pdf_all. skip')
                 return
 
@@ -541,6 +547,7 @@ class Md2Html_v0_1:
 
         logging.info('check all directory exist : success')
 
+
     def check_template_exist(self, output_types):
         logging.info('check basic template exist : start')
         try:
@@ -591,6 +598,7 @@ class Md2Html_v0_1:
 
         logging.info('check basic template exist : success')
 
+
     def check_markdown_exist(self, output_type):
         logging.info('check markdown files exist : start')
         try:
@@ -627,7 +635,11 @@ class Md2Html_v0_1:
 
         logging.info('check markdown files exist : success')
 
-    def check_pdf_exist(self):
+
+    def check_pdf_exist(self, output_types):
+        if (self.TYPE_PDF not in output_types) or (self.TYPE_PDF_ALL not in output_types):
+            return
+
         logging.info('check pdf files exist : start')
         try:
             logging.info('    check css files')
@@ -836,7 +848,7 @@ class Md2Html_v0_1:
                 text_markdown = self.read_file(path_markdown)
                 html = self.convert_markdown_to_html(text_markdown)
                 if self.bootstrap:
-                    html = self.modify_html_bootstrap(html_markdown)
+                    html = self.modify_html_bootstrap(html)
                 logging.debug(('        convert markdown to content html : success'))
 
                 # replace
