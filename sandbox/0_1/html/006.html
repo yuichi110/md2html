@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta content="Sample Description" name="description"/>
+  <meta content="Yuichi Ito" name="author"/>
+  <link href="./asset/favicon.ico" rel="icon"/>
+  <title>
+   Python入門
+  </title>
+  <!-- Bootstrap core CSS -->
+  <link href="./assets/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Custom styles for this template -->
+  <link href="./assets/css/blog.css" rel="stylesheet"/>
+  <link href="./assets/css/codehilite.css" rel="stylesheet"/>
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+ </head>
+ <body>
+  <div class="blog-masthead">
+   <div class="container">
+    <nav class="blog-nav">
+     <a class="blog-nav-item active" href="./">
+      Home
+     </a>
+     <a class="blog-nav-item" href="./download.html">
+      Download
+     </a>
+     <a class="blog-nav-item" href="./about.html">
+      About
+     </a>
+     <a class="blog-nav-item" href="http://www.yuichi.com/">
+      Grid Computing
+     </a>
+    </nav>
+   </div>
+  </div>
+  <div class="container">
+   <div class="blog-header">
+    <h1 class="blog-title">
+     Python入門
+    </h1>
+    <p class="lead blog-description">
+     プログラミング言語Pythonについて
+    </p>
+   </div>
+   <div class="row">
+    <div class="col-sm-8 blog-main">
+     <!-- GENERATED HTML START -->
+     <h2>
+      型と変数
+     </h2>
+     <h3>
+      型
+     </h3>
+     <p>
+      プログラミングで使われるデータには「型」と呼ばれるものがあります。
+たとえば、1や2というのは「数値」という型で、“Hello”というテキストは「文字列」という型です。
+プログラミングをする際に、初心者の方はこの「型」について意識することが重要です。
+なぜかというと、「型」と「処理」は密接に結びついているためです。
+例をあげて説明します。Python のプロンプトを立ち上げて以下を実行してみてください。
+     </p>
+     <div class="codehilite">
+      <pre><span></span>&gt;&gt;&gt; 3 + 3
+6
+&gt;&gt;&gt; 3 - 1
+2
+</pre>
+     </div>
+     <p>
+      上記のように数値は足し算、引き算することができます。当たり前といえば当たり前です。
+     </p>
+     <p>
+      では、文字列はどうでしょうか。文字列は ' ' でアルファベットや記号を囲むことで作成できますので、
+先ほどと同じように足し算と引き算をさせてみます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span>&gt;&gt;&gt; 'hello' + 'python'
+'hellopython'
+&gt;&gt;&gt; 'hello' - 'python'
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+TypeError: unsupported operand type(s) for -: 'str' and 'str'
+</pre>
+     </div>
+     <p>
+      文字列の足し算はできました。文字列の後ろに別の文字列をくっつけるという「結合」処理がされています。
+文字列の結合は数値の足し算とは違いますが、これも直感的な処理内容といえるのではないでしょうか。
+     </p>
+     <p>
+      ただ、文字列の引き算をしようとしたところ、エラーが表示されてしまいました。
+このエラーの内容は「operand(オペランド)」という言葉で小難しく説明されていますが、
+要するに「文字列 - 文字列」という処理はできないということを言っています。
+     </p>
+     <p>
+      最初にも説明しましたが、「型」と「処理」は密接に結びついています。
+数値であれば足し算も引き算もできますが、文字列は足し算(結合)しかできません。
+同様に文字列でしかできない処理というものも存在しています。
+すべてを暗記する必要はありませんが「どの型がどのような処理をすることができるか」
+「その処理をするにはどういう書き方をすればいいか」ということをある程度知っておくことは重要です。
+詳細はプログラミング言語ごとに若干異なりますが、他の言語でもそれほど大きな違いはありません。
+そのため、型と処理の関係の知識がたまると言語というよりプログラミング自体の知識が向上します。
+     </p>
+     <p>
+      以下に型と処理の関係を示す図を記載します。
+     </p>
+     <p>
+      <img alt="image" class="img-responsive" src="./0030_image/01.jpg"/>
+     </p>
+     <p>
+      なお、ぱっと見て「同じに見えるデータ」であっても、型が違えば別物ですので注意が必要です。
+例えば数値の3と文字列の'3'は別物です。前者は引き算に使えますが、後者は使えません。
+後者はあくまでも文字列としての3であり、数値ではありません。
+     </p>
+     <h3>
+      変数
+     </h3>
+     <p>
+      型の続きを説明する前に変数の話をしてしまいましょう。
+変数はデータを格納するための箱のようなものです。
+プログラミングは1行1行に命令を書き連ねていくことで実現されますが、
+後ろの行で前の行の結果を利用する場面などが必ずあります。
+そのような場合に、変数に命令の結果を保存して、それを後で使うといった利用方法がとられます。
+イメージとしては以下の図のようなものとなります。
+     </p>
+     <p>
+      <img alt="image" class="img-responsive" src="./0030_image/02.jpg"/>
+     </p>
+     <p>
+      変数の使い方は非常に簡単で、以下のように宣言するだけで変数に値が格納されます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="err">変数名</span> <span class="o">=</span> <span class="err">変数に入れたい値</span>
+</pre>
+     </div>
+     <p>
+      変数名はアルファベットから始まり、特別なキーワードを避けた英数字と一部の記号(“_”など)から構成されていれば、
+好きなものを使ってかまいません。
+特別なキーワードは次章以降で扱うPythonの文法で利用されるものです。
+たとえば、条件分岐のifやelseなどは変数名には使えません。
+なお、変数に値を入れることを「代入する」といいますので、それも覚えておいてください。
+     </p>
+     <p>
+      変数が利用される場合は、その中に実際に代入されている値が自動的に取り出されて使われます。
+以下に例を示します。
+     </p>
+     <div class="codehilite">
+      <pre><span></span>&gt;&gt;&gt; a = 5
+&gt;&gt;&gt; print(a)
+5
+&gt;&gt;&gt; b = a + 5
+&gt;&gt;&gt; print(b)
+10
+&gt;&gt;&gt; b = a + 6
+&gt;&gt;&gt; print(b)
+11
+</pre>
+     </div>
+     <p>
+      取り出しただけではデータは消失しないので、何度でも利用できます。
+たとえば変数aに5を代入した後に、変数aから2回値を取り出していますが、2回とも5が取り出されています。
+一般的には、取り出すというよりも“変数aが5を「返す」”というような言い方をします。
+     </p>
+     <p>
+      ただ、注意してほしいのは「なにか値が代入されている変数」に新しい値を代入してしまうと「昔の値」は上書きされてしまうということです。
+上記例で、bは10を保持していましたが、そこに11が代入されると10を消失してしまいます。
+また、代入されていない変数を使おうとするとエラーとなります。
+     </p>
+     <p>
+      少し高度になりますが、変数に同じ変数の値を加工して代入することも可能です。
+たとえば、変数aにすでに文字列が入っており、それに別の文字列を追加したいという場合は以下のように書きます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span>&gt;&gt;&gt; a = 'hello'
+&gt;&gt;&gt; a = a + 'python'
+&gt;&gt;&gt; print(a)
+hellopython
+</pre>
+     </div>
+     <p>
+      上記の「a = a + 'python'」は以下の動きをします。
+     </p>
+     <ol>
+      <li>
+       右のaが'hello'という文字列を返す
+      </li>
+      <li>
+       それに'python'が結合されて'hellopython'になる
+      </li>
+      <li>
+       'hellopython'が左のaに代入される
+      </li>
+     </ol>
+     <p>
+      なお、「a = a」のように加工せずにそのまま代入することもできますが、その処理にとくに意味はありませんので普通はしません。
+     </p>
+     <p>
+      上記のサンプルでは変数名に a というアルファベットを使いましたが、
+実際のプログラミングを行う際は以下のルールを守って命名するようにすることが推奨されています。
+     </p>
+     <ul>
+      <li>
+       分かりやすい変数名
+      </li>
+      <li>
+       大文字は使わずアンダーバーで単語を区切る
+      </li>
+      <li>
+       理由なくアンダーバーから始まる変数名は使わない(特別な意味を持つ)
+      </li>
+     </ul>
+     <p>
+      以下に良い例と悪い例を示します。
+     </p>
+     <div class="codehilite">
+      <pre><span></span># 1単語の場合
+student = 'taro' # OK : 小文字のみで構成
+Student = 'taro' # 大文字スタートなのでNG
+a = 'taro'       # a が何か分からないのでNG
+
+# 2単語の場合
+student_name = 'taro' # OK : 小文字の単語間を _ で区切る
+studentName = 'taro'  # NG : 単語の区切りを大文字に
+                      #      するのは Python 流でない
+
+# 先頭が _ から始まる
+_student = 'taro'   # 他の人に「これを使わないで下さい」と示す
+__student = 'taro'  # 文法として外から使えなくする
+</pre>
+     </div>
+     <p>
+      プログラミング言語によって変数名の名前の付け方は異なります。
+難しいことを考えなければ小文字の単語とアンダーバーのみで構成すると覚えておいて下さい。
+なお、アンダーバーから始まる変数をどう利用するかは中編にて扱います。
+     </p>
+     <p>
+      また使いたい名前が予約後(Pythonの文法として特別な意味をもつワード)や、
+既に定義されている名前と重複する場合は名前の後ろにアンダーバーをつけるという慣習があります。
+たとえば後ほど説明する list という型がありますが、
+リストのデータを list という変数に代入することは名前が分かりやすいためついついやりたくなりがちですが避けなければいけません。
+list という変数名の代わりに list_ という変数名を使います。
+     </p>
+     <div class="codehilite">
+      <pre><span></span># NG
+# list = [1,2,3,4]
+
+# OK
+list_ = [1,2,3,4]
+print(list_)
+# [1, 2, 3, 4]
+</pre>
+     </div>
+     <p>
+      ただ、本書で使われるようなサンプルのプログラムならともかく、
+現実のアプリケーションで用いられるコードの変数は何らかの役割があるはずです。
+そのため、list_ といったような名前は本来現れないことが望ましいです。
+     </p>
+     <p>
+      Pythonの変数の概念は非常に簡単です。「
+変数はどのような型の値でも格納する入れ物のようなもの」ということを理解していれば、
+しばらくは何も問題ありません。
+ただ、CやJavaなどのほかの言語だと、変数の概念はもう少し複雑なので簡単に説明します。
+興味がない人は読み飛ばしていただいてかまいません。
+     </p>
+     <h2>
+      型と変数
+     </h2>
+     <p>
+      Python以外の言語を少しでも学んだことのある人は、先ほどのPythonの変数の使い方に違和感を覚えられたかもしれません。
+CやJavaなどは「変数」と「型」が密接に結びついています。
+具体的にいうと変数にも型があり、変数の型と代入する値の型は同一である必要があります。
+     </p>
+     <p>
+      たとえば、Javaで変数xを宣言し、それを利用するには以下のように書きます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="c1">// JAVA</span>
+<span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>         <span class="c1">// OK</span>
+<span class="n">x</span> <span class="o">=</span> <span class="s">"Java"</span>     <span class="c1">// Error</span>
+</pre>
+     </div>
+     <p>
+      Pythonで変数を利用する場合、変数xの前に「int」というキーワードは存在していませんでした。
+intは整数型のことなので、この場合は「整数型の変数x」を作っています。
+Javaの変数には必ず型があるので、変数を宣言する(作る)際には必ず「int」といった型を示す必要があります。
+     </p>
+     <p>
+      上記例では変数を作成した後で、その変数に整数値5と文字列“Java”を代入しています。
+変数xは整数型なので、同じ整数型である5は代入できるものの、
+文字列型の“Java”は代入できずにエラーとなります。
+     </p>
+     <p>
+      文字列型の変数もこれと同じです。
+文字列を格納するために作成された変数yに文字列を代入することは当然できますが、
+整数型である5を代入することはできません。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="c1">// JAVA</span>
+<span class="n">String</span> <span class="n">y</span> <span class="o">=</span> <span class="s">"Java"</span><span class="o">;</span>   <span class="c1">// OK</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>               <span class="c1">// Error</span>
+</pre>
+     </div>
+     <p>
+      一方、Pythonの変数にはどのような型でもいれることができるので、
+以下のように「整数を代入した変数に文字列を代入する」ことも問題ありません。
+そもそもJavaでいう「int」や「String」といった変数の型宣言がPythonのコードにはありませんね。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="c1"># PYTHON</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">x</span> <span class="o">=</span> <span class="s1">'python'</span>
+</pre>
+     </div>
+     <p>
+      Python と Java の変数の使い方の違いを図にまとめます。
+     </p>
+     <p>
+      <img alt="image" class="img-responsive" src="./0030_image/03.jpg"/>
+     </p>
+     <p>
+      ただ、上記のような「変数を使いまわす」ようなコードは一般的には避けたほうがよいです。
+一度宣言された変数を「別の使い方で再利用」すると、その変数に何が入っているのかわかりにくくなるため、
+プログラミングの行儀がよくありません。専門的な言い方をすると「保守しにくいコード」といわれます。
+脱線はこのぐらいにして本題に戻ることにしましょう。
+     </p>
+     <h3>
+      定数とマジックナンバー
+     </h3>
+     <p>
+      プログラムの中にはたまに「マジックナンバー」と呼ばれる正体不明の数字が現れることがあります。
+たとえば以下のコードを見て下さい。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="mf">1.08</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre>
+     </div>
+     <p>
+      このコードが何をやっているか分かりません。
+結論を言ってしまうと、1.08 は税率にあたり、税抜き100円が税込みいくらになるか確認しています。
+1.08 という数字を見て勘のいいかたであれば「税率のようだ」と気づくかもしれませんが、
+プログラミングはそのような気づきには頼ってほしくないです。
+     </p>
+     <p>
+      このような場合、1.08 というよくわからない「マジックナンバー」ではなく「定数」を使うことが望ましいです。
+定数は一回設定されたら変更されることがない特殊な変数であり、
+その名前は大文字とアンダーバーで宣言されます。
+例えば先程の税込み額の計算プログラムであれば以下のようになります。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">TAX_RATE</span> <span class="o">=</span> <span class="mf">1.08</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">TAX_RATE</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># 108</span>
+</pre>
+     </div>
+     <p>
+      上記の TAX_RATE が定数にあたります。
+     </p>
+     <p>
+      この定数は一般的にプログラムのファイルの先頭で宣言されます。そしてパラメータとして使われることも多く、
+ファイルを開いて定数の値を変更することでプログラムの挙動を変えることがよくあります。
+例えば税率が10% に変更されたら、プログラム本体ではなく定数を書き換えることで対応します。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">TAX_RATE</span> <span class="o">=</span> <span class="mf">1.1</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">TAX_RATE</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># 110</span>
+</pre>
+     </div>
+     <p>
+      1.08 という税率がプログラムの各所に散っていたら、それを全て 1.1 に書き換えていく作業が必要になります。
+定数を使っていればそのような作業は不要になり、なおかつプログラムが分かりやすくなります。
+     </p>
+     <p>
+      ちなみに、Python の定数は厳密な意味では定数ではなく、実は文法としては単なる変数と変わりがありません。
+大文字で定数を作るというのは Python のプログラマたちが決めたルールであり、文法的な拘束はありません。
+そのため再代入をしてもエラーとはなりません。ただ、定数が変わることは誰も想定していないので、
+再代入は絶対にしないでください。
+     </p>
+     <!-- GENERATED HTML END -->
+     <nav>
+      <ul class="pager">
+       <li>
+        <a href="#">
+         Previous
+        </a>
+       </li>
+       <li>
+        <a href="#">
+         Next
+        </a>
+       </li>
+      </ul>
+     </nav>
+    </div>
+    <!-- /.blog-main -->
+    <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+     <div class="sidebar-module sidebar-module-inset">
+      <h4>
+       About
+      </h4>
+      <p>
+      </p>
+     </div>
+     <div class="sidebar-module">
+      <h4>
+       初級編
+      </h4>
+      <ol class="list-unstyled">
+       <li>
+        <a href="./001.html">
+         前書き
+        </a>
+       </li>
+       <li>
+        <a href="./002.html">
+         目次
+        </a>
+       </li>
+       <li>
+        <a href="./003.html">
+         Pythonプログラミング
+        </a>
+       </li>
+       <li>
+        <a href="./004.html">
+         インストールと実行
+        </a>
+       </li>
+       <li>
+        <a href="./005.html">
+         概要
+        </a>
+       </li>
+       <li>
+        <a href="./006.html">
+         型と変数
+        </a>
+       </li>
+       <li>
+        <a href="./007.html">
+         最重要な型
+        </a>
+       </li>
+       <li>
+        <a href="./008.html">
+         制御構造
+        </a>
+       </li>
+       <li>
+        <a href="./009.html">
+         関数
+        </a>
+       </li>
+       <li>
+        <a href="./010.html">
+         モジュール
+        </a>
+       </li>
+       <li>
+        <a href="./011.html">
+         オブジェクトとメソッド
+        </a>
+       </li>
+       <li>
+        <a href="./012.html">
+         テキスト処理
+        </a>
+       </li>
+       <li>
+        <a href="./013.html">
+         リスト再入門
+        </a>
+       </li>
+       <li>
+        <a href="./014.html">
+         タプル
+        </a>
+       </li>
+       <li>
+        <a href="./015.html">
+         セット
+        </a>
+       </li>
+       <li>
+        <a href="./016.html">
+         辞書型
+        </a>
+       </li>
+       <li>
+        <a href="./017.html">
+         None型
+        </a>
+       </li>
+       <li>
+        <a href="./018.html">
+         ファイル処理
+        </a>
+       </li>
+       <li>
+        <a href="./019.html">
+         基数と文字コード
+        </a>
+       </li>
+       <li>
+        <a href="./020.html">
+         日本語の扱い
+        </a>
+       </li>
+       <li>
+        <a href="./021.html">
+         プログラムへの入力
+        </a>
+       </li>
+       <li>
+        <a href="./022.html">
+         関数の高度なトピック
+        </a>
+       </li>
+       <li>
+        <a href="./023.html">
+         おわりに
+        </a>
+       </li>
+      </ol>
+     </div>
+     <div class="sidebar-module">
+      <h4>
+       Elsewhere
+      </h4>
+      <ol class="list-unstyled">
+       <li>
+        <a href="#">
+         GitHub
+        </a>
+       </li>
+       <li>
+        <a href="#">
+         Twitter
+        </a>
+       </li>
+       <li>
+        <a href="#">
+         Facebook
+        </a>
+       </li>
+      </ol>
+     </div>
+    </div>
+    <!-- /.blog-sidebar -->
+   </div>
+   <!-- /.row -->
+  </div>
+  <!-- /.container -->
+  <footer class="blog-footer">
+   <p>
+    Blog template built for
+    <a href="http://getbootstrap.com">
+     Bootstrap
+    </a>
+    by
+    <a href="https://twitter.com/mdo">
+     @mdo
+    </a>
+    .
+   </p>
+   <p>
+    <a href="#">
+     Back to top
+    </a>
+   </p>
+  </footer>
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">
+  </script>
+  <script src="./assets/js/bootstrap.min.js">
+  </script>
+ </body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta content="Sample Description" name="description"/>
+  <meta content="Yuichi Ito" name="author"/>
+  <link href="./asset/favicon.ico" rel="icon"/>
+  <title>
+   Python入門
+  </title>
+  <!-- Bootstrap core CSS -->
+  <link href="./assets/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Custom styles for this template -->
+  <link href="./assets/css/blog.css" rel="stylesheet"/>
+  <link href="./assets/css/codehilite.css" rel="stylesheet"/>
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+ </head>
+ <body>
+  <div class="blog-masthead">
+   <div class="container">
+    <nav class="blog-nav">
+     <a class="blog-nav-item active" href="./">
+      Home
+     </a>
+     <a class="blog-nav-item" href="./download.html">
+      Download
+     </a>
+     <a class="blog-nav-item" href="./about.html">
+      About
+     </a>
+     <a class="blog-nav-item" href="http://www.yuichi.com/">
+      Grid Computing
+     </a>
+    </nav>
+   </div>
+  </div>
+  <div class="container">
+   <div class="blog-header">
+    <h1 class="blog-title">
+     Python入門
+    </h1>
+    <p class="lead blog-description">
+     プログラミング言語Pythonについて
+    </p>
+   </div>
+   <div class="row">
+    <div class="col-sm-8 blog-main">
+     <!-- GENERATED HTML START -->
+     <h2>
+      セット
+     </h2>
+     <p>
+      次は「セット」です。セットを一言で説明すると、「集合」という概念を実現するための型です。
+たとえば、ある空の集合にAを追加すると、その集合にはAがあります。
+さらにBを追加するとA、Bの2つが存在します。
+しかし、ここにさらにAを追加しても、「A、A、B」とはならずに「A、B」のままです。
+そして集合は「順序を持たない」ので「A、B」も、「B、A」も同じ意味を持ちます。
+セットの内部実装には非常に重要な概念があるのですが、とりあえず使い方を説明してしまいます。
+     </p>
+     <p>
+      空のセットのオブジェクトを作るにはset() 関数を使います。
+空でない場合は{}に要素を並べることで作ることもできます。
+  もしくはリストのデータをset関数に渡すことで、中身のあるセットを作ることもできます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># set()</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">}</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="c1"># {1, 2, 3}</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="c1"># {1, 3, 5, 7}</span>
+</pre>
+     </div>
+     <p>
+      空のセットを作る際に注意して欲しいことは「変数 = {}」 としてしまうと、
+  セットではなく次に説明する「辞書型のオブジェクト」が作成されてしまうということです。
+     </p>
+     <p>
+      セットへの要素の追加にはadd、削除にはremoveメソッドを使います。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span>
+<span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># {1, 2, 3, 4}</span>
+<span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># {1, 2, 3, 4}</span>
+
+<span class="n">a</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># {2, 3, 4}</span>
+</pre>
+     </div>
+     <p>
+      リストのデータ追加のメソッド名を覚えていますか。addではなく、appendや insertでしたね。
+日本語で言うと同じ「追加」であっても、addだと「集合に加える」という感じで、
+appendだと「末尾に加える」という意味合いになります。
+順序を持たない set 型なので、add というメソッド名となっています。
+そして removeメソッドを使うと指定した値をセットから取り除きます。
+存在しない値を指定するとエラーになるので注意してください。
+     </p>
+     <p>
+      セットの使い方はリストに似ています。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="c1"># in, not in を使える</span>
+<span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">}</span>
+<span class="k">print</span><span class="p">(</span><span class="mi">1</span> <span class="ow">in</span> <span class="n">a</span><span class="p">)</span>
+<span class="c1"># True</span>
+<span class="k">print</span><span class="p">(</span><span class="mi">2</span> <span class="ow">in</span> <span class="n">a</span><span class="p">)</span>
+<span class="c1"># False</span>
+
+<span class="c1"># pop を使える(何が帰ってくるかは分からない)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># {3, 5, 7}</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="c1"># 1</span>
+
+<span class="c1"># for も使えるが順序は不明</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">}:</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="c1"># 1 3 5 7</span>
+</pre>
+     </div>
+     <p>
+      リストと若干異なるのはセットの結合です。
+先程説明したようにセットは重複した要素を持たないため、
+結合される2つのセットが同じものを持っていれば1つだけになります。
+プラス記号を使った結合はできません。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">}</span>
+<span class="n">a</span><span class="o">.</span><span class="n">union</span><span class="p">({</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">})</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># {1, 2, 3, 4, 5}</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="p">{</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">})</span>
+<span class="c1"># Traceback (most recent call last):</span>
+<span class="c1"># ...</span>
+<span class="c1"># TypeError: unsupported operand type(s) for +: 'set' and 'set'</span>
+</pre>
+     </div>
+     <p>
+      あまり利用場面は多くないかもしれませんが、集合特有の演算をすることもできます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="c1"># 比較</span>
+<span class="k">print</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">}</span> <span class="o">&lt;</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">})</span>
+<span class="c1"># True</span>
+
+<span class="c1"># AND(両方含むもののみ)</span>
+<span class="k">print</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">}</span> <span class="o">&amp;</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">})</span>
+<span class="c1"># {3}</span>
+
+<span class="c1"># OR(結合)</span>
+<span class="k">print</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">}</span> <span class="o">|</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">})</span>
+<span class="c1"># {1, 2, 3, 4, 5}</span>
+</pre>
+     </div>
+     <p>
+      セットの使い方はわかっていただけたでしょうか。
+追加や削除、有無のチェックなどの機能を見ると、なんだかリストに似ているような気がしたかもしれませんが、
+両者の仕組みはまったく異なっています。
+     </p>
+     <h3>
+      ハッシュの仕組み
+     </h3>
+     <p>
+      セットで使われている重要なコンピュータ技術に、ハッシュ(Hash)と呼ばれているものがあります。
+集合はハッシュを使わずにでも実現できるでしょうが、
+PythonのセットはJavaでいうところのHashSetに近いです。
+このハッシュの概念図を以下に示します。
+     </p>
+     <p>
+      <img alt="image" class="img-responsive" src="./0075_image/01.jpg"/>
+     </p>
+     <p>
+      ハッシュは「ハッシュ関数」と呼ばれるものに特定の値(キー)を与えて「ハッシュ値」を得ることで実現されています。
+ハッシュ値はある範囲のなかの数値(一般的には0からN)のどれかとなり、
+同じキーから生成されるハッシュ値は常に同じです。
+     </p>
+     <p>
+      上記の図でいうと、キーとして「John Smith」をハッシュ関数にかけるとハッシュ値「02」が得られています。
+同様に「Lisa Smith」をハッシュ関数にかけると「01」となります。
+そしてハッシュ値の範囲は00から15です。
+この性質を考慮したうえで「ある集合に要素Xはあるか」ということをどのようにして実現するか想像してください。
+     </p>
+     <p>
+      ハッシュを使う場合、たとえば「John Smith」を集合に加える際には、
+ハッシュ値「02」の場所に「John Smith」を格納します。
+そして「John Smith」が存在するかどうかのチェックはハッシュ値「02」の場所に「John Smith」がいるかどうか確認すればいいのです。
+一方、リストの探索であれば「先頭から末尾まで順に「John Smith」かどうかを確認していく」ことが必要です。
+リストのサイズが大きければこの探索コストは非常に大きくなります。
+「要素」の探索という面においてハッシュはリストに比べるとであるのに比べると随分スマートだと思いませんか。
+実際、ハッシュを使った要素の探索は非常に高速です。
+     </p>
+     <p>
+      ただ、ハッシュも使い方を間違えると効率が悪くなります。もう一度図を見てください。
+よく見ると「John Smith」と「Sandra Dee」は同じハッシュ値に割り当てられています。
+これはいわゆる「ハッシュの衝突」と呼ばれており、これが多発すると探索のスピードが遅くなります。
+なぜなら「Sandra Dee」の有無の確認をする際に「01」を見にいって、
+そこに「John Smith」やほかの要素がたくさん入っていると、
+「01」のなかで「リストの探索」のようにして全部をチェックしていかないといけないからです。
+     </p>
+     <p>
+      この問題を防ぐためにハッシュ値の範囲は十分な広さを持たせる必要があります。
+たとえば今回のように00から15などという範囲は狭すぎるので、これをもっと広げます。
+そうすると確率的には衝突は発生しにくくなります。
+ただ、通常はこんなことを気にしなくてもPythonがよしなに処理してくれるので大丈夫です。
+     </p>
+     <!-- GENERATED HTML END -->
+     <nav>
+      <ul class="pager">
+       <li>
+        <a href="#">
+         Previous
+        </a>
+       </li>
+       <li>
+        <a href="#">
+         Next
+        </a>
+       </li>
+      </ul>
+     </nav>
+    </div>
+    <!-- /.blog-main -->
+    <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+     <div class="sidebar-module sidebar-module-inset">
+      <h4>
+       About
+      </h4>
+      <p>
+      </p>
+     </div>
+     <div class="sidebar-module">
+      <h4>
+       初級編
+      </h4>
+      <ol class="list-unstyled">
+       <li>
+        <a href="./001.html">
+         前書き
+        </a>
+       </li>
+       <li>
+        <a href="./002.html">
+         目次
+        </a>
+       </li>
+       <li>
+        <a href="./003.html">
+         Pythonプログラミング
+        </a>
+       </li>
+       <li>
+        <a href="./004.html">
+         インストールと実行
+        </a>
+       </li>
+       <li>
+        <a href="./005.html">
+         概要
+        </a>
+       </li>
+       <li>
+        <a href="./006.html">
+         型と変数
+        </a>
+       </li>
+       <li>
+        <a href="./007.html">
+         最重要な型
+        </a>
+       </li>
+       <li>
+        <a href="./008.html">
+         制御構造
+        </a>
+       </li>
+       <li>
+        <a href="./009.html">
+         関数
+        </a>
+       </li>
+       <li>
+        <a href="./010.html">
+         モジュール
+        </a>
+       </li>
+       <li>
+        <a href="./011.html">
+         オブジェクトとメソッド
+        </a>
+       </li>
+       <li>
+        <a href="./012.html">
+         テキスト処理
+        </a>
+       </li>
+       <li>
+        <a href="./013.html">
+         リスト再入門
+        </a>
+       </li>
+       <li>
+        <a href="./014.html">
+         タプル
+        </a>
+       </li>
+       <li>
+        <a href="./015.html">
+         セット
+        </a>
+       </li>
+       <li>
+        <a href="./016.html">
+         辞書型
+        </a>
+       </li>
+       <li>
+        <a href="./017.html">
+         None型
+        </a>
+       </li>
+       <li>
+        <a href="./018.html">
+         ファイル処理
+        </a>
+       </li>
+       <li>
+        <a href="./019.html">
+         基数と文字コード
+        </a>
+       </li>
+       <li>
+        <a href="./020.html">
+         日本語の扱い
+        </a>
+       </li>
+       <li>
+        <a href="./021.html">
+         プログラムへの入力
+        </a>
+       </li>
+       <li>
+        <a href="./022.html">
+         関数の高度なトピック
+        </a>
+       </li>
+       <li>
+        <a href="./023.html">
+         おわりに
+        </a>
+       </li>
+      </ol>
+     </div>
+     <div class="sidebar-module">
+      <h4>
+       Elsewhere
+      </h4>
+      <ol class="list-unstyled">
+       <li>
+        <a href="#">
+         GitHub
+        </a>
+       </li>
+       <li>
+        <a href="#">
+         Twitter
+        </a>
+       </li>
+       <li>
+        <a href="#">
+         Facebook
+        </a>
+       </li>
+      </ol>
+     </div>
+    </div>
+    <!-- /.blog-sidebar -->
+   </div>
+   <!-- /.row -->
+  </div>
+  <!-- /.container -->
+  <footer class="blog-footer">
+   <p>
+    Blog template built for
+    <a href="http://getbootstrap.com">
+     Bootstrap
+    </a>
+    by
+    <a href="https://twitter.com/mdo">
+     @mdo
+    </a>
+    .
+   </p>
+   <p>
+    <a href="#">
+     Back to top
+    </a>
+   </p>
+  </footer>
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">
+  </script>
+  <script src="./assets/js/bootstrap.min.js">
+  </script>
+ </body>
+</html>

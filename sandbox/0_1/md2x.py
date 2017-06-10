@@ -49,8 +49,11 @@ class Md2Html_v0_1:
     def __init__(self, config_path):
         self.config_path = config_path
 
-        # basic
-        self.bootstrap = False
+        # bootstrap
+        self.bootstrap_html = False
+        self.bootstrap_print = False
+        self.bootstrap_pdf = False
+        self.bootstrap_pdf_all = False
 
         # directory
         self.dir_markdown = None
@@ -59,8 +62,11 @@ class Md2Html_v0_1:
         self.dir_pdf = None
 
         # template and markdown
-        self.conv_template = None
         self.conv_replace = None
+        self.conv_template_html = None
+        self.conv_template_print = None
+        self.conv_template_pdf = None
+        self.conv_template_pdf_all = None
         self.conv_markdown_dict = {}
 
         # pdf
@@ -72,7 +78,9 @@ class Md2Html_v0_1:
         # VAL
         self.VERSION = '0.1'
         self.TYPE_HTML = 'html'
+        self.TYPE_PRINT = 'print'
         self.TYPE_PDF = 'pdf'
+        self.TYPE_PDF_ALL = 'pdf_all'
 
     def run(self):
         self.cd_to_script_dir()
@@ -80,38 +88,33 @@ class Md2Html_v0_1:
         #  LOAD CONFIG
         config_text = self.get_config_text(self.config_path)
         config = self.get_config(config_text)
-        output_type = self.load_basic_section(config)
-        output_type = output_type.lower()
-        if output_type == 'html':
-            output_type = self.TYPE_HTML
-        elif output_type == 'pdf':
-            output_type = self.TYPE_PDF
-        else:
-            print_logging('Critical : option output_type at section [basic] must be "html" or "pdf"')
-            print_logging('abort')
-            exit(1)
+        output_types = self.load_basic_section(config)
 
         self.load_logging_section(config)
-        self.load_directory_section(config, output_type)
-        self.load_template_section(config)
-        self.load_markdown_sections(config, output_type)
-        if(output_type == self.TYPE_PDF):
-            self.load_pdf_section(config)
+        self.load_bootstrap_section(config)
+        self.load_directory_section(config, output_types)
+        self.load_template_section(config, output_types)
+        self.load_markdown_sections(config, output_types)
+        self.load_pdf_section(config, output_types)
 
         # CHECK FILES
-        self.check_directory_exist(output_type)
-        self.check_template_exist()
-        self.check_markdown_exist(output_type)
-        if(output_type == self.TYPE_PDF):
-            self.check_pdf_exist()
-
+        self.check_directory_exist(output_types)
+        self.check_template_exist(output_types)
+        self.check_markdown_exist(output_types)
+        self.check_pdf_exist(output_types)
 
         # CONVERT
-        if(output_type == self.TYPE_HTML):
+        if self.TYPE_HTML in output_types:
             self.convert_html()
-            self.copy_other_files()
-        elif(output_type == self.TYPE_PDF):
+        if self.TYPE_PRINT in output_types:
+            self.convert_print()
+        if self.TYPE_PDF in output_types:
             self.convert_pdf()
+        if self.type_PDF_ALL in output_types:
+            self.convert_pdf()
+
+        self.copy_other_files()
+        logging.info('CONVERSION FINISHED WITHOUT PROBLEMS!!')
 
 
     def cd_to_script_dir(self):
@@ -158,6 +161,7 @@ class Md2Html_v0_1:
         print_logging('get config text : success')
         return config_text
 
+
     def get_config(self, config_text):
         print_logging('get config-object from text : start')
         try:
@@ -177,25 +181,28 @@ class Md2Html_v0_1:
     def load_basic_section(self, config):
         print_logging('load config [basic] section : start')
         try:
+            # VERSION CHECK
             version = config.get('basic', 'version')
-            output_type = config.get('basic', 'output_type')
-            print_logging('loading [basic] section success')
-
-            if config.has_option('basic', 'bootstrap'):
-                bootstrap = config.get('basic', 'bootstrap').upper()
-                if bootstrap == 'TRUE':
-                    self.bootstrap = True
-                elif bootstrap == 'FALSE':
-                    self.bootstrap = False
-                else:
-                    print_logging('   option bootstrap at section [basic] must be "True" or "False"')
-                    raise
-
             if version != self.VERSION:
                 print_logging('    found version mismatch')
-                print_logging('    args {}'.format(self.VERSION))
-                print_logging('    config file {}'.format(version))
+                print_logging('    args : {}'.format(self.VERSION))
+                print_logging('    config file : {}'.format(version))
                 raise
+
+            # OUTPUT TYPE CHECK
+            output_type_str = config.get('basic', 'output_type')
+            output_types = []
+            for output_type in output_types_str.split(','):
+                output_type = output_type.strip().lower()
+                if output_type in [self.TYPE_HTML, self.TYPE_PRINT, self.TYPE_PDF, self.TYPE_PDF_ALL]:
+                    if output_type not in output_types:
+                        output_types.append(output_type)
+            if len(output_types) == 0:
+                print_logging('    found no correct output type at option output_type')
+                print_logging('    needs "html" or "print" or "pdf" or "pdf_all"')
+                raise
+
+            print_logging('loading [basic] section success')
 
         except Exception as e:
             print_logging('    {}'.format(e))
@@ -203,7 +210,7 @@ class Md2Html_v0_1:
             exit(1)
 
         print_logging('load config [basic] section : success')
-        return output_type
+        return output_types
 
 
     def load_logging_section(self, config):
@@ -262,7 +269,46 @@ class Md2Html_v0_1:
         logging.info('load config [logging] section : success')
 
 
-    def load_directory_section(self, config, output_type):
+    def load_bootstrap_section(self, config):
+        logging.info('load [bootstrap] section : start')
+
+        def get_bool(text):
+            text = text.upper()
+            if text == 'TRUE':
+                return True
+            elif text == 'FALSE':
+                return False
+            else:
+                logging.warning('    option value must be "True" or "False"')
+                raise
+
+        try:
+            if not config.has_section('bootstrap'):
+                logging.info('load [bootstrap] section : does not exist. skip')
+                return
+
+            if config.has_option('bootstrap', 'html'):
+                self.bootstrap_html = get_bool(config.get('bootstrap', 'html'))
+            if config.has_option('bootstrap', 'print'):
+                self.bootstrap_html = get_bool(config.get('bootstrap', 'print'))
+            if config.has_option('bootstrap', 'pdf'):
+                self.bootstrap_html = get_bool(config.get('bootstrap', 'pdf'))
+            if config.has_option('bootstrap', 'pdf_all'):
+                self.bootstrap_html = get_bool(config.get('bootstrap', 'pdf_all'))
+
+        except Exception as e:
+            logging_critical('    {}'.format(e))
+            logging_critical('load config [bootstrap] section : fail')
+            exit(1)
+
+        logging.debug('   html : {}'.format(self.bootstrap_html))
+        logging.debug('   html : {}'.format(self.bootstrap_print))
+        logging.debug('   html : {}'.format(self.bootstrap_pdf))
+        logging.debug('   html : {}'.format(self.bootstrap_pdf_all))
+        logging.info('load [bootstrap] section : start')
+
+
+    def load_directory_section(self, config, output_types):
         logging.info('load config [directory] section : start')
 
         try:
@@ -279,8 +325,8 @@ class Md2Html_v0_1:
                 dir_pdf = config.get('directory', 'pdf')
                 self.dir_pdf = os.path.abspath(dir_pdf)
             else:
-                if output_type == self.TYPE_PDF:
-                    logging.warning('output_type pdf requires pdf option at section directory')
+                if (self.TYPE_PDF in output_types) or (self.TYPE_PDF_ALL in output_types):
+                    logging.warning('output_type pdf or pdf_all requires pdf option at section directory')
                     raise
 
         except Exception as e:
@@ -295,18 +341,28 @@ class Md2Html_v0_1:
         logging.debug('    pdf : "{}"'.format(self.dir_pdf))
         logging.info('load config [directory] section : success')
 
-    def load_template_section(self, config):
+
+    def load_template_section(self, config, output_types):
         logging.info('load config [template] section : start')
         try:
-            abs_template = config.get('template', 'template')
-            if not path.isabs(abs_template):
-                abs_template = path.join(self.dir_template, abs_template)
-            self.conv_template = abs_template
+            fname = config.get('template', 'replace')
+            self.conv_replace = path.join(self.dir_template, fname)
 
-            abs_replace = config.get('template', 'replace')
-            if not path.isabs(abs_replace):
-                abs_replace = path.join(self.dir_template, abs_replace)
-            self.conv_replace = abs_replace
+            if self.TYPE_HTML in output_types:
+                fname = config.get('template', 'html')
+                self.conv_template_html = path.join(self.dir_template, fname)
+
+            if self.TYPE_PRINT in output_types:
+                fname = config.get('template', 'print')
+                self.conv_template_print = path.join(self.dir_template, fname)
+
+            if self.TYPE_PDF in output_types:
+                fname = config.get('template', 'pdf')
+                self.conv_template_pdf = path.join(self.dir_template, fname)
+
+            if self.TYPE_PDF_ALL in output_types:
+                fname = config.get('template', 'pdf_all')
+                self.conv_template_pdf_all = path.join(self.dir_template, fname)
 
         except Exception as e:
             logging.critical('    {}'.format(e))
@@ -332,30 +388,37 @@ class Md2Html_v0_1:
                 markdown_path = path.join(self.dir_markdown, markdown_section)
                 d['markdown'] = markdown_path
 
-                # html path
-                if config.has_option(markdown_section, 'html'):
-                    html_path = config.get(markdown_section, 'html')
-                    if not path.isabs(html_path):
-                        html_path = path.join(self.dir_output, html_path)
-                    d['html'] = html_path
-                else:
-                    if output_type == self.TYPE_HTML:
-                        logging.warning('    output_type "html" needs html option at markdown section')
-                        raise
+                # html
+                if self.TYPE_HTML in output_types:
+                    fname = config.get(markdown_section, 'html')
+                    d['html'] = path.join(self.dir_template, fname)
 
-                # specific template path
-                if config.has_option(markdown_section, 'template'):
-                    template = config.get(markdown_section, 'template')
-                    if not path.isabs(template):
-                        template = path.join(self.dir_template, template)
-                    d['template'] = template
+                    if config.has_option(markdown_section, 'html_template'):
+                        fname = config.get(markdown_section, 'html_template')
+                        d['html_template'] = path.join(self.dir_template, fname)
 
-                # specific replace path
+                # print
+                if self.TYPE_PRINT in output_types:
+                    fname = config.get(markdown_section, 'print')
+                    d['print'] = path.join(self.dir_template, fname)
+
+                    if config.has_option(markdown_section, 'print_template'):
+                        fname = config.get(markdown_section, 'print_template')
+                        d['print_template'] = path.join(self.dir_template, fname)
+
+                # pdf
+                if self.TYPE_PDF in output_types:
+                    fname = config.get(markdown_section, 'pdf')
+                    d['pdf'] = path.join(self.dir_template, fname)
+
+                    if config.has_option(markdown_section, 'pdf_template'):
+                        fname = config.get(markdown_section, 'pdf_template')
+                        d['pdf_template'] = path.join(self.dir_template, fname)
+
+                # replace
                 if config.has_option(markdown_section, 'replace'):
-                    replace = config.get(markdown_section, 'replace')
-                    if not path.isabs(replace):
-                        replace = path.join(self.dir_template, replace)
-                    d['replace'] = replace
+                    fname = config.get(markdown_section, 'replace')
+                    d['replace'] = path.join(self.dir_template, fname)
 
                 dict_markdown[markdown_section] = d
 
@@ -375,9 +438,13 @@ class Md2Html_v0_1:
         logging.info('load config markdown sections : success')
 
 
-    def load_pdf_section(self, config):
+    def load_pdf_section(self, config, output_types):
         logging.info('load [pdf] section : start')
         try:
+            if (TYPE_PDF not in output_types) and (TYPE_PDF_ALL not in output_types):
+                logging.info('load [pdf] section : output type does not have pdf and pdf_all. skip')
+                return
+
             output = config.get('pdf', 'output')
             if not path.isabs(output):
                 output = path.join(self.dir_output, output)
@@ -418,11 +485,13 @@ class Md2Html_v0_1:
         logging.info('load [pdf] section : success')
 
 
+
+
     ########################
     ### CHECK FILE EXIST ###
     ########################
 
-    def check_directory_exist(self, output_type):
+    def check_directory_exist(self, output_types):
         logging.info('check all directory exist : start')
         try:
             # Markdown Directory
@@ -433,7 +502,7 @@ class Md2Html_v0_1:
                 raise
             logging.info('    markdown : exist')
 
-            # HTML Directory
+            # Output Directory
             dir_output = self.dir_output
             if not path.isdir(dir_output):
                 if not path.isfile(dir_output):
@@ -456,7 +525,7 @@ class Md2Html_v0_1:
             logging.info('    template : exist')
 
             # PDF Directory
-            if(output_type == self.TYPE_PDF):
+            if (self.TYPE_PDF in output_types) or (self.type_PDF_ALL in output_types):
                 dir_pdf = self.dir_pdf
                 if not path.isdir(dir_pdf):
                     logging.warning('    pdf : not exist')
@@ -472,22 +541,47 @@ class Md2Html_v0_1:
 
         logging.info('check all directory exist : success')
 
-    def check_template_exist(self):
+    def check_template_exist(self, output_types):
         logging.info('check basic template exist : start')
         try:
-            template = self.conv_template
-            if not path.isfile(template):
-                logging.warning('   template : not exit')
-                logging.warning('   {}'.format(template))
-                raise
-            logging.info('    template : exist')
-
             replace = self.conv_replace
             if not path.isfile(replace):
                 logging.warning('   replace : not exit')
                 logging.warning('   {}'.format(replace))
                 raise
             logging.info('    replace : exist')
+
+            if self.TYPE_HTML in output_types:
+                template = self.conv_template_html
+                if not path.isfile(template):
+                    logging.warning('   html template : not exit')
+                    logging.warning('   {}'.format(template))
+                    raise
+                logging.info('    html template : exist')
+
+            if self.TYPE_PRINT in output_types:
+                template = self.conv_template_print
+                if not path.isfile(template):
+                    logging.warning('   print template : not exit')
+                    logging.warning('   {}'.format(template))
+                    raise
+                logging.info('    print template : exist')
+
+            if self.TYPE_PDF in output_types:
+                template = self.conv_template_pdf
+                if not path.isfile(template):
+                    logging.warning('   pdf template : not exit')
+                    logging.warning('   {}'.format(template))
+                    raise
+                logging.info('    pdf template : exist')
+
+            if self.TYPE_PDF_ALL in output_types:
+                template = self.conv_template_pdf_all
+                if not path.isfile(template):
+                    logging.warning('   pdf_all template : not exit')
+                    logging.warning('   {}'.format(template))
+                    raise
+                logging.info('    pdf_all template : exist')
 
         except Exception as e:
             logging.critical('    {}'.format(e))
@@ -505,13 +599,18 @@ class Md2Html_v0_1:
                 for (key, value) in mapping.items():
                     if key == 'html':
                         continue
+                    if key == 'print':
+                        continue
+                    if key == 'pdf':
+                        continue
+
                     if not path.isfile(value):
                         logging.warning('        {} : not exist.'.format(key))
                         logging.warning('        {}'.format(value))
                         raise
                     logging.info('        {} : exist.'.format(key))
 
-            if(output_type == self.TYPE_PDF):
+            if(output_type == self.TYPE_PDF_ALL):
                 logging.info('    check pdf markdowns')
                 for (md_name, md_path) in self.pdf_markdowns:
                     if not path.isfile(md_path):
@@ -555,13 +654,17 @@ class Md2Html_v0_1:
         logging.info('convert html : start')
         try:
             for (markdown, d) in self.conv_markdown_dict.items():
-                logging.info('    markdown : {}'.format(markdown))
+                if 'html' not in d:
+                    continue
 
+                logging.info('    markdown : {}'.format(markdown))
                 path_markdown = d['markdown']
                 path_html = d['html']
-                path_template = self.conv_template
-                if 'template' in d:
-                    path_template = d['template']
+
+                path_template = self.conv_template_html
+                if 'html_template' in d:
+                    path_template = d['html_template']
+
                 path_replaces = [self.conv_replace]
                 if 'replace' in d:
                     path_replaces.insert(0, d['replace'])
@@ -570,7 +673,7 @@ class Md2Html_v0_1:
                 # markdown html
                 text_markdown = self.read_file(path_markdown)
                 html_markdown = self.convert_markdown_to_html(text_markdown)
-                if self.bootstrap:
+                if self.bootstrap_html:
                     html_markdown = self.modify_html_bootstrap(html_markdown)
                 logging.debug(('        convert markdown to content html : success'))
 
@@ -603,7 +706,118 @@ class Md2Html_v0_1:
         logging.info('convert html : success')
 
 
+    def convert_print(self):
+        logging.info('convert print : start')
+        try:
+            for (markdown, d) in self.conv_markdown_dict.items():
+                if 'print' not in d:
+                    continue
+
+                logging.info('    markdown : {}'.format(markdown))
+                path_markdown = d['markdown']
+                path_html = d['print']
+
+                path_template = self.conv_template_print
+                if 'print_template' in d:
+                    path_template = d['print_template']
+
+                path_replaces = [self.conv_replace]
+                if 'replace' in d:
+                    path_replaces.insert(0, d['replace'])
+                logging.debug(('        load path info : success'))
+
+                # markdown html
+                text_markdown = self.read_file(path_markdown)
+                html_markdown = self.convert_markdown_to_html(text_markdown)
+                if self.bootstrap_print:
+                    html_markdown = self.modify_html_bootstrap(html_markdown)
+                logging.debug(('        convert markdown to content html : success'))
+
+                # include markdown html to template html
+                html_template = self.get_template_html(path_template)
+                html = self.modify_html_include_markdown_html(html_markdown, html_template)
+                logging.debug(('        include content html to template html : success'))
+
+                # replace keywords
+                for replace in path_replaces:
+                    html = self.modify_html_keyword(html, replace)
+                all_changed = self.check_all_keywords_changed(html)
+                if not all_changed:
+                    raise
+                logging.debug(('        replayce keywords : success'))
+
+                html = self.prettify_html(html, 4)
+                logging.debug(('        format html : success'))
+
+                # write
+                with open(path_html, 'w') as fout:
+                    fout.write(html)
+                logging.debug(('        write to file : success'))
+
+        except Exception as e:
+            logging.critical('   {}'.format(e))
+            logging.critical('convert print : fail')
+            exit(1)
+
+        logging.info('convert print : success')
+
     def convert_pdf(self):
+        logging.info('convert pdf : start')
+        try:
+            for (markdown, d) in self.conv_markdown_dict.items():
+                if 'pdf' not in d:
+                    continue
+
+                logging.info('    markdown : {}'.format(markdown))
+                path_markdown = d['markdown']
+                path_html = d['pdf']
+
+                path_template = self.conv_template
+                if 'pdf_template' in d:
+                    path_template = d['pdf_template']
+
+                path_replaces = [self.conv_replace]
+                if 'replace' in d:
+                    path_replaces.insert(0, d['replace'])
+                logging.debug(('        load path info : success'))
+
+                # markdown html
+                text_markdown = self.read_file(path_markdown)
+                html_markdown = self.convert_markdown_to_html(text_markdown)
+                if self.bootstrap_pdf:
+                    html_markdown = self.modify_html_bootstrap(html_markdown)
+                logging.debug(('        convert markdown to content html : success'))
+
+                # change URL to local
+                basedir = path.dirname(path_markdown)
+                html_markdown = self.modify_html_url_localize(html_markdown, basedir)
+                logging.debug(('        change image url to local : success'))
+
+                # include markdown html to template html
+                html_template = self.get_template_html(path_template)
+                html = self.modify_html_include_markdown_html(html_markdown, html_template)
+                logging.debug(('        include content html to template html : success'))
+
+                # replace keywords
+                for replace in path_replaces:
+                    html = self.modify_html_keyword(html, replace)
+                all_changed = self.check_all_keywords_changed(html)
+                if not all_changed:
+                    raise
+                logging.debug(('        replayce keywords : success'))
+
+                #print(html_pdf)
+                self.convert_html_to_pdf(html, path_html)
+                logging.debug(('        convert html to pdf : success'))
+
+        except Exception as e:
+            logging.critical('   {}'.format(e))
+            logging.critical('convert html : fail')
+            exit(1)
+
+        logging.info('convert html : success')
+
+    def convert_pdf_all(self):
         logging.info('convert pdf : start')
         try:
             html_sum = ''
@@ -688,9 +902,8 @@ class Md2Html_v0_1:
                 else:
                     raise
 
-                print(src_path, dst_path)
         except Exception as e:
-            logging.warning(e)
+            logging.critical(e)
             logging.critical('Copy files fail')
             exit(1)
 
@@ -839,10 +1052,6 @@ class Md2Html_v0_1:
 
 def run():
     Md2Html_v0_1('html.conf').run()
-    #print('\n\n\n')
-    #Md2Html_v0_1('print.conf').run()
-    #print('\n\n\n')
-    #Md2Html_v0_1('pdf.conf').run()
 
 def test():
     pass

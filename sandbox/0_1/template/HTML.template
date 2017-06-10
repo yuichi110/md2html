@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="{{ DESCRIPTION }}">
-    <meta name="author" content="">
-    <link rel="icon" href="./favicon.ico">
+    <meta name="author" content="Yuichi Ito">
+    <link rel="icon" href="./asset/favicon.ico">
 
     <title>{{ TITLE }}</title>
 
@@ -34,8 +34,7 @@
           <a class="blog-nav-item active" href="./">Home</a>
           <a class="blog-nav-item" href="./download.html">Download</a>
           <a class="blog-nav-item" href="./about.html">About</a>
-          <a class="blog-nav-item" href="http://www.yuichi.com/">GC</a>
-          <a class="blog-nav-item" href="http://www.yuichi.com/bio.html"></a>
+          <a class="blog-nav-item" href="http://www.yuichi.com/">Grid Computing</a>
         </nav>
       </div>
     </div>
@@ -43,8 +42,8 @@
     <div class="container">
 
       <div class="blog-header">
-        <h1 class="blog-title">The Bootstrap Blog</h1>
-        <p class="lead blog-description">The official example template of creating a blog with Bootstrap.</p>
+        <h1 class="blog-title">Python入門</h1>
+        <p class="lead blog-description">プログラミング言語Pythonについて</p>
       </div>
 
       <div class="row">
@@ -65,23 +64,34 @@
         <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
           <div class="sidebar-module sidebar-module-inset">
             <h4>About</h4>
-            <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+            <p></p>
           </div>
           <div class="sidebar-module">
-            <h4>Archives</h4>
+            <h4>初級編</h4>
             <ol class="list-unstyled">
-              <li><a href="./01.html">Python</a></li>
-              <li><a href="./02.html">目次</a></li>
-              <li><a href="./03.html">インストールと実行</a></li>
-              <li><a href="./04.html">概要</a></li>
-              <li><a href="./05.html">型と変数</a></li>
-              <li><a href="./06.html">制御構造</a></li>
-              <li><a href="#">September 2013</a></li>
-              <li><a href="#">August 2013</a></li>
-              <li><a href="#">July 2013</a></li>
-              <li><a href="#">June 2013</a></li>
-              <li><a href="#">May 2013</a></li>
-              <li><a href="#">April 2013</a></li>
+              <li><a href="./001.html">前書き</a></li>
+              <li><a href="./002.html">目次</a></li>
+              <li><a href="./003.html">Pythonプログラミング</a></li>
+              <li><a href="./004.html">インストールと実行</a></li>
+              <li><a href="./005.html">概要</a></li>
+              <li><a href="./006.html">型と変数</a></li>
+              <li><a href="./007.html">最重要な型</a></li>
+              <li><a href="./008.html">制御構造</a></li>
+              <li><a href="./009.html">関数</a></li>
+              <li><a href="./010.html">モジュール</a></li>
+              <li><a href="./011.html">オブジェクトとメソッド</a></li>
+              <li><a href="./012.html">テキスト処理</a></li>
+              <li><a href="./013.html">リスト再入門</a></li>
+              <li><a href="./014.html">タプル</a></li>
+              <li><a href="./015.html">セット</a></li>
+              <li><a href="./016.html">辞書型</a></li>
+              <li><a href="./017.html">None型</a></li>
+              <li><a href="./018.html">ファイル処理</a></li>
+              <li><a href="./019.html">基数と文字コード</a></li>
+              <li><a href="./020.html">日本語の扱い</a></li>
+              <li><a href="./021.html">プログラムへの入力</a></li>
+              <li><a href="./022.html">関数の高度なトピック</a></li>
+              <li><a href="./023.html">おわりに</a></li>
             </ol>
           </div>
           <div class="sidebar-module">
