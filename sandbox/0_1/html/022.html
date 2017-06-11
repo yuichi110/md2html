@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta content="Sample Description" name="description"/>
+  <meta content="Yuichi Ito" name="author"/>
+  <link href="./asset/favicon.ico" rel="icon"/>
+  <title>
+   Python入門
+  </title>
+  <!-- Bootstrap core CSS -->
+  <link href="./assets/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Custom styles for this template -->
+  <link href="./assets/css/blog.css" rel="stylesheet"/>
+  <link href="./assets/css/codehilite.css" rel="stylesheet"/>
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+ </head>
+ <body>
+  <div class="blog-masthead">
+   <div class="container">
+    <nav class="blog-nav">
+     <a class="blog-nav-item active" href="./">
+      Home
+     </a>
+     <a class="blog-nav-item" href="./download.html">
+      Download
+     </a>
+     <a class="blog-nav-item" href="./about.html">
+      About
+     </a>
+     <a class="blog-nav-item" href="http://www.yuichi.com/">
+      Grid Computing
+     </a>
+    </nav>
+   </div>
+  </div>
+  <div class="container">
+   <div class="blog-header">
+    <h1 class="blog-title">
+     Python入門
+    </h1>
+    <p class="lead blog-description">
+     プログラミング言語Pythonについて
+    </p>
+   </div>
+   <div class="row">
+    <div class="col-sm-8 blog-main">
+     <!-- GENERATED HTML START -->
+     <h2>
+      関数の高度な使い方
+     </h2>
+     <p>
+      本章では関数の高度なトピックについて扱います。
+正直なところ本章の内容は初心者にはかなり難しいのですが、
+Pythonの初心者であっても既存ライブラリなどを利用する場面は多くあるため、
+「こういう機能がある」というレベルでは知っておいたほうがいいです。
+本トピックは下編で扱うか悩んだのですが、難易度が高いわりに利用する頻度が高いためここで扱わせていただきます。
+難しければ斜め読みしていただき、ある程度 Python のプログラムが書けるようになってから読み直してみて下さい。
+     </p>
+     <h3>
+      関数内の関数
+     </h3>
+     <p>
+      Python の関数は実は関数の中に入れ子構造にすることができます。
+例えば以下のような使い方ができます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test1</span><span class="p">():</span>
+  <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+
+  <span class="k">def</span> <span class="nf">test2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+
+  <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">test2</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">test1</span><span class="p">())</span>
+<span class="c1"># 21</span>
+</pre>
+     </div>
+     <p>
+      上記の例では関数 test1() の中で関数 test2() を定義し、それを使っています。
+今回のサンプルのような短い関数であればこのような使い方は不要ですが、
+より複雑な処理を関数で行う場合は処理を綺麗に分類するために内部で関数を定義して使うことがあります。
+     </p>
+     <h3>
+      関数オブジェクト
+     </h3>
+     <p>
+      先程もお伝えしましたがPython は関数自体もオブジェクトです。
+そのため、変数に関数を代入し、それを利用することができます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test1</span><span class="p">():</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'test1'</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">test1</span>
+<span class="n">a</span><span class="p">()</span>
+<span class="c1"># test1</span>
+</pre>
+     </div>
+     <p>
+      変数に代入できるということは関数の引数として使えるということです。
+詳細は中編にて取り扱いますが、関数を使う関数である高階関数というものもあります。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">apply_list</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">list_</span><span class="p">):</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">list_</span><span class="p">:</span>
+    <span class="n">fun</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">print_double</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">list_</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">apply_list</span><span class="p">(</span><span class="n">print_double</span><span class="p">,</span> <span class="n">list_</span><span class="p">)</span>
+<span class="c1"># 2</span>
+<span class="c1"># 4</span>
+<span class="c1"># 6</span>
+<span class="c1"># 8</span>
+<span class="c1"># 10</span>
+</pre>
+     </div>
+     <h3>
+      位置引数とキーワード引数
+     </h3>
+     <p>
+      関数の引数の使い方については既に何度も説明しています。
+例えば以下の関数があるとしましょう。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</pre>
+     </div>
+     <p>
+      この関数は引数として a, b, c を受け取ります。
+この関数を呼び出す際に a, b, c に対応した順序で引数を与えます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1"># 1</span>
+<span class="c1"># 2</span>
+<span class="c1"># 3</span>
+</pre>
+     </div>
+     <p>
+      出力をみると分かりますが呼び出しの引数の順序と関数の定義の引数の順序が合致していることが分かります。
+このように関数の引数をその位置を使って指定することから、このような引数の使い方を「位置引数」と呼んでいます。
+     </p>
+     <p>
+      実は関数の引数は位置引数以外に「キーワード引数」と呼ばれる使い方ができます。
+具体的には関数を呼び出す際に仮引数(定義された引数名)に対して実引数を与えるとキーワード引数として使われます。
+具体的には以下の様な使い方です。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">'C'</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="s1">'A'</span><span class="p">)</span>
+<span class="c1"># A</span>
+<span class="c1"># B</span>
+<span class="c1"># C</span>
+</pre>
+     </div>
+     <p>
+      関数の定義自体は最初の例と全く代わりませんが、呼び出し時に「b=’B’」といった形で値を与えています。
+指定する引数の順番としては b, c, a なのですが、
+呼び出し側では定義された順序の a, b, c で解釈されていることが分かります。
+位置で引数を指定するのではなく、引数名という「キーワード」で引数を指定するのでキーワード引数と呼ばれています。
+今回のようなシンプルな関数の定義だとキーワード引数で呼び出す必要はありませんが、
+次に説明する「デフォルト引数を使う関数」や
+「キーワード引数を使うことを前提に定義された関数」を使う関数を使う場合に利用されます。
+     </p>
+     <h3>
+      デフォルト引数
+     </h3>
+     <p>
+      デフォルト引数は引数定義時にデフォルトの値を決めてしまい、
+呼び出し時に対応する引数が与えられなければデフォルト値が適用されるというものです。
+デフォルト引数は関数定義の引数の箇所に「引数名 = 値」と定義することで実現できます。
+以下にサンプルを記載します。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">'C'</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</pre>
+     </div>
+     <p>
+      引数 a,b,c を見ると、b と c にはデフォルト引数が定義されていることが分かります。
+この関数を呼び出すときに引数を3つ与えればそれぞれ a, b, c に与えられますが、
+それ未満の数で呼び出すと足りないぶんはデフォルト値が使われます。
+以下にこの関数の利用例を示します。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1"># 1</span>
+<span class="c1"># 2</span>
+<span class="c1"># 3</span>
+
+<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># 1</span>
+<span class="c1"># 2</span>
+<span class="c1"># C</span>
+
+<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># 1</span>
+<span class="c1"># B</span>
+<span class="c1"># C</span>
+</pre>
+     </div>
+     <p>
+      出力を見ると引数が足りない場合はデフォルト値が使われていることが分かります。
+デフォルト値を使う場合に気をつけてほしいことは、
+デフォルト引数は必ず引数の後部でなければならないということです。
+例えば以下のような使い方はできません。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="s1">'A'</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+<span class="c1">#    def test(a='A', b='B', c):</span>
+<span class="c1">#            ^</span>
+<span class="c1">#SyntaxError: non-default argument follows default argument</span>
+</pre>
+     </div>
+     <p>
+      大量のデフォルト引数を持つ関数はキーワード引数との相性がいいです。例えば以下の例を見て下さい。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">'C'</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="s1">'D'</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="s1">'E'</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="s1">'F'</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">(</span><span class="s1">'AA'</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="s1">'DD'</span><span class="p">)</span>
+<span class="c1"># AA</span>
+<span class="c1"># B</span>
+<span class="c1"># C</span>
+<span class="c1"># DD</span>
+<span class="c1"># E</span>
+<span class="c1"># F</span>
+</pre>
+     </div>
+     <p>
+      上記サンプルの関数は非常に高度なもので、引数が6つとれるとしましょう。
+ただ、細かい調整を引数で調整できるだけであり、最初の引数以外はそれほど重要でないとします。
+全ての引数を指定するのは大変ですが、デフォルト引数の機能を使って必要な箇所のみピンポイントで指定し、
+あとはデフォルト値を使うようにすれば呼び出しが簡単になります。
+     </p>
+     <h3>
+      可変長引数
+     </h3>
+     <p>
+      可変長引数は名前の通り「引数の長さ(数)が変わる」ということです。
+ 先ほどのキーワード引数も良い出す際の引数の数はデフォルト値を使うか否かという観点では可変でした。
+ ただ、可変長引数はそれとは異なり「好きなだけ」関数の定義をすることができます。
+可変長引数を使う際は、関数を定義する際に引数の前に「*」をつけます。
+引数名はなんでもよいのですが、慣習的に args (日本語だと引数)といった名前を付けることが多いです。
+読む人にとっても「これは可変長引数」と認識しやすいです。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># &lt;class 'tuple'&gt;</span>
+<span class="c1"># (1,)</span>
+
+<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1"># &lt;class 'tuple'&gt;</span>
+<span class="c1"># (1, 2, 3)</span>
+
+<span class="n">test</span><span class="p">()</span>
+<span class="c1"># &lt;class 'tuple'&gt;</span>
+<span class="c1"># ()</span>
+</pre>
+     </div>
+     <p>
+      上記のサンプルを見てもらうと分かるように可変長引数はタプルとして渡されています。
+呼び出し時にあたえられる引数の数は任意の数が使え、0 であっても問題ありません。
+     </p>
+     <p>
+      定義する可変長引数の位置を調整することで必要最低限の引数の数が決まります。
+例えば
+      <code>
+       def test(a, *args):
+      </code>
+      とした場合、最初に与えられた引数が a に入り、
+のこりが args に入ります。そのため、最低一つの引数が必要です。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># 1</span>
+<span class="c1"># ()</span>
+
+<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1"># 1</span>
+<span class="c1"># (2, 3)</span>
+
+<span class="n">test</span><span class="p">()</span>
+<span class="c1"># Traceback (most recent call last):</span>
+<span class="c1">#   ...</span>
+<span class="c1"># TypeError: test() missing 1 required positional argument: 'a'</span>
+</pre>
+     </div>
+     <p>
+      2つの引数が必要であれば
+      <code>
+       def test(a, b, *args):
+      </code>
+      とするなどして、
+必要な数にマッチした関数の定義をしてください。
+     </p>
+     <h3>
+      なんでも受け取るキーワード引数
+     </h3>
+     <p>
+      位置指定引数のところで紹介したキーワード引数は関数の引数の順序を無視して呼び出す目的で使いました。
+実はこのキーワード引数は自分が定義した引数以外にも使えます。
+以下のサンプルで関数定義の際に
+      <code>
+       **kargs
+      </code>
+      という引数を使っています。
+これを使うと定義されていないキーワード引数を辞書型として扱うことができます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">kargs</span><span class="p">))</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">kargs</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="s1">'A'</span><span class="p">,</span> <span class="n">hello</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1"># &lt;class 'dict'&gt;</span>
+<span class="c1"># {'hello': 3, 'a': 'A'}</span>
+
+<span class="n">test</span><span class="p">()</span>
+<span class="c1"># &lt;class 'dict'&gt;</span>
+<span class="c1"># {}</span>
+
+<span class="n">test</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">)</span>
+<span class="c1"># Traceback (most recent call last):</span>
+<span class="c1">#   ...</span>
+<span class="c1"># TypeError: test() takes 0 positional arguments but 2 were given</span>
+</pre>
+     </div>
+     <p>
+      上記の呼び出し結果と出力を見てもらうと分かりますが、
+キーワード引数の引数名が辞書型の key になり、それに対応する値が value となっています。
+      <code>
+       **kargs
+      </code>
+      はあくまでもキーワード引数専用であるため、
+キーワードを指定しない位置引数を使った呼び出しをするとエラーとなっています。
+なお、kargs は keyword args の省略形であり、
+先ほどの args と同様に慣習としてこの名前を使うことが多いです。
+他の変数名も使えますがあえて使う理由もありません。
+     </p>
+     <p>
+      かなり高度な使い方となるのですが、可変長引数とキーワード引数を併用することで
+「どんな引数でも使える関数」を定義することができます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">kargs</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="s1">'A'</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="s1">'C'</span><span class="p">)</span>
+<span class="c1"># (1, 2, 3)</span>
+<span class="c1"># {'a': 'A', 'b': 'B', 'c': 'C'}</span>
+</pre>
+     </div>
+     <p>
+      この使い方で便利なのは関数を「呼び出す」場合にも
+      <code>
+       *arg
+      </code>
+      と
+      <code>
+       **kargs
+      </code>
+      を使えるということです。
+それをすると「受け取った引数をそのまま別の関数に渡す」ということができます。
+以下のサンプルを見ると test2 関数が受け取った引数を test1 関数に丸投げしていることがわかります。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'test1'</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">kargs</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test2</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'test2'</span><span class="p">)</span>
+  <span class="c1"># 可変長引数とキーワード引数をそのまま呼び出す関数に渡す</span>
+  <span class="n">test1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
+
+<span class="n">test2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="s1">'A'</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="s1">'C'</span><span class="p">)</span>
+<span class="c1"># test2</span>
+<span class="c1"># test1</span>
+<span class="c1"># (1, 2, 3)</span>
+<span class="c1"># {'a': 'A', 'b': 'B', 'c': 'C'}</span>
+</pre>
+     </div>
+     <p>
+      今回は自分で作った test1 を呼び出していますが、たとえばここに既存の関数をいれることもできます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'args:   '</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'kargs:  '</span><span class="p">,</span> <span class="n">kargs</span><span class="p">)</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'result: '</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">test</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<span class="c1"># sum([1,2,3,4,5])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="c1"># args:    ([1, 2, 3, 4, 5],)</span>
+<span class="c1"># kargs:   {}</span>
+<span class="c1"># result:  15</span>
+<span class="c1"># 15</span>
+</pre>
+     </div>
+     <p>
+      上記のサンプルは sum 関数になにを与えるかをリッチに出力させています。
+面白いのは関数 sum はキーワード引数を受け取らないのに呼び出し時にそれを与えても問題が発生していないところかと思います。
+     </p>
+     <h3>
+      再帰関数
+     </h3>
+     <p>
+      再帰関数は自分自身を呼び出す関数です。
+for や while 文でループ処理をしますが、再帰関数も似たように「同じ処理を何度も繰り返す」場面で使われます。
+たとえば配列から一番大きな要素を取得する処理は以下のように書けます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">get_max</span><span class="p">(</span><span class="n">list_</span><span class="p">,</span> <span class="n">max_</span><span class="p">):</span>
+  <span class="c1"># リスト長が0なら最大値を返す</span>
+  <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">max_</span>
+
+  <span class="c1"># リストから値を取り出し最大値の更新</span>
+  <span class="n">value</span> <span class="o">=</span> <span class="n">list_</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">value</span> <span class="o">&gt;</span> <span class="n">max_</span><span class="p">):</span>
+    <span class="n">max_</span> <span class="o">=</span> <span class="n">value</span>
+
+  <span class="c1"># 次のリストの要素をチェック。</span>
+  <span class="k">return</span> <span class="n">get_max</span><span class="p">(</span><span class="n">list_</span><span class="p">,</span> <span class="n">max_</span><span class="p">)</span>
+
+<span class="n">list_</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">max_</span> <span class="o">=</span> <span class="n">get_max</span><span class="p">(</span><span class="n">list_</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">max_</span><span class="p">)</span>
+<span class="c1"># 10</span>
+</pre>
+     </div>
+     <p>
+      コメントを読んでもらうと何をやっているか分かるかと思いますが、
+ようするにリストから1つの要素を取り出して、
+それが現在の最大値より大きければ最大値を更新する作業を繰り返し実行しています。
+関数が同じ関数をどんどん呼んでいき、深くまで戻っていくようなイメージです。
+最終的に探索し終えたら、最大値を return 文で返し、深くもぐった関数呼び出しを今度は上に戻っていき、
+最初の get_max 関数の呼び出しもとに値を返します。
+     </p>
+     <p>
+      はっきり言うとこのコードは悪い再帰関数です。
+再帰関数としては分かりやすいのでとりあげたのですが、同じことを for 文で実現した以下のコードのほうがはるかに分かりやすいです。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">list_</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+
+<span class="n">max_</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">list_</span><span class="p">:</span>
+ <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">max_</span><span class="p">:</span>
+   <span class="n">max_</span> <span class="o">=</span> <span class="n">i</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">max_</span><span class="p">)</span>
+<span class="c1"># 10</span>
+</pre>
+     </div>
+     <p>
+      このコードがどういう処理をしているかについてはあえて説明する必要はないと思います。
+     </p>
+     <p>
+      実はこの再帰関数なのですが、ループ文にはない特徴があります。
+それは繰り返しではなく「木構造の呼び出し」に向いているということです。
+本書の冒頭で説明した「あるディレクトリ配下を書き出す」という再帰の例を思い出して下さい。
+それは以下のようなコードでした。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">def</span> <span class="nf">list_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">indent_level</span><span class="p">):</span>
+  <span class="c1"># ディレクトリ名を表示</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'{}[{}]'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">' '</span><span class="o">*</span><span class="n">indent_level</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
+
+  <span class="c1"># ディレクトリ内のファイルとディレクトリを全てループで確認</span>
+  <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">file_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)):</span> <span class="k">continue</span>
+    <span class="n">abs_filepath</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="n">file_name</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">abs_filepath</span><span class="p">)):</span>
+      <span class="c1"># ディレクトリだったので、そのディレクトリをチェックする</span>
+      <span class="n">list_file</span><span class="p">(</span><span class="n">abs_filepath</span><span class="p">,</span> <span class="n">indent_level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>      
+    <span class="k">else</span><span class="p">:</span>
+      <span class="c1"># ファイルだったので、ファイル名を表示</span>
+      <span class="k">print</span><span class="p">(</span><span class="s1">'{}- {}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">' '</span> <span class="o">*</span> <span class="n">indent_level</span><span class="p">,</span> <span class="n">file_name</span><span class="p">))</span>
+
+<span class="n">list_file</span><span class="p">(</span><span class="s1">'/python'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre>
+     </div>
+     <p>
+      先程の最大値を得る再帰関数と同様に関数 list_file 内で関数 list_file を呼び出しています。
+ただ、両者の大きな違いは list_file 内での list_file 関数の呼び出しは必ずしも1回ではなく、
+状況に応じて任意の数に変わるということです。
+そして呼び出された毎の各関数はそれぞれ状態を維持し続けています。
+     </p>
+     <p>
+      たとえば以下のディレクトリ構造に対してこのプログラムを走らせると、
+以下のような呼び出しかたをします。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0110_image/01.png"/>
+     </p>
+     <p>
+      そして出力は以下のようなものとなります。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">[/python]</span>
+ <span class="k">[/python/a]</span>
+ <span class="na">- aa</span>
+  <span class="k">[/python/a/ab]</span>
+  <span class="na">- aba</span>
+<span class="na">- b</span>
+<span class="na">- c</span>
+ <span class="k">[/python/d]</span>
+ <span class="na">- da</span>
+ <span class="na">- db</span>
+</pre>
+     </div>
+     <p>
+      着目してほしいのはループと違って同じ関数を呼び出した時点で、その関数の仕事が終了していないという点です。
+たとえばディレクトリ /python に対して関数が呼ばれた際に、
+その子要素のディレクトリ a に対して関数を呼び出したあとも、ファイルb,c を表示したり、
+さらに別のディレクトリ d を呼び出したりしています。
+これは各関数の呼び出しがそれぞれに状態を持っているため簡単に実現できます。
+一方、同じことをループ文でやろうとすると
+「3周目の処理がおわって2週目の処理を継続」ということを実現するのに一苦労します。
+     </p>
+     <p>
+      単純にグルグル回す場合はループを使い、
+複雑な木構造のような処理をしないといけない場合は再帰関数を使うというのが一般的な使い分けとなります。
+それほど利用する機会は多くないとは思いますが、覚えておいて下さい。
+     </p>
+     <!-- GENERATED HTML END -->
+     <nav>
+      <ul class="pager">
+       <li>
+        <a href="#">
+         Previous
+        </a>
+       </li>
+       <li>
+        <a href="#">
+         Next
+        </a>
+       </li>
+      </ul>
+     </nav>
+    </div>
+    <!-- /.blog-main -->
+    <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+     <div class="sidebar-module sidebar-module-inset">
+      <h4>
+       About
+      </h4>
+      <p>
+      </p>
+     </div>
+     <div class="sidebar-module">
+      <h4>
+       初級編
+      </h4>
+      <ol class="list-unstyled">
+       <li>
+        <a href="./001.html">
+         前書き
+        </a>
+       </li>
+       <li>
+        <a href="./002.html">
+         目次
+        </a>
+       </li>
+       <li>
+        <a href="./003.html">
+         Pythonプログラミング
+        </a>
+       </li>
+       <li>
+        <a href="./004.html">
+         インストールと実行
+        </a>
+       </li>
+       <li>
+        <a href="./005.html">
+         概要
+        </a>
+       </li>
+       <li>
+        <a href="./006.html">
+         型と変数
+        </a>
+       </li>
+       <li>
+        <a href="./007.html">
+         最重要な型
+        </a>
+       </li>
+       <li>
+        <a href="./008.html">
+         制御構造
+        </a>
+       </li>
+       <li>
+        <a href="./009.html">
+         関数
+        </a>
+       </li>
+       <li>
+        <a href="./010.html">
+         モジュール
+        </a>
+       </li>
+       <li>
+        <a href="./011.html">
+         オブジェクトとメソッド
+        </a>
+       </li>
+       <li>
+        <a href="./012.html">
+         テキスト処理
+        </a>
+       </li>
+       <li>
+        <a href="./013.html">
+         リスト再入門
+        </a>
+       </li>
+       <li>
+        <a href="./014.html">
+         タプル
+        </a>
+       </li>
+       <li>
+        <a href="./015.html">
+         セット
+        </a>
+       </li>
+       <li>
+        <a href="./016.html">
+         辞書型
+        </a>
+       </li>
+       <li>
+        <a href="./017.html">
+         None型
+        </a>
+       </li>
+       <li>
+        <a href="./018.html">
+         ファイル処理
+        </a>
+       </li>
+       <li>
+        <a href="./019.html">
+         基数と文字コード
+        </a>
+       </li>
+       <li>
+        <a href="./020.html">
+         日本語の扱い
+        </a>
+       </li>
+       <li>
+        <a href="./021.html">
+         プログラムへの入力
+        </a>
+       </li>
+       <li>
+        <a href="./022.html">
+         関数の高度なトピック
+        </a>
+       </li>
+       <li>
+        <a href="./023.html">
+         おわりに
+        </a>
+       </li>
+      </ol>
+     </div>
+     <div class="sidebar-module">
+      <h4>
+       Elsewhere
+      </h4>
+      <ol class="list-unstyled">
+       <li>
+        <a href="#">
+         GitHub
+        </a>
+       </li>
+       <li>
+        <a href="#">
+         Twitter
+        </a>
+       </li>
+       <li>
+        <a href="#">
+         Facebook
+        </a>
+       </li>
+      </ol>
+     </div>
+    </div>
+    <!-- /.blog-sidebar -->
+   </div>
+   <!-- /.row -->
+  </div>
+  <!-- /.container -->
+  <footer class="blog-footer">
+   <p>
+    Blog template built for
+    <a href="http://getbootstrap.com">
+     Bootstrap
+    </a>
+    by
+    <a href="https://twitter.com/mdo">
+     @mdo
+    </a>
+    .
+   </p>
+   <p>
+    <a href="#">
+     Back to top
+    </a>
+   </p>
+  </footer>
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">
+  </script>
+  <script src="./assets/js/bootstrap.min.js">
+  </script>
+ </body>
+</html>

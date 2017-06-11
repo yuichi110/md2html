@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="Sample Description" name="description"/>
+  <link href="./assets/favicon.ico" rel="icon"/>
+  <title>
+   Python入門
+  </title>
+  <link href="./assets/css/codehilite.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <!-- GENERATED HTML START -->
+  <h2>
+   モジュール
+  </h2>
+  <p>
+   Pythonのプログラムは書けば書くほど大きくなります。
+数百行のコードでしたらひとつのファイルに書けないことはないですが、
+何千行にもなってくるとコードを複数のファイルに分けたほうが管理はしやすいです。
+これは日常生活の整理整頓とまったく同じです。たとえば洋服ダンスがあるとすると、
+それを使いやすく使うためには下着、シャツ、ズボンといった種類ごとに引き出しを分けて使うと思います。
+ひとつの大きなダンボール箱にすべての服をつっこんでしまうとどこに何があるかわからなくなり、
+なおかつ服もきれいに管理できずにシワシワになってしまいます。
+プログラムのファイルを分けないと、後者のような乱雑な服の管理法に近い形でコードを書くことになります。
+ひとつの大きなファイルのなかにさまざまなコードをゴチャゴチャと書くのでどこで何をやっているのかわからなくなってきます。
+  </p>
+  <p>
+   一方、特定の処理ごとにファイルを分けて「このファイルはXXの処理」「このファイルはYYの処理」などと整理すると、
+XXの処理を追加したり修正したりする際にすぐに場所がわかります。
+Pythonではこの「ファイルに分けられた各プログラム」のことをモジュールと呼んでいます。
+既存のモジュールを使ったり、自分で新しくモジュールを使ってプログラムを書いていったりすることになります。
+  </p>
+  <p>
+   本章ではこのモジュールを使ったり、作ったりする方法について学びます。
+  </p>
+  <p class="blog-img">
+   <img alt="image" class="img-responsive" src="./0050_image/01.jpg"/>
+  </p>
+  <p>
+   まずはPythonが提供してくれているモジュールを利用することからはじめていきましょう。
+モジュールを利用するには「import宣言」が必要です。
+たとえば、数学処理がまとめられたmathモジュールを利用するには以下のようにします。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="c1"># import モジュール名</span>
+<span class="kn">import</span> <span class="nn">math</span>
+</pre>
+  </div>
+  <p>
+   このようにimportをすると、mathモジュールに入っている関数などが利用できるようになります。
+たとえばmathモジュールの切り捨て関数を使うには以下のようにします。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">math</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="mf">5.5</span><span class="p">)</span>
+<span class="mf">5.0</span>
+</pre>
+  </div>
+  <p>
+   モジュール内の関数を呼び出すには"モジュール名.関数()"とします。
+math モジュールに含まれる関数であれば全て「math.関数名()」という形で呼び出します。
+import されるモジュール名が長かったりわかりにくかったりする場合はそれに別名を付けることが可能です。
+それは以下のように行います。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="c1"># import A as B</span>
+<span class="c1"># モジュール A を B として import</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="kn">as</span> <span class="nn">tk</span>
+
+<span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s1">'Helevetica'</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s1">'bold'</span><span class="p">)</span>
+<span class="c1"># 呼び出しは tk</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'Hello Python'</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">'red'</span><span class="p">)</span>
+<span class="n">label</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+<span class="n">label</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
+</pre>
+  </div>
+  <p>
+   上記例では tkinter と呼ばれている GUI のモジュールを tk として import しています。
+  </p>
+  <p>
+   モジュールの関数を呼び出すたびに毎回モジュール名を書くのが面倒であれば「from」を使うことで、
+モジュール内の関数をモジュール名なしで呼び出すことも可能になります。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="c1"># from モジュール名 import 関数名</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">floor</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="mf">5.5</span><span class="p">))</span>
+<span class="c1"># 5</span>
+</pre>
+  </div>
+  <p>
+   頻繁に使う関数であればこのように使用しても構いませんが、
+一般的には from を使わずに import のみを行うほうが分かりやすいコードになります。
+なぜならその関数がどのモジュールに属しているかひとめで分かるからです。
+  </p>
+  <p>
+   先ほどの 「import A as B」とこの from を組み合わせることで、
+あるモジュールに属する関数を別名で使うこともできます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="c1"># math モジュールの floor 関数 を f として import</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">floor</span> <span class="k">as</span> <span class="n">f</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="mf">5.5</span><span class="p">))</span>
+<span class="c1"># 5</span>
+</pre>
+  </div>
+  <p>
+   2つのモジュールが同名の関数を持っていて、2つとも使いたいといった場合に利用可能ですが、
+そのような状況ではモジュール名ごと関数を書くほうが賢明かと思います。
+  </p>
+  <p>
+   モジュール内の関数すべてをモジュール名なしで呼び出すには以下のようにワイルドカードを使います。
+ただ、このような乱雑なモジュールの利用法は「名前の衝突(同じ名前が２箇所で使われてしまっている)」
+などの問題が発生しかねないので、あまり推奨できません。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="o">*</span>
+</pre>
+  </div>
+  <p>
+   あるモジュールをテストするといったシナリオでは有効な使い方ですが、
+本番環境用のコードでは使用しないほうがよいです。
+  </p>
+  <h3>
+   モジュールの作成
+  </h3>
+  <p>
+   モジュールの作成は簡単です。本連載の最初に説明したように、
+「.py」という拡張子をつけたファイルにpythonのコードを書くだけです。
+モジュール名(ファイル名)はアルファベットの小文字と数字のみから構成されていることが望ましいとされていますが、
+それに加えてアンダーバーを使うこともあります。
+ここではモジュールutil.pyを作成し、それをmain.pyから呼び出す例を示します。
+両ファイルは同じディレクトリで作成し、そのディレクトリ内でプログラムを実行してください。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="c1">#util.py</span>
+<span class="k">def</span> <span class="nf">say_hello</span><span class="p">():</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'hello!'</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">say_python</span><span class="p">():</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'python!'</span><span class="p">)</span>
+</pre>
+  </div>
+  <p>
+   上記が呼び出される側の Python のプログラムです。2つの関数が定義されています。
+そして以下がそれを呼び出す側の Python のプログラムです。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="c1">#main.py</span>
+<span class="kn">import</span> <span class="nn">util</span>
+
+<span class="n">util</span><span class="o">.</span><span class="n">say_hello</span><span class="p">()</span>
+<span class="n">util</span><span class="o">.</span><span class="n">say_python</span><span class="p">()</span>
+</pre>
+  </div>
+  <p>
+   main.py を実行すると以下のような出力が得られ、
+Python のプログラムのファイルが別の Python のプログラムのファイルを呼び出していることが分かります。
+  </p>
+  <div class="codehilite">
+   <pre><span></span>hello!
+python!
+</pre>
+  </div>
+  <p>
+   特別に難しいことはありませんね。
+  </p>
+  <p>
+   モジュールを書くにあたって注意すべきすることは、モジュールが以下の特性を持っているかということです。
+  </p>
+  <ul>
+   <li>
+    再利用可能か
+   </li>
+   <li>
+    似た処理のみをまとめているか
+   </li>
+  </ul>
+  <p>
+   たとえば標準ライブラリで提供されていない特殊な数値計算が必要なら、
+その計算のためのモジュールを作ってもよいでしょう。
+ただ、そこに特殊な文字列処理であったり、ネットワークの処理も書いたりするというのは誤った設計です。
+数値計算のモジュールであればそれに徹するべきです。
+文字列処理、ネットワークの処理についても同様です。
+また、そのモジュールを誰しもが簡単に使えるようにすることが理想です。
+例えばよくわからない名前の関数を作っていたり、変な副作用などがあったりすると扱いに困ります。
+実際は複雑なプログラムを分割するためだけにモジュール化することも多いのですが、
+それでも「使いやすい」ように書くことを心がけておくといいかもしれません。
+  </p>
+  <p>
+   なお、実行するプログラムからモジュールが見つからずにエラーとなることがたまにあります。
+サンプルを試す際に「両ファイルは同じディレクトリで作成し、
+そのディレクトリ内でプログラムを実行してください」とお願いしたのはこの問題を防ぐためです。
+モジュールの探索には規則があり、それを知ることで別の場所にあるモジュールを読み込むこともできます。
+ただ、それらは難しいため本書ではなく本シリーズの下編にて扱います。
+  </p>
+  <h3>
+   モジュールのリロード
+  </h3>
+  <p>
+   モジュールを開発している際にモジュールのコードを更新しても、
+それを import している側は昔のコードのモジュールを保持し続けます。
+新しいコードのものを参照して欲しい場合はそのモジュールを「リロード」することが必要で、
+それは以下のように行います。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="kn">import</span> <span class="nn">imp</span>
+<span class="n">imp</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="err">モジュール名</span><span class="p">)</span>
+</pre>
+  </div>
+  <p>
+   モジュール imp の reload という関数を使うことでモジュールのリロードができます。
+実際に先ほど作成した util モジュール(util.py) を使いながらこの挙動を確認してみます。
+インタプリタを起動しモジュールの関数を呼び出します。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">util</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">util</span><span class="o">.</span><span class="n">say_hello</span><span class="p">()</span>
+<span class="n">hello</span><span class="err">!</span>
+</pre>
+  </div>
+  <p>
+   先ほど定義した通りの動きをしました。
+この util モジュールのファイルを以下のように更新し保存します。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="c1"># util.py</span>
+
+<span class="k">def</span> <span class="nf">say_hello</span><span class="p">():</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'hello!'</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">say_python</span><span class="p">():</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'python!'</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+</pre>
+  </div>
+  <p>
+   モジュールのファイルを新しくしたあとで、
+インタプリタで再度同じ関数を呼び出してみます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span>&gt;&gt;&gt; util.say_hello()
+hello!
+</pre>
+  </div>
+  <p>
+   出力を見てもらうと分かるように「昔の定義」のまま動いています。
+試しにモジュールを再度 import し関数を呼び出してみます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">util</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">util</span><span class="o">.</span><span class="n">say_hello</span><span class="p">()</span>
+<span class="n">hello</span><span class="err">!</span>
+</pre>
+  </div>
+  <p>
+   再度 import をしても挙動は変わっていません。
+次に先ほど紹介したモジュールのリロードを行い、関数を実行してみます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">imp</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">imp</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">util</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">module</span> <span class="s1">'util'</span> <span class="kn">from</span> <span class="s1">'/Users/yuichi/Desktop/util.py'</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">util</span><span class="o">.</span><span class="n">say_hello</span><span class="p">()</span>
+<span class="n">hello</span><span class="err">!</span><span class="n">hello</span><span class="err">!</span><span class="n">hello</span><span class="err">!</span>
+</pre>
+  </div>
+  <p>
+   出力を見ると分かりますが、モジュールが更新されていることが分かります。
+  </p>
+  <p>
+   本番環境でモジュールをリロードすることはあまりありませんが、
+サーバープロセスなどにおいて動的に実行するコードを更新するといった目的にも使えるかもしれません。
+  </p>
+  <h3>
+   モジュールの読み込みと実行
+  </h3>
+  <p>
+   Python はモジュールを読み込む際に実行をしています。
+そのため、先程までのような関数のみのモジュールを import しても全く影響はありませんが、
+特定の処理をするコードを書くとそれが実行されてしまいます。
+例えば以下の関数を定義しているモジュール util.py ですが、
+これを import するだけで 4 行目が実行されて test と出力されてしまいます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'test'</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">()</span>
+</pre>
+  </div>
+  <p>
+   そのため、モジュールとして読み込まれることを想定して開発された Python のプログラムファイルは、
+実行されるコードを含まないべきです。
+モジュールを読み込んだ際になんらかの初期化処理が必要な場合でも関数などとして提供するほうが行儀はいいです。
+なぜなら import をする側は import をするだけで勝手になんらかの処理をすると想定していないからです。
+  </p>
+  <p>
+   ただ、モジュールがプログラムの起点になることもあれば import されることもあるという場合は、
+「起点となる場合はある処理をする」一方、「モジュールとして呼び出される場合はそれをしない」
+という実装が必要なことがあります。
+これを実現するには特殊な変数
+   <code>
+    __name__
+   </code>
+   を使います。
+これは特殊属性(詳細は本シリーズの下編にて扱います)と呼ばれる高度なトピックなのですが、
+難しいことは考えずにこれにはモジュール名が入っていると認識して下さい。
+たとえば util.py をモジュールとして読み込めば util となりますし、
+testmodule.py を読み込めば testmodule となります。
+ただし、一つ例外がありプログラムの起点となるプログラムは、
+モジュール名がファイル名ではなく
+   <code>
+    __main__
+   </code>
+   となります。
+  </p>
+  <p>
+   せっかくなので実際に試してみます。
+以下に3つのファイルがあるとします。
+  </p>
+  <p>
+   hello.py
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="kn">import</span> <span class="nn">nice</span>
+<span class="kn">import</span> <span class="nn">world</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'hello.py: '</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
+</pre>
+  </div>
+  <p>
+   nice.py
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="k">def</span> <span class="nf">fun_nice</span><span class="p">():</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'nice'</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'nice.py: '</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
+</pre>
+  </div>
+  <p>
+   world.py
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="k">def</span> <span class="nf">fun_world</span><span class="p">():</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'world'</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'world.py: '</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
+</pre>
+  </div>
+  <p>
+   コードを読んでもらえば分かりますが、hello.py は nice.py と world.py をimport しています。
+nice.py 及び world.py はモジュールとして使われることを想定していますので、
+簡単な関数の定義を持っています。
+そしてそれらのファイルは最後にモジュール名のプリントをしています。
+hello.py を起点に呼び出すと以下のような出力が得られます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span>$ python3 hello.py
+nice.py: nice
+world.py: world
+hello.py: __main__
+</pre>
+  </div>
+  <p>
+   この際、 Python は以下の図のようにコードを読み込み、print 出力をしています。
+  </p>
+  <p class="blog-img">
+   <img alt="image" class="img-responsive" src="./0050_image/02.png"/>
+  </p>
+  <p>
+   出力を見てもらうと分かりますが、import されたモジュール内にある特殊変数
+   <code>
+    __name__
+   </code>
+   には、
+ファイル名(モジュール名)が入っています。
+ただ、起点となるファイルの
+   <code>
+    __name__
+   </code>
+   だけはファイル名ではなく
+   <code>
+    __main__
+   </code>
+   となっていることが分かります。
+  </p>
+  <p>
+   この
+   <code>
+    __name__
+   </code>
+   の性質を利用して、
+そのモジュールが起点として呼ばれた場合のみ特定の処理をすることができます。
+想像がつくかもしれませんが、以下のようなものとなります。
+  </p>
+  <p>
+   test.py
+  </p>
+  <div class="codehilite">
+   <pre><span></span>def fun_test(x):
+  return x**2
+
+if(__name__ == '__main__'):
+  print('start function tests')
+
+  if(4 != fun_test(2)):
+    print('error')
+  if(9 != fun_test(-3)):
+    print('error')
+</pre>
+  </div>
+  <p>
+   上記のコードは
+   <strong>
+    name
+   </strong>
+   がもし
+   <strong>
+    main
+   </strong>
+   だった場合、
+つまりこのモジュールが起点としてプログラムが起動された場合にモジュールで定義された関数をテストしています。
+このモジュールが呼び出されるたびにいちいちテストをするのは問題ですが、
+モジュールとして使われるプログラムを起点と呼び出した場合にだけテストをするというのは理にかなっています。
+この書き方は様々なところで使われているので、ぜひ覚えておいて下さい。
+  </p>
+  <h3>
+   モジュール紹介
+  </h3>
+  <p>
+   Python には数え切れないほどのモジュールがあります。
+モジュールには大きく分けて2つあり、標準モジュール、及び外部のモジュール(インストールなどが必要)があります。
+有用なモジュールは多くあるのですが、
+それらを多く語るのは本書の趣旨にそぐわないため下編に譲ります。
+ここでは最重要なモジュールのみ駆け足で紹介します。
+  </p>
+  <p>
+   まず Python の環境自体に関わる sys モジュールがあります。
+インタプリタとしての挙動に関わる関数を多く持ち、たとえば sys.exit() はプログラムを終了させます。
+他には標準入出力や標準エラー出力を扱う機能も持っており、sys.stdin.read() や、sys.stdout.write(),
+そしてエラー出力の sys.stderr.write() があります。
+改行なしの print 文を使いたい場合は改行をしないオプションを加える(後述します)か、
+代わりに sys.stdout.write() を使うという方法があります。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">' python'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">' python'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+</pre>
+  </div>
+  <p>
+   上記コードを見てもらうと、同じ出力を print()と sys.stdout.write() で出力させています。
+このプログラムを実行すると以下のような出力が得られます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span>hello
+ python
+
+
+hello python
+</pre>
+  </div>
+  <p>
+   出力を見てもらうと分かりますが、sys.stdout.write は出力後に改行されていません。
+改行なしでコンソールに出力をしたい場合は使ってみて下さい。
+  </p>
+  <p>
+   次に OSに関わる処理として os モジュールがあります。
+OS モジュールはちょうどターミナルや DOS Prompt、power shell のような、
+シェルを使ったファイルやディレクトリの操作に近いことができます。
+例えば以下のようなものとなります。
+  </p>
+  <div class="codehilite">
+   <pre><span></span># 現在のディレクトリを取得
+&gt;&gt;&gt; os.getcwd()
+'/Users/yuichi/Desktop'
+
+# ディレクトリを移動
+&gt;&gt;&gt; os.chdir('test')
+
+# ディレクトリの中身を確認
+&gt;&gt;&gt; os.listdir('./')
+['.DS_Store', '1.txt']
+
+# ディレクトリを作成
+&gt;&gt;&gt; os.mkdir('hello')
+
+# ディレクトリを削除
+&gt;&gt;&gt; os.rmdir('hello')
+</pre>
+  </div>
+  <p>
+   os モジュールは子モジュールも持っており、たとえば os.path モジュールはパス関係の処理をできます。
+他には時間関係の time モジュールや数学関係の math モジュールなどもよく利用されます。
+それらの使い方の詳細は適時Python の公式ドキュメントなり、webサイトや書籍を参照してください。
+  </p>
+  <p>
+   Python のモジュールの数は膨大ですが、
+プログラマが実現したい処理は一般的なことであればたいがいは既になんらかの形で提供されています。
+どういうものがあるか手を動かしながら試し、
+概観を掴んでしまえば簡単にそれらを利用できるようになるはずです。
+ただ、提供されるモジュールやライブラリはPythonやプログラミングの最低限の知識を必要とする場合が多いです。
+モジュールの詳細について学ぶ前に、
+まずは Python やプログラミングの基礎知識を身につけることに注力するのがよいと思います。
+  </p>
+  <!-- GENERATED HTML END -->
+ </body>
+</html>

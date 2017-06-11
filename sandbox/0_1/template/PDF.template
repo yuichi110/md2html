@@ -2,14 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="description" content="{{ DESCRIPTION }}">
-    <link rel="icon" href="./assets/favicon.ico">
-    <title>{{ TITLE }}</title>
-    <link href="./assets/css/codehilite.css" rel="stylesheet">
   </head>
 
   <body>
   {{ MARKDOWN }}
   </body>
-  
+
 </html>

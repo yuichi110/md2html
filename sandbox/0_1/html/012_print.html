@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="Sample Description" name="description"/>
+  <link href="./assets/favicon.ico" rel="icon"/>
+  <title>
+   Python入門
+  </title>
+  <link href="./assets/css/codehilite.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <!-- GENERATED HTML START -->
+  <h3>
+   テキスト処理
+  </h3>
+  <p>
+   テキスト処理は要するに、文字列型の処理です。
+前の章で扱ったように文字列型もオブジェクトであるため、様々なメソッドが利用できます。
+テキストファイルの処理では文字列型の基本知識が必要なので、
+以前学んだことを少し発展させて復習します。
+  </p>
+  <p>
+   まず、文字列は以下のように定義するのでした。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text1</span> <span class="o">=</span> <span class="s1">'hello python'</span>
+
+<span class="n">text2</span> <span class="o">=</span> <span class="s1">'''hello</span>
+<span class="s1">world</span>
+<span class="s1">python'''</span>
+</pre>
+  </div>
+  <p>
+   ひとつめに関しては今さらいうこともないですが、
+2つめに関しては複数行でテキストをプログラム中で定義する方法でした。
+記号「'」の代わりに記号「"」を使うことも可能ですが、文字列の前後で統一されている必要があります。
+  </p>
+  <p>
+   文字列の結合に関しては「+」記号でできますが、
+数字などを結合するときは「文字列に変換」してから結合するのでした。
+ほかの型から文字列型への変換にはstr関数を使います。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">'hello '</span> <span class="o">+</span> <span class="s1">'world'</span><span class="p">)</span>
+<span class="c1"># hello world</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'hello '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1"># hello 5</span>
+</pre>
+  </div>
+  <p>
+   文字列長は以下のように len() 関数を使うことで取得できます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="s1">'hello world'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+<span class="c1"># 11</span>
+</pre>
+  </div>
+  <p>
+   文字列中の「文字」の取得は以下のように [X] で位置を指定して行います。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'hello world python'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="c1"># o</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+<span class="c1"># t</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="mi">100</span><span class="p">])</span>
+<span class="c1"># Traceback (most recent call last):</span>
+<span class="c1">#  ...</span>
+<span class="c1"># IndexError: string index out of range</span>
+</pre>
+  </div>
+  <p>
+   この位置の指定はリストの要素の数え方と同じで0から始まります。
+先頭から0、1、2……と数えていくと4はoに対応しています。
+面白いのがこの値をマイナスにできるところです。
+このように指定すると後ろ側から取得してきます。
+この際、0からではなく-1、-2、-3……とカウントすることに注意してください。
+文字列の範囲を超えてアクセスしようとするとエラーになります。
+  </p>
+  <p>
+   文字列から「文字列」を取得するには、以下のように行います。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'hello world python'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">11</span><span class="p">])</span>
+<span class="c1"># world</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="o">-</span><span class="mi">12</span><span class="p">:</span><span class="o">-</span><span class="mi">7</span><span class="p">])</span>
+<span class="c1"># world</span>
+</pre>
+  </div>
+  <p>
+   これは「スライシング」と呼ばれるテクニックで、
+[X:Y]とあるとXからYまで取得という意味になります。
+[X:Y] と指定する際はX &lt; Yとなるようにしてください。
+先ほどと同じように、範囲指定にもマイナス値を利用できます。
+  </p>
+  <p>
+   前と後ろを指定するのではなく、Xより前、Xより後という指定の仕方も可能です。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="mi">6</span><span class="p">:])</span>
+<span class="c1"># world python</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">[:</span><span class="mi">11</span><span class="p">])</span>
+<span class="c1"># hello world</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">[:])</span>
+<span class="c1"># hello world python</span>
+</pre>
+  </div>
+  <p>
+   見ていただくとわかるように [X:Y] の片方を省略しています。
+そうすると先頭から、もしくは末尾までという意味になります。
+あまり使いどころはありませんが、両方とも省略すると、文字列のすべてが取得されます。
+このスライシングはリストから複数の要素を取り出す際にも使えます。
+  </p>
+  <h3>
+   文字列型のメソッド
+  </h3>
+  <p>
+   先にお伝えしたように文字列型もオブジェクトであるためメソッドが利用できます。
+ただ、文字列型に対してメソッドを呼び出した場合は
+「呼び出し元の文字列オブジェクトは変更されない」という規則があります。
+例えば次にお話する文字列の置き換えも、置き換えメソッドを呼び出した文字列は変更されず、
+メソッドの返り値として変更された文字列オブジェクトがかえってくるという動きをします。
+これは全ての文字列型のメソッドに共通した特徴なので必ず覚えておいて下さい。
+  </p>
+  <p>
+   文字列型のメソッドを使ってテキストの置き換え処理をしてみます。
+テキストエディタなどである特定のキーワードを別のキーワードに置き換えることがあるかと思いますが、それと同じ要領です。
+サンプルコードを以下に記載します。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'hello world python'</span>
+<span class="n">text1</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'o'</span><span class="p">,</span> <span class="s1">'0'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="c1"># hello world python</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text1</span><span class="p">)</span>
+<span class="c1"># hell0 w0rld pyth0n</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'world'</span><span class="p">,</span> <span class="s1">'WORLD'</span><span class="p">))</span>
+<span class="c1"># hello WORLD python</span>
+</pre>
+  </div>
+  <p>
+   文字列.replace(置き換える文字列, 置き換えられる文字列)とすると、変換された文字列が返されます。
+例にもあるように、元の文字列自体は変化していません。
+1文字だけを変更することもできますし、文字列を変更することもできます。
+不要かもしれませんが、上記のコードのオブジェクトとメソッドの関係を図に示します。
+  </p>
+  <p class="blog-img">
+   <img alt="image" class="img-responsive" src="./0060_image/01.png"/>
+  </p>
+  <p>
+   ‘hello world python’ という文字列型のオブジェクトを変数 text に格納し、
+そのオブジェクトに対してメソッド replace を呼び出しています。
+そのメソッドは変換した文字列を返り値として返しますが、
+元のデータ(オブジェクトが持つ’hello world python’ というテキストデータ自体)は変更を加えません。
+  </p>
+  <p>
+   文字列の検索もそれほど難しくはありません。
+検索には「存在の確認」と「位置の確認」の2つの使い方があり、それぞれ次のようになります。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'hello world python'</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'wor'</span> <span class="ow">in</span> <span class="n">text</span><span class="p">)</span>
+<span class="c1"># True</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'w0r'</span> <span class="ow">in</span> <span class="n">text</span><span class="p">)</span>
+<span class="c1"># False</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'wor'</span><span class="p">))</span>
+<span class="c1"># 6</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'w0r'</span><span class="p">))</span>
+<span class="c1"># -1</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'o'</span><span class="p">))</span>
+<span class="c1"># 4</span>
+</pre>
+  </div>
+  <p>
+   inについてはlistでの使い方と同じで、「A in B」の場合は「AがBに含まれていれば Trueを返す」という動きをします。
+’hello world python’ というテキストに ‘wor’ は含まれているので True となっています。
+find メソッドについては最も左側にあるマッチした位置を返します。
+そのため、'o'は何個もありますが、一番左の位置となっています。
+マッチしない場合は-1が返ってきます。
+  </p>
+  <p>
+   find メソッドに似たメソッドで startswith と endswith があります。
+名前から分かるかもしれませんが、前者は「この文字列から始まっていればTrue」、
+後者は「この文字列で終わっていればTrue」という動きをします。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'hello world python'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'hell'</span><span class="p">))</span>
+<span class="c1"># True</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'hell0'</span><span class="p">))</span>
+<span class="c1"># False</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'hon'</span><span class="p">))</span>
+<span class="c1"># True</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'h0n'</span><span class="p">))</span>
+<span class="c1"># False</span>
+</pre>
+  </div>
+  <p>
+   それほど使う場面は多くないのですが、
+find メソッドのオプションである第二引数を指定することで前側を指定した数だけ飛ばして途中から検索することもできます。
+右側から探索をする rfind というメソッドも利用できます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'hello world python'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'o'</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="c1"># 16</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">'o'</span><span class="p">))</span>
+<span class="c1"># 16</span>
+</pre>
+  </div>
+  <p>
+   次に文字列の前後からの特定の文字の削除メソッド stripです。
+よく利用するのは、前後の空白や改行コード、タブなどを取り除く場合などでしょう。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">' hello world </span><span class="se">\n</span><span class="s1">'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+<span class="c1"># 'hello world'</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">' hell'</span><span class="p">))</span>
+<span class="c1"># 'o world \n'</span>
+</pre>
+  </div>
+  <p>
+   strip関数に引数を指定しないと文字列の前後の空白文字(空白とタブ、改行)が取り除かれます。
+引数に文字列を指定すると、その文字列が取り除かれます。
+この strip() 関数はファイル読み込み処理とともに「改行コードを取り除く」ことによく使われることがありますので、
+覚えておいて頂いたほうがいいかもしれません。
+左側の文字だけを取り除く場合は lstrip、右側だけの場合は rstrip メソッドを使います。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">' hello world </span><span class="se">\n</span><span class="s1">'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+<span class="c1"># 'hello world'</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+<span class="c1"># 'hello world \n'</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span>
+<span class="c1"># ' hello world'</span>
+</pre>
+  </div>
+  <p>
+   また、文字列を split メソッドで特定の区切り文字で分割して文字列のリストにすることもできます。
+改行コードで分割する場合は split(‘\n’) とすることもできますし、
+splitlines() という専用のメソッドもあります。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'1, taro, 35, male'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">))</span>
+<span class="c1"># ['1', ' taro', ' 35', ' male']</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s1">'hello</span><span class="se">\n</span><span class="s1">world</span><span class="se">\n</span><span class="s1">python'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+<span class="c1"># ['hello', 'world', 'python']</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">))</span>
+<span class="c1"># ['hello', 'world', 'python']</span>
+</pre>
+  </div>
+  <p>
+   上記サンプルにあるようなコンマ「,」記号での文字列の分割は CSV(Excel出力)やログの解析あたりでよく使うテクニックです。
+たとえば以下ではトリプルくおテーションで作ったCSV形式のテキストを、
+まず改行コードで分割して1行ずつににして、各行においてコンマでテキストを区切っています。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'''1, taro, 35, male</span>
+<span class="s1">2, jiro, 29, male</span>
+<span class="s1">3, hanako, 23, female'''</span>
+
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">):</span>
+  <span class="n">elems</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">elems</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s1">':'</span> <span class="o">+</span> <span class="n">elems</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+<span class="c1"># taro:35</span>
+<span class="c1"># jiro:29</span>
+<span class="c1"># hanako:23</span>
+</pre>
+  </div>
+  <p>
+   この例のように CSV の要素に空白が含まれているのであれば、
+先ほどの strip 関数と組み合わせて前後の空白を取り除いて整形してあげてもいいかもしれません。
+  </p>
+  <p>
+   「オブジェクトを返す関数やメソッド」に対してメソッドを呼び出しているようなコードはよくありますが、
+それは上記と同じように「作成されたばかりのオブジェクトのメソッドを呼ぶ」ということをしています。
+例えば以下の様なコードにです。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">'hello world python'</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'he'</span><span class="p">,</span><span class="s1">'HE'</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'py'</span><span class="p">,</span><span class="s1">'PY'</span><span class="p">))</span>
+<span class="c1"># HEllo world PYthon</span>
+</pre>
+  </div>
+  <p>
+   これは分かりやすく書けば以下のようになります。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="s1">'hello world python'</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'he'</span><span class="p">,</span><span class="s1">'HE'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'py'</span><span class="p">,</span><span class="s1">'PY'</span><span class="p">))</span>
+<span class="c1"># HEllo world PYthon</span>
+</pre>
+  </div>
+  <p>
+   メソッドをチェーン上に並べるのは長くなりすぎなければ積極的に活用するべきだと思います。
+ただ、例えばマイナーなメソッドを呼び出したりバグを生んだりしそうな場所での利用は避けて頂いたほうが無難です。
+メソッドをチェーン上に並べた場所でエラーが発生すると、そのエラー原因の特定が困難な場合があります。
+  </p>
+  <p>
+   他には文字列の大文字、小文字の変換あたりもよく使います。
+  </p>
+  <div class="codehilite">
+   <pre><span></span>&gt;&gt;&gt; a = 'Hello Python'
+&gt;&gt;&gt; a.lower()
+'hello python'
+&gt;&gt;&gt; a.upper()
+'HELLO PYTHON'
+</pre>
+  </div>
+  <h3>
+   文字列の生成
+  </h3>
+  <p>
+   テキストを整形して文字列を作ることはよくあります。
+たとえば、文字列型の名前と数値型の年齢を合わせて「名前 : 年齢」とするには以下のようにすればできます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'taro'</span> <span class="o">+</span> <span class="s1">' : '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="c1"># taro : 35</span>
+</pre>
+  </div>
+  <p>
+   上記は文字列の結合を使って文字列を生成しています。
+数値型と文字列は直接結合できないため、数値35はstr()関数を使って一旦文字列にしています。
+  </p>
+  <p>
+   3つの文字列ぐらいであれば結合を使うことで文字列を作れますが、
+あまりに長くなってくると結合で文字列を作るのは非常に見苦しくなってきます。
+結合の代わりに、文字列にテキストや数字を埋め込むという手法で文字列を生成することができます。
+これを実現する format メソッドを使うと非常にシンプルに文字列を作ることができます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'{} : {}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">'taro'</span><span class="p">,</span><span class="mi">35</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="c1"># taro : 35</span>
+</pre>
+  </div>
+  <p>
+   文字列のformat関数(メソッド)の引数に {} に対応する文字列なり数値なりを与えています。
+ひとつ目の{}がfortmatメソッドの1つめの引数に対応し、2番目の{}が2番目の引数に対応、
+といった具合で文字列に引数を埋め込んでいきます。
+私はそれほど利用しませんが、この format はもっと複雑な使い方もできます。
+たとえば {} の中に数字やキーワードを埋め込むことで引数の何番目をそこに埋め込むかを調整できます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">'{0} {2} {1} {0}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">))</span>
+<span class="c1"># a c b a</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'{user} : {age}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">'taro'</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">35</span><span class="p">))</span>
+<span class="c1"># taro : 35</span>
+</pre>
+  </div>
+  <p>
+   上記のように同じ引数を何度も埋め込むこともできます。キーワード引数を使うこともできます。
+  </p>
+  <p>
+   さらに format メソッドは文字列に埋め込む「フォーマット(形式)」も調整できます。
+フォーマットを指定するには「:」のあとにフォーマットを指定する書式を書きます。
+かなり細かく調整できますが、いくつか便利なものだけ紹介します。
+  </p>
+  <p>
+   まず数字の桁の調整です。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="c1"># 5桁</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'{:5}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span>
+<span class="c1"># '   50'</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'{:5}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">255</span><span class="p">))</span>
+<span class="c1"># '  255'</span>
+
+<span class="c1"># 5桁(左寄せ)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'{:&lt;5}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">255</span><span class="p">))</span>
+<span class="c1"># '255  '</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'{:&lt;5}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span>
+<span class="c1"># '50   '</span>
+
+<span class="c1"># 5桁(0埋め)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'{:05}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">50</span><span class="p">))</span>
+<span class="c1"># '00050'</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'{:05}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">255</span><span class="p">))</span>
+<span class="c1"># '00255'</span>
+
+<span class="c1"># 位置指定やキーワードとの併用</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'{ab:05} {cd:05}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ab</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cd</span><span class="o">=</span><span class="mi">255</span><span class="p">))</span>
+<span class="c1"># '00050 00255'</span>
+</pre>
+  </div>
+  <p>
+   コロンの後に数字を指定することで表示される桁数を調整できます。
+0を指定する桁数の前に付けることで0埋めされます。
+  </p>
+  <p>
+   数値型の表示を調整することもよくあります。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="c1"># 整数、少数</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'{:d}, {:f}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">))</span>
+<span class="c1"># '5, 5.500000'</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'{:.3f}, {:.5f}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">))</span>
+<span class="c1"># '5.500, 5.50000'</span>
+
+<span class="c1"># 3桁区切り</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'{:,}, {:10,}, {:010,}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">111111</span><span class="p">,</span> <span class="mi">111111</span><span class="p">,</span> <span class="mi">111111</span><span class="p">))</span>
+<span class="c1"># '111,111,    111,111, 00,111,111'</span>
+
+<span class="c1"># 基数変換(2進数、8進数, 10進数, 16進数)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'{0:b}, {0:o}, {0:d}, {0:x}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
+<span class="c1"># '1100100, 144, 100, 64'</span>
+</pre>
+  </div>
+  <p>
+   format メソッドに似た書式化演算子(%)も Python3 では利用できます。
+書式化演算子は format メソッドより気軽に使えますが、そのぶん単純なことしかできません。
+以下のように使います。
+  </p>
+  <div class="codehilite">
+   <pre><span></span>ベースとなる文字列 % 埋め込む値
+ベースとなる文字列 % (埋め込む値1, 埋め込む値2,..)
+</pre>
+  </div>
+  <p>
+   ベースとなる文字列に値を一つだけ埋め込む場合はそれを % 記号の後におきます。
+そして複数の値を埋め込む場合は % 記号のあとに埋め込む要素をタプルにまとめて配置します。
+例えば以下のようになります。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'hello </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="s1">'HELLO'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="c1"># hello HELLO</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s1">'hello </span><span class="si">%s</span><span class="s1"> python </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="s1">'HELLO'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="c1"># hello HELLO python 1</span>
+</pre>
+  </div>
+  <p>
+   ベースとなる文字列の「%s」の箇所に値が埋め込まれていることがわかります。
+この %s はどのような形で値が埋め込まれるかを指定する「変換指定子」と呼ばれており、
+%s は文字列、%d は整数、%f は少数として利用されます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">'hello </span><span class="si">%s</span><span class="s1"> python'</span> <span class="o">%</span> <span class="p">(</span><span class="mf">5.5</span><span class="p">))</span>
+<span class="c1"># hello 5.5 python</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'hello </span><span class="si">%d</span><span class="s1"> python </span><span class="si">%f</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">))</span>
+<span class="c1"># hello 5 python 5.500000</span>
+</pre>
+  </div>
+  <p>
+   format メソッドと書式化指定子は奥が深く、様々な使い方ができます。
+ただ、込み入った使い方は頻繁には利用されないため、必要になったタイミングでドキュメントなどを参照すれば問題ないと思います。
+C言語などの printf に慣れているかたは書式化演算子のほうが書式を見慣れているため魅力的に見えるかもしれません。
+ただ、今後の Python は format メソッドを主流としていく見込みなので、可能であれば format メソッドを使うようにしてください。
+  </p>
+  <p>
+   リストに含まれる複数の文字列を「特定の文字列」で結合していくことも可能です。
+これはちょうど先程のsplit メソッドの逆です。
+2次元配列(リストにリストが入っている)に格納された情報をCSV形式でファイルに書き出したりする際に便利な手法です。
+書式は「結合に使う文字列.join(文字列のリスト)」となります。
+空白で結合すればそのままつながります。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'1'</span><span class="p">,</span> <span class="s1">'taro'</span><span class="p">,</span> <span class="s1">'35'</span><span class="p">,</span> <span class="s1">'male'</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="c1"># 1, taro, 35, male</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="c1"># 1taro35male</span>
+</pre>
+  </div>
+  <h3>
+   エスケープ記号
+  </h3>
+  <p>
+   最後に文字列で使われる特殊記号についてお話します。
+特殊記号はプログラム中で意味を持ってしまう特別な記号のことです。
+たとえば「'」という記号は文字列を作成する際に利用する特別な記号です。
+そのほかにはビープ音なども記号に分類されます。
+これらは文法的な理由やそもそもそれを表現する記号がキーボードのキーにないことから、
+「これは XX ですよ」という特別なルールにもとづいて文字列に表記します。
+そのルールに利用されるのがエスケープ記号と呼ばれるもので半角のバックスラッシュ「\」(英語キーボード)か、
+半角の円記号「¥」(日本語キーボード)を利用します。
+このエスケープ記号の後に特別な文字を続けることで、それが特別な意味を持つのです。
+  </p>
+  <p>
+   たとえば「'」とビープ音は以下のように記載できます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">'escape sample1 </span><span class="se">\'</span><span class="s1">.'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'escape sample2 </span><span class="se">\a</span><span class="s1">.'</span><span class="p">)</span>
+</pre>
+  </div>
+  <p>
+   ほかには改行とエスケープ記号自身あたりをよく使います。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">'escape sample1 </span><span class="se">\n</span><span class="s1">.'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'escape sample1 </span><span class="se">\\</span><span class="s1">.'</span><span class="p">)</span>
+</pre>
+  </div>
+  <p>
+   エスケープ記号一覧は調べてもらえればすぐに出てきますので、興味がある人は検索してみてください。
+  </p>
+  <!-- GENERATED HTML END -->
+ </body>
+</html>

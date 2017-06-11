@@ -54,37 +54,193 @@
     <div class="col-sm-8 blog-main">
      <!-- GENERATED HTML START -->
      <h2>
-      None 型
+      辞書型(マップ)
      </h2>
      <p>
-      None 型は「値がない」ということを表明する特別な型です。
-たとえば返り値がない関数の結果を取得しようとしたら、以下のように None 型が取得できます。
+      辞書型は、別名で連想配列やマップとも呼ばれている型です。
+簡単にいってしまえば、重複が許されないキー(Key)とその値(Value)が対応付けられたデータ型です。
+「キー」という名前からわかるように、これも内部的にハッシュを使っています。
+     </p>
+     <p>
+      例をあげて説明しましょう。果物(Key)と色(Value)の辞書オブジェクトを作るとすると、
+     </p>
+     <ul>
+      <li>
+       りんご(Key) : 赤色(Value)
+      </li>
+      <li>
+       レモン : 黄色
+      </li>
+      <li>
+       ぶどう : 紫
+      </li>
+      <li>
+       さくらんぼ : 赤色
+      </li>
+     </ul>
+     <p>
+      というペアが作れます。辞書型を使うと「りんご」と指定すれば「赤色」が得られ、
+「ぶどう」と指定すれば「紫」が帰ってきます。
+先ほどのセットと同じように「りんご」というキーは重複が許されずにひとつしか存在することができないため、
+「りんご : 緑色」というペアを改めて登録すると昔のデータは上書きされてなくなってしまいます。
+ただ、例にある「りんご」と「さくらんぼ」を見ればわかるように値(Value)の重複は許されています。
+     </p>
+     <p>
+      勘のいいかたであれば辞書型のしくみの想像がついたかもしれませんが、
+簡単にいってしまうと、セットにおけるハッシュの使い方に「Valueも追加」しているだけです。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0080_image/01.jpg"/>
+     </p>
+     <p>
+      「John Smith」をキーとして指定するとハッシュ関数で「02」が得られ、
+「02」のなかから「John Smith」のValueを取得してきます。
+     </p>
+     <p>
+      それではさっそく辞書型を利用するサンプルプログラムを書いてみます。
+まずは辞書オブジェクトの生成です。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="k">print</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">)</span>
-<span class="c1"># hello</span>
-<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="c1"># None</span>
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="c1"># &lt;class 'dict'&gt;</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+<span class="c1"># &lt;class 'dict'&gt;</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"apple"</span><span class="p">:</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"lemon"</span><span class="p">:</span><span class="s2">"yellow"</span><span class="p">}</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+<span class="c1"># &lt;class 'dict'&gt;</span>
 </pre>
      </div>
      <p>
-      None は C 言語や Java の null に相当するもので、
-たまに関数やメソッドから期待されるオブジェクトの代わりに返されることがあります。
-少し高度になるのですが、たとえばある関数内の複雑な処理(例えばネットワークやデータベースへの接続など)に失敗した際に、
-「Noneを返す」もしくは「例外を発生させる」とことで処理が失敗したことを示すことができます。
-None を返す実装の場合、返り値がNone であれば失敗したことがわかり、そうでなければ成功したということが分かります。
-None か否かの判定には is 演算子を使うことが推奨されています。
-理由が高度になるため説明は割愛しますが、== 演算子での判定は推奨されません。
+      辞書オブジェクトの生成にはdict()関数を使う方法と、リストにおける [] に近い {} 記号を使うという方法があります。
+{} を使う場合はその内部で 「key:value」 という組み合わせをコンマ区切りで列挙すると、
+そのペアが追加された辞書オブジェクトが得られます。
+     </p>
+     <p>
+      次に辞書オブジェクトを操作してみます。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="n">return_value</span> <span class="o">=</span> <span class="err">関数</span><span class="p">()</span>
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"apple"</span><span class="p">:</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"lemon"</span><span class="p">:</span><span class="s2">"yellow"</span><span class="p">}</span>
 
-<span class="k">if</span><span class="p">(</span><span class="n">return_value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
-  <span class="err">失敗した際の処理</span>
-<span class="k">else</span><span class="p">:</span>
-  <span class="err">成功した際の処理</span>
+<span class="c1"># バリューの取得</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="s1">'apple'</span><span class="p">])</span>
+<span class="c1"># red</span>
+
+<span class="c1"># キーを指定したバリューの更新</span>
+<span class="n">a</span><span class="p">[</span><span class="s1">'apple'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'green'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="s1">'apple'</span><span class="p">])</span>
+<span class="c1"># green</span>
+
+<span class="c1"># 新しいキーとバリューの組み合わせの追加</span>
+<span class="n">a</span><span class="p">[</span><span class="s1">'orange'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'orange'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="s1">'orange'</span><span class="p">])</span>
+<span class="c1"># orange</span>
+
+<span class="c1"># 存在しないキーへのアクセス</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="s1">'banana'</span><span class="p">])</span>
+<span class="c1"># Traceback (most recent call last):</span>
+<span class="c1"># ...</span>
+<span class="c1"># KeyError: 'banana'</span>
 </pre>
      </div>
+     <p>
+      キーを使った値の取得、キーと値のペアの登録を行っています。
+リストにおけるインデックス番号がキー名に変わっているだけです。
+"辞書オブジェクト[キー]" としてキーを指定することで、対応する値(Value)を参照します。
+存在しないキーを参照しようとすると当然エラーとなります。
+     </p>
+     <p>
+      ただ、存在しないキーを参照した場合に「デフォルト値」を返したいという場合がたまにあります。
+そのような場合、get メソッドや setdefault メソッドを利用します。
+get メソッドの第一引数にキーを指定し、第二引数にキーが存在しなかった際に取得されるデフォルト値を指定します。
+第二引数がない場合はデフォルト値として None が使われます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'apple'</span><span class="p">:</span><span class="s1">'red'</span><span class="p">,</span> <span class="s1">'lemon'</span><span class="p">:</span><span class="s1">'yellow'</span><span class="p">}</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'apple'</span><span class="p">,</span> <span class="s1">'green'</span> <span class="p">))</span>
+<span class="c1"># red</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'banana'</span><span class="p">,</span> <span class="s1">'green'</span><span class="p">))</span>
+<span class="c1"># green</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="p">{</span><span class="s1">'lemon'</span><span class="p">:</span> <span class="s1">'yellow'</span><span class="p">,</span> <span class="s1">'apple'</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">}</span>
+</pre>
+     </div>
+     <p>
+      辞書オブジェクトにはキー apple が存在するため、
+’apple’ を get した際はそのバリューである red が返されています。
+ただ、存在しないキー ‘banana’ を指定した場合はデフォルト値である ‘green’ が返されています。
+辞書オブジェクト自身は変更されていません。
+     </p>
+     <p>
+      setdefault は get とほとんど同じですが、
+その名前からわかるように辞書オブジェクトがアップデートされます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'apple'</span><span class="p">:</span><span class="s1">'red'</span><span class="p">,</span> <span class="s1">'lemon'</span><span class="p">:</span><span class="s1">'yellow'</span><span class="p">}</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">'apple'</span><span class="p">,</span> <span class="s1">'green'</span><span class="p">))</span>
+<span class="c1"># red</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">'banana'</span><span class="p">,</span> <span class="s1">'green'</span><span class="p">))</span>
+<span class="c1"># green</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># {'lemon': 'yellow', 'apple': 'red', 'banana': 'green'}</span>
+</pre>
+     </div>
+     <p>
+      セットと同じように辞書型もリストと似た操作ができます。
+例えばキーの存在確認に in を使うことができます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"apple"</span><span class="p">:</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"lemon"</span><span class="p">:</span><span class="s2">"yellow"</span><span class="p">}</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'apple'</span> <span class="ow">in</span> <span class="n">a</span><span class="p">)</span>
+<span class="c1"># True</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'banana'</span> <span class="ow">in</span> <span class="n">a</span><span class="p">)</span>
+<span class="c1"># False</span>
+</pre>
+     </div>
+     <p>
+      ほかにも、リストに似た特性はあり、pop や for 文での利用も可能です。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'lemon'</span><span class="p">:</span> <span class="s1">'yellow'</span><span class="p">,</span> <span class="s1">'apple'</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">,</span> <span class="s1">'banana'</span><span class="p">:</span> <span class="s1">'green'</span><span class="p">}</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'apple'</span><span class="p">))</span>
+<span class="c1"># red</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># {'banana': 'green', 'lemon': 'yellow'}</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">popitem</span><span class="p">())</span>
+<span class="c1"># ('banana', 'green')</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># {'lemon': 'yellow'}</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'lemon'</span><span class="p">:</span> <span class="s1">'yellow'</span><span class="p">,</span> <span class="s1">'apple'</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">,</span> <span class="s1">'banana'</span><span class="p">:</span> <span class="s1">'green'</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="c1"># lemon apple banana</span>
+</pre>
+     </div>
+     <p>
+      キー一覧の取得などもよく使います。値一覧の取得はそれほど使わないかもしれないです。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'lemon'</span><span class="p">:</span> <span class="s1">'yellow'</span><span class="p">,</span> <span class="s1">'apple'</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">,</span> <span class="s1">'banana'</span><span class="p">:</span> <span class="s1">'green'</span><span class="p">}</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="c1"># dict_keys(['apple', 'lemon', 'banana'])</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="c1"># dict_values(['red', 'yellow', 'green'])</span>
+</pre>
+     </div>
+     <p>
+      ほかにも辞書型の使い方にはいろいろありますが、まずはこのあたりさえ使いこなせれば十分でしょう。
+     </p>
      <!-- GENERATED HTML END -->
      <nav>
       <ul class="pager">

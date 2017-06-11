@@ -54,522 +54,399 @@
     <div class="col-sm-8 blog-main">
      <!-- GENERATED HTML START -->
      <h2>
-      関数の高度な使い方
+      プログラムへの入力
      </h2>
      <p>
-      本章では関数の高度なトピックについて扱います。
-正直なところ本章の内容は初心者にはかなり難しいのですが、
-Pythonの初心者であっても既存ライブラリなどを利用する場面は多くあるため、
-「こういう機能がある」というレベルでは知っておいたほうがいいです。
-本トピックは下編で扱うか悩んだのですが、難易度が高いわりに利用する頻度が高いためここで扱わせていただきます。
-難しければ斜め読みしていただき、ある程度 Python のプログラムが書けるようになってから読み直してみて下さい。
+      WindowsやMacのGUIアプリケーションを使うときに、さまざまな入力を求められることはありませんか。
+書き出すファイル名の入力や、利用するサーバを一覧から選択するといった場合などです。
+このようにプログラムがユーザになんらかの入力を求めることは一般的です。
+本章では今までのようにテキストベースのプログラムで「ユーザーからプログラムへの入力」を扱う方法についてお話します。
+     </p>
+     <p>
+      ユーザーからの入力の方法にはいくつかありますが、
+ここではプログラムの起動時に指定する「コマンドライン引数」と、
+プログラム中でユーザーに入力を求める「標準入力」、
+そして標準入力を使ったインタラクティブなプログラムの書き方についてお話します。
+     </p>
+     <p>
+      コマンドライン引数の使い方についてお話しする前に、それがなぜ必要なのか説明しておきます。
+まず以下のような「一人の生徒の成績表を表示するプログラム」のshow_score_sheet.pyがあるとします。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">student</span> <span class="o">=</span> <span class="s1">'taro'</span>
+<span class="n">score_sheet</span> <span class="o">=</span> <span class="n">get_score_sheet</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>  <span class="c1"># get_score_sheetは実装済みとする</span>
+<span class="k">print</span><span class="p">(</span><span class="n">score_sheet</span><span class="p">)</span>
+</pre>
+     </div>
+     <p>
+      上記の例では‘taro’の成績を取得しています。
+では、‘taro’の代わりに‘jiro’の成績を取得したいと思ったらどのようにすればよいと思いますか。
+成績取得をする関数に与える生徒名の‘taro’を‘jiro’にしてやればよいです。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">student</span> <span class="o">=</span> <span class="s1">'jiro'</span>  <span class="c1"># 生徒の名前を変更</span>
+<span class="n">score_sheet</span> <span class="o">=</span> <span class="n">get_score_sheet</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">score_sheet</span><span class="p">)</span>
+</pre>
+     </div>
+     <p>
+      ただ、40人の生徒の成績を表示したい場合、プログラムのファイルを40回開いて、
+その都度生徒の名前を変更してプログラムを動かすのは正直面倒くさいです。
+それにそもそも「プログラムを開いてそれを修正する」などということは、そのプログラムの開発者でなければできません。
+要するにプログラムファイルをいちいち書き変えるという対応での解決策はなしということです。
      </p>
      <h3>
-      関数内の関数
+      コマンドライン引数
      </h3>
      <p>
-      Python の関数は実は関数の中に入れ子構造にすることができます。
-例えば以下のような使い方ができます。
+      解決方法はいろいろ考えられますが、最も一般的なものは、コマンドライン引数を利用することです。
+コマンドライン引数とは、Pythonコマンドでプログラムを起動する際に与えるパラメータのことです。
+たとえば以下のようなものになります。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test1</span><span class="p">():</span>
-  <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
-
-  <span class="k">def</span> <span class="nf">test2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
-
-  <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">test2</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
-
-<span class="k">print</span><span class="p">(</span><span class="n">test1</span><span class="p">())</span>
-<span class="c1"># 21</span>
+      <pre><span></span>python3 show_score_sheet.py taro
 </pre>
      </div>
      <p>
-      上記の例では関数 test1() の中で関数 test2() を定義し、それを使っています。
-今回のサンプルのような短い関数であればこのような使い方は不要ですが、
-より複雑な処理を関数で行う場合は処理を綺麗に分類するために内部で関数を定義して使うことがあります。
+      注目して欲しいのは3番目のキーワードのtaroです。
+今まではPythonプログラムを実行するときは“python ファイル名”だけでしたが、そこにtaroが追加されています。
+このtaroという与えられたキーワードを、Pythonのプログラムが内部で利用することで、
+生徒の名前をプログラム中に直接書き込まなくても指定した生徒の成績を取得できるようになります。
+今回は生徒名ですが、プログラムによってはファイル名であったり接続するサーバ名であったり、いろいろな利用方法があります。
+     </p>
+     <p>
+      コマンドライン引数の使い方は以下の図のようになります。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0105_image/01.jpg"/>
+     </p>
+     <p>
+      直感的に動きをつかんでもらえればよいのですが、起動時に与えたコマンドライン引数を、
+プログラム中のsys.argvでアクセスしています。
+図の細かい説明をするより、実際にコマンドライン引数を利用するプログラムを見たほうが早そうなので、以下に記載します。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="c1"># sysモジュールをimport</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1"># sys.argvにコマンドライン引数が「リスト」で格納されている</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
+</pre>
+     </div>
+     <p>
+      これを実行すると以下のようになります。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="c">% python3 test.py taro</span>
+<span class="p">[</span><span class="s">'test.py'</span><span class="p">,</span> <span class="s">'taro'</span><span class="p">]</span>
+<span class="mi">2</span>
+
+<span class="c">% python3 test.py taro jiro</span>
+<span class="p">[</span><span class="s">'test.py'</span><span class="p">,</span> <span class="s">'taro'</span><span class="p">,</span> <span class="s">'jiro'</span><span class="p">]</span>
+<span class="mi">3</span>
+</pre>
+     </div>
+     <p>
+      sys.argvをprintしているのでわかると思いますが、これは「リスト」です。
+そのリストの中の最初の要素は必ずPythonの実行プログラムとなります。
+今回は同じディレクトリのプログラムを相対パスで呼び出したのでファイル名だけですが、
+絶対パスなどで呼び出すと要素も絶対パスとなります。
+     </p>
+     <p>
+      2番目以降の要素はコマンドライン引数に与えられた入力値と対応します。
+上記例を見てもらうとわかりますが、引数のn番目がsys.argvのn＋1番目の要素になっています。
+sys.argvはリストですので、その長さはlen()関数で取得できます。
+     </p>
+     <p>
+      このコマンドライン引数を先ほどの生徒の成績を取得するプログラムに組むこむのはそれほど難しくありません。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1"># 誤った入力値の場合はメッセージとともにプログラム中断</span>
+<span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">'usage: student.py student_name'</span><span class="p">)</span>
+    <span class="nb">exit</span><span class="p">()</span>
+
+<span class="c1"># sys.argvよりもわかりやすい変数名に代入して使う</span>
+<span class="n">student</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">score_sheet</span> <span class="o">=</span> <span class="n">get_score_sheet</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">score_sheet</span><span class="p">)</span>
+</pre>
+     </div>
+     <p>
+      コマンドライン引数の長さを調べて、2未満であれば使い方を表示して終了するようにしています。
+無言で終了するのも何が原因なのかプログラムの利用者にわからないのでやめたほうがよいです。
+コマンドライン引数に指定された内容は、プログラムの途中で都度チェックするよりも、
+このように最初に調べてしまって問題があれば終了するとしたほうがきれいにコードを書けるかもしれません。
+必要になった場所でチェックをするという実装だと、プログラムのコアとなるロジックに余計なものが食い込み、
+汚くわかりにくいコードになりがちなので気をつけてください。
+     </p>
+     <p>
+      その後はコマンドライン引数の値を「わかりやすい名前の変数」に格納しています。
+sys.argvの何番目という表現を延々とプログラム中で使い続けるとわかりにくく、
+なおかつ引数の順番を変えたときなどの修正が面倒になるため避けたほうがいいです。
+それ以降のコードは先ほどとまったく一緒ですので解説は割愛します。
+     </p>
+     <p>
+      なお、UnixやLinuxコマンドの「オプション(-v や --help など)」相当のことを実装したいのであれば、
+sys.argvを使って根性で作りこむよりも専用のパッケージ「argparse」などを利用したほうがよいかと思います。
      </p>
      <h3>
-      関数オブジェクト
+      標準入力
      </h3>
      <p>
-      先程もお伝えしましたがPython は関数自体もオブジェクトです。
-そのため、変数に関数を代入し、それを利用することができます。
+      ユーザーがプログラムに入力を与えるのはコマンドライン引数だけではありません。
+標準入力も用います。先ほどの生徒の成績を取得するプログラムを例に、標準入力がどのようなものか説明します。
+     </p>
+     <p>
+      コマンドライン引数はプログラムの「起動時」に入力値を指定しますが、
+標準入力はプログラムの「起動後」に入力値を与えるものです。
+さっそくですが、生徒の成績表示プログラムを標準入力のものに書き換えてみます。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test1</span><span class="p">():</span>
-  <span class="k">print</span><span class="p">(</span><span class="s1">'test1'</span><span class="p">)</span>
+      <pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">'please input student name.'</span><span class="p">)</span>
+<span class="c1"># 標準入力</span>
+<span class="n">student</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'your input is: '</span> <span class="o">+</span> <span class="n">student</span><span class="p">)</span>
+</pre>
+     </div>
+     <p>
+      1～2行目が変更されています。1行目は入力を促すテキストを出しているだけなのでたいしたことはないのですが、
+重要なのは2行目です。これは以下のように動いています。
+     </p>
+     <ol>
+      <li>
+       input()関数が実行される
+      </li>
+      <li>
+       pythonはユーザーからのキーボード入力を待つ
+      </li>
+      <li>
+       ユーザーがキーボードでテキストを入力し、Enter(Return)を打つ
+      </li>
+      <li>
+       pythonがユーザーからの入力を読み取り、input()関数がそれを文字列として返す
+      </li>
+      <li>
+       変数 studentが返された文字列を格納
+      </li>
+     </ol>
+     <p>
+      長々と書きましたが、要するにinput()を書いた場所で「ユーザー入力」が求められて、
+ユーザーが入力した値がinput()から返されるということです。図にまとめると以下のようになります。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0105_image/01.jpg"/>
+     </p>
+     <p>
+      上記プログラムを実行すると次のようになります。
+     </p>
+     <div class="codehilite">
+      <pre><span></span>python test.py
+please input student name.
+taro
+your input is: taro
+</pre>
+     </div>
+     <p>
+      なお、この標準入力を読み取る関数ですが python2 の頃は別名で raw_input() 関数でした。
+間違えないように注意をしてください。
+     </p>
+     <p>
+      ほかにはsysモジュールのreadline関数も同じ目的で利用できます。
+詳しくは書きませんが、以下のように使うことができます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">sys</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">line</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+<span class="n">hello</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="n">hello</span>
 
-<span class="n">a</span> <span class="o">=</span> <span class="n">test1</span>
-<span class="n">a</span><span class="p">()</span>
-<span class="c1"># test1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">line</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+<span class="n">hello</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="n">hello</span>
+<span class="o">&gt;&gt;&gt;</span>
 </pre>
      </div>
      <p>
-      変数に代入できるということは関数の引数として使えるということです。
-詳細は中編にて取り扱いますが、関数を使う関数である高階関数というものもあります。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">apply_list</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">list_</span><span class="p">):</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">list_</span><span class="p">:</span>
-    <span class="n">fun</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">print_double</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
-
-<span class="n">list_</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
-<span class="n">apply_list</span><span class="p">(</span><span class="n">print_double</span><span class="p">,</span> <span class="n">list_</span><span class="p">)</span>
-<span class="c1"># 2</span>
-<span class="c1"># 4</span>
-<span class="c1"># 6</span>
-<span class="c1"># 8</span>
-<span class="c1"># 10</span>
-</pre>
-     </div>
-     <h3>
-      位置引数とキーワード引数
-     </h3>
-     <p>
-      関数の引数の使い方については既に何度も説明しています。
-例えば以下の関数があるとしましょう。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-</pre>
-     </div>
-     <p>
-      この関数は引数として a, b, c を受け取ります。
-この関数を呼び出す際に a, b, c に対応した順序で引数を与えます。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-<span class="c1"># 1</span>
-<span class="c1"># 2</span>
-<span class="c1"># 3</span>
-</pre>
-     </div>
-     <p>
-      出力をみると分かりますが呼び出しの引数の順序と関数の定義の引数の順序が合致していることが分かります。
-このように関数の引数をその位置を使って指定することから、このような引数の使い方を「位置引数」と呼んでいます。
+      ほとんどinput()と同じですが、着目して欲しいのは改行コード“Enter(Return)”も取得されているということです。
+上記サンプルを見ると、前者のreadline()は改行コードを含んでいますが、
+後者のinput()は省かれています。
+そのため、readline()を使う場合、必要であれば“文字列.strip()”などとして行末の改行コードを削ってください。
      </p>
      <p>
-      実は関数の引数は位置引数以外に「キーワード引数」と呼ばれる使い方ができます。
-具体的には関数を呼び出す際に仮引数(定義された引数名)に対して実引数を与えるとキーワード引数として使われます。
-具体的には以下の様な使い方です。
+      なお、かなりの小ネタですが、input()などの標準入力を挟むことで、
+指示があるまでプログラムをわざと中断させておくという使い方もあります。
+たとえばデモプログラムを実行する際に、デモとデモの間にinput()を入れておくと、
+ひとつめのデモが終わったあとに、すぐに2つめに入らず標準入力で待ちに入ることができます。
+意外と便利な使い方です。
      </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-
-<span class="n">test</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">'C'</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="s1">'A'</span><span class="p">)</span>
-<span class="c1"># A</span>
-<span class="c1"># B</span>
-<span class="c1"># C</span>
-</pre>
-     </div>
      <p>
-      関数の定義自体は最初の例と全く代わりませんが、呼び出し時に「b=’B’」といった形で値を与えています。
-指定する引数の順番としては b, c, a なのですが、
-呼び出し側では定義された順序の a, b, c で解釈されていることが分かります。
-位置で引数を指定するのではなく、引数名という「キーワード」で引数を指定するのでキーワード引数と呼ばれています。
-今回のようなシンプルな関数の定義だとキーワード引数で呼び出す必要はありませんが、
-次に説明する「デフォルト引数を使う関数」や
-「キーワード引数を使うことを前提に定義された関数」を使う関数を使う場合に利用されます。
+      さて、ちょっと余談です。コマンドライン引数と標準入力の2つのユーザー入力方法を示しましたが、
+利用するとしたらどちらが優れているでしょうか。
+これは個人の好みによるとは思いますが、どちらでもよい場合、
+私は「Unixのコマンドの思想に沿っている」という点からコマンドライン引数を支持します。
+ここではUnixとしていますが、この思想は、
+LinuxはおろかWindowsであってもCUI(テキストのコンソール)を使う限りあてはまる大事な考え方です。
+当然、Pythonで作成したプログラムも基本はテキストベースなので当てはまります。
+Unixの思想にはいろいろあるのですが、「入力」に関しては以下が当てはまるでしょう。
      </p>
-     <h3>
-      デフォルト引数
-     </h3>
+     <ul>
+      <li>
+       一つひとつのコマンド(プログラム)が小さい範囲で完璧に仕事をこなすべき
+      </li>
+      <li>
+       大きなプログラムになんでもやらせるのは基本的に間違い
+      </li>
+      <li>
+       小さいプログラムを組み合わせることで大きな仕事を実現する
+      </li>
+     </ul>
      <p>
-      デフォルト引数は引数定義時にデフォルトの値を決めてしまい、
-呼び出し時に対応する引数が与えられなければデフォルト値が適用されるというものです。
-デフォルト引数は関数定義の引数の箇所に「引数名 = 値」と定義することで実現できます。
-以下にサンプルを記載します。
+      ここで重要となるのは「小さいプログラムを組み合わせる」ことです。
+組み合わせる際に「あるプログラムから別のプログラムを呼び出す」ということをよくするのですが、
+この場合、標準入力よりもコマンドライン引数のほうが圧倒的に簡単に使えます。
+標準入力を使ってしまうと、プログラムが別のプログラムを「インタラクティブ(この出力がされたら、
+これを入力するといった具合)」に制御する必要があります。
+人間がプログラムとインタラクティブに対話するのは簡単ですが、
+プログラムにそれをやらせるのは結構苦労することが多いです。
+一方、コマンドライン引数だと、
+プログラムを呼び出す際にパラメータを与えるだけで簡単に期待どおりの使い方をすることが可能です。
+なので私は、コマンドライン引数のほうを好んで使っています。
      </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">'C'</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-</pre>
-     </div>
      <p>
-      引数 a,b,c を見ると、b と c にはデフォルト引数が定義されていることが分かります。
-この関数を呼び出すときに引数を3つ与えればそれぞれ a, b, c に与えられますが、
-それ未満の数で呼び出すと足りないぶんはデフォルト値が使われます。
-以下にこの関数の利用例を示します。
+      ただ、標準入力が有効な場面というのも存在します。たとえば以下の場合です。
      </p>
-     <div class="codehilite">
-      <pre><span></span><span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-<span class="c1"># 1</span>
-<span class="c1"># 2</span>
-<span class="c1"># 3</span>
-
-<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-<span class="c1"># 1</span>
-<span class="c1"># 2</span>
-<span class="c1"># C</span>
-
-<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># 1</span>
-<span class="c1"># B</span>
-<span class="c1"># C</span>
-</pre>
-     </div>
+     <ul>
+      <li>
+       ユーザーがインタラクティブに操作するプログラムを組む場合
+      </li>
+      <li>
+       コマンドの履歴を残したくない場合(例えばパスワード入力など)
+      </li>
+     </ul>
      <p>
-      出力を見ると引数が足りない場合はデフォルト値が使われていることが分かります。
-デフォルト値を使う場合に気をつけてほしいことは、
-デフォルト引数は必ず引数の後部でなければならないということです。
-例えば以下のような使い方はできません。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="s1">'A'</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-
-<span class="c1">#    def test(a='A', b='B', c):</span>
-<span class="c1">#            ^</span>
-<span class="c1">#SyntaxError: non-default argument follows default argument</span>
-</pre>
-     </div>
-     <p>
-      大量のデフォルト引数を持つ関数はキーワード引数との相性がいいです。例えば以下の例を見て下さい。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">'C'</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="s1">'D'</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="s1">'E'</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="s1">'F'</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-<span class="n">test</span><span class="p">(</span><span class="s1">'AA'</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="s1">'DD'</span><span class="p">)</span>
-<span class="c1"># AA</span>
-<span class="c1"># B</span>
-<span class="c1"># C</span>
-<span class="c1"># DD</span>
-<span class="c1"># E</span>
-<span class="c1"># F</span>
-</pre>
-     </div>
-     <p>
-      上記サンプルの関数は非常に高度なもので、引数が6つとれるとしましょう。
-ただ、細かい調整を引数で調整できるだけであり、最初の引数以外はそれほど重要でないとします。
-全ての引数を指定するのは大変ですが、デフォルト引数の機能を使って必要な箇所のみピンポイントで指定し、
-あとはデフォルト値を使うようにすれば呼び出しが簡単になります。
+      適切なものは時と場合によりますので、どちらが最適なのかよく考えて利用してください。
+なお、パスワード入力に関してはgetpassというモジュールもありますので、
+パスワード入力を求める場合は、それを使ってもよいでしょう。
      </p>
      <h3>
-      可変長引数
+      インタラクティブなプログラムの作成
      </h3>
      <p>
-      可変長引数は名前の通り「引数の長さ(数)が変わる」ということです。
- 先ほどのキーワード引数も良い出す際の引数の数はデフォルト値を使うか否かという観点では可変でした。
- ただ、可変長引数はそれとは異なり「好きなだけ」関数の定義をすることができます。
-可変長引数を使う際は、関数を定義する際に引数の前に「*」をつけます。
-引数名はなんでもよいのですが、慣習的に args (日本語だと引数)といった名前を付けることが多いです。
-読む人にとっても「これは可変長引数」と認識しやすいです。
+      今までのプログラムは「ユーザーがプログラムを起動したら処理を実行し、それが終われば終了」というものでした。
+ただ、なかにはこれにそぐわないプログラムもあります。
+たとえばGUIのアプリケーションを想像してください。
+だいたいはボタンを押したりテキスト入力をしたりして使い続けて、
+必要がなくなった時点でウィンドウを閉じるなどして終了します。
+これは「インタラクティブなプログラム」と呼ばれており、以下の処理を繰り返すことで実現されています。
+     </p>
+     <ol>
+      <li>
+       ユーザーからの入力をアプリケーションが待つ
+      </li>
+      <li>
+       ユーザーからの入力に応じてアプリケーションがなんらかの処理を行う
+      </li>
+      <li>
+       処理が終わると1に戻る
+      </li>
+     </ol>
+     <p>
+      これと同じことは、CLIのコンソールでもできます。その一番簡単な仕組みは以下の図のようなものとなります。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0105_image/01.jpg"/>
+     </p>
+     <p>
+      これも実例を用いて説明したほうがはやそうなので、簡単なサンプルプログラムを使います。
+以下のサンプルでは「あるプログラムの設定ファイルを書き出すプログラム」を作成します。
+設定ファイルは以下のようなものとします。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-
-<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># &lt;class 'tuple'&gt;</span>
-<span class="c1"># (1,)</span>
-
-<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-<span class="c1"># &lt;class 'tuple'&gt;</span>
-<span class="c1"># (1, 2, 3)</span>
-
-<span class="n">test</span><span class="p">()</span>
-<span class="c1"># &lt;class 'tuple'&gt;</span>
-<span class="c1"># ()</span>
+      <pre><span></span>username = taro
+password = my_password
+server = 10.0.0.1
 </pre>
      </div>
      <p>
-      上記のサンプルを見てもらうと分かるように可変長引数はタプルとして渡されています。
-呼び出し時にあたえられる引数の数は任意の数が使え、0 であっても問題ありません。
+      プログラムの流れは以下のようなものとなります。
      </p>
+     <ol>
+      <li>
+       最初に入力可能なオプションを示し、input()で待機
+      </li>
+      <li>
+       ユーザーが入力
+      </li>
+      <li>
+       ユーザー入力を読み取り、適切な入力であればそれを設定。不適切であればエラー表示
+      </li>
+      <li>
+       exitと入力されれば終了し、内容をファイルに書き出す(終了条件)
+      </li>
+     </ol>
      <p>
-      定義する可変長引数の位置を調整することで必要最低限の引数の数が決まります。
-例えば
-      <code>
-       def test(a, *args):
-      </code>
-      とした場合、最初に与えられた引数が a に入り、
-のこりが args に入ります。そのため、最低一つの引数が必要です。
+      これをプログラムにすると以下のようなものとなります。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+      <pre><span></span><span class="n">username</span> <span class="o">=</span> <span class="s1">''</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s1">''</span>
+<span class="n">server</span> <span class="o">=</span> <span class="s1">''</span>
 
-<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># 1</span>
-<span class="c1"># ()</span>
+<span class="k">while</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>  <span class="c1"># 無限ループ</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'''please input option and its value.</span>
+<span class="s1">u USER_NAME</span>
+<span class="s1">p PASSWORD</span>
+<span class="s1">s SERVER_IP</span>
+<span class="s1">exit'''</span><span class="p">)</span>
 
-<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-<span class="c1"># 1</span>
-<span class="c1"># (2, 3)</span>
+  <span class="n">line</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>  <span class="c1"># ユーザーからの入力を取得</span>
 
-<span class="n">test</span><span class="p">()</span>
-<span class="c1"># Traceback (most recent call last):</span>
-<span class="c1">#   ...</span>
-<span class="c1"># TypeError: test() missing 1 required positional argument: 'a'</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">line</span> <span class="o">==</span> <span class="s1">'exit'</span><span class="p">):</span> <span class="c1"># 無限ループから離脱する条件</span>
+    <span class="k">break</span>
+
+  <span class="n">words</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="c1"># ユーザーからの入力内容をチェック</span>
+  <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">'Error'</span><span class="p">)</span>
+    <span class="k">continue</span>
+
+  <span class="k">if</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'u'</span><span class="p">):</span>    <span class="c1"># 入力内容に応じた処理</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+  <span class="k">elif</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'p'</span><span class="p">):</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+  <span class="k">elif</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'s'</span><span class="p">):</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">'Error'</span><span class="p">)</span>
+<span class="c1"># ループ終わり</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'username = '</span> <span class="o">+</span> <span class="n">username</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'password = '</span> <span class="o">+</span> <span class="n">password</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'server = '</span> <span class="o">+</span> <span class="n">server</span><span class="p">)</span>
 </pre>
      </div>
      <p>
-      2つの引数が必要であれば
-      <code>
-       def test(a, b, *args):
-      </code>
-      とするなどして、
-必要な数にマッチした関数の定義をしてください。
-     </p>
-     <h3>
-      なんでも受け取るキーワード引数
-     </h3>
-     <p>
-      位置指定引数のところで紹介したキーワード引数は関数の引数の順序を無視して呼び出す目的で使いました。
-実はこのキーワード引数は自分が定義した引数以外にも使えます。
-以下のサンプルで関数定義の際に
-      <code>
-       **kargs
-      </code>
-      という引数を使っています。
-これを使うと定義されていないキーワード引数を辞書型として扱うことができます。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">kargs</span><span class="p">))</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">kargs</span><span class="p">)</span>
-
-<span class="n">test</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="s1">'A'</span><span class="p">,</span> <span class="n">hello</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="c1"># &lt;class 'dict'&gt;</span>
-<span class="c1"># {'hello': 3, 'a': 'A'}</span>
-
-<span class="n">test</span><span class="p">()</span>
-<span class="c1"># &lt;class 'dict'&gt;</span>
-<span class="c1"># {}</span>
-
-<span class="n">test</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">)</span>
-<span class="c1"># Traceback (most recent call last):</span>
-<span class="c1">#   ...</span>
-<span class="c1"># TypeError: test() takes 0 positional arguments but 2 were given</span>
-</pre>
-     </div>
-     <p>
-      上記の呼び出し結果と出力を見てもらうと分かりますが、
-キーワード引数の引数名が辞書型の key になり、それに対応する値が value となっています。
-      <code>
-       **kargs
-      </code>
-      はあくまでもキーワード引数専用であるため、
-キーワードを指定しない位置引数を使った呼び出しをするとエラーとなっています。
-なお、kargs は keyword args の省略形であり、
-先ほどの args と同様に慣習としてこの名前を使うことが多いです。
-他の変数名も使えますがあえて使う理由もありません。
+      今回は書き出す代わりにprint出力させています。
+先に提示した処理手順と完全に同じではありませんが、
+ユーザーが入力した内容に応じて処理を行うということを繰り返します。
      </p>
      <p>
-      かなり高度な使い方となるのですが、可変長引数とキーワード引数を併用することで
-「どんな引数でも使える関数」を定義することができます。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">kargs</span><span class="p">)</span>
-
-<span class="n">test</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="s1">'A'</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="s1">'C'</span><span class="p">)</span>
-<span class="c1"># (1, 2, 3)</span>
-<span class="c1"># {'a': 'A', 'b': 'B', 'c': 'C'}</span>
-</pre>
-     </div>
-     <p>
-      この使い方で便利なのは関数を「呼び出す」場合にも
-      <code>
-       *arg
-      </code>
-      と
-      <code>
-       **kargs
-      </code>
-      を使えるということです。
-それをすると「受け取った引数をそのまま別の関数に渡す」ということができます。
-以下のサンプルを見ると test2 関数が受け取った引数を test1 関数に丸投げしていることがわかります。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="s1">'test1'</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">kargs</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">test2</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="s1">'test2'</span><span class="p">)</span>
-  <span class="c1"># 可変長引数とキーワード引数をそのまま呼び出す関数に渡す</span>
-  <span class="n">test1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
-
-<span class="n">test2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="s1">'A'</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s1">'B'</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="s1">'C'</span><span class="p">)</span>
-<span class="c1"># test2</span>
-<span class="c1"># test1</span>
-<span class="c1"># (1, 2, 3)</span>
-<span class="c1"># {'a': 'A', 'b': 'B', 'c': 'C'}</span>
-</pre>
-     </div>
-     <p>
-      今回は自分で作った test1 を呼び出していますが、たとえばここに既存の関数をいれることもできます。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-  <span class="k">print</span><span class="p">(</span><span class="s1">'args:   '</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="s1">'kargs:  '</span><span class="p">,</span> <span class="n">kargs</span><span class="p">)</span>
-  <span class="n">result</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
-  <span class="k">print</span><span class="p">(</span><span class="s1">'result: '</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">result</span>
-
-<span class="n">result</span> <span class="o">=</span> <span class="n">test</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
-<span class="c1"># sum([1,2,3,4,5])</span>
-<span class="k">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-<span class="c1"># args:    ([1, 2, 3, 4, 5],)</span>
-<span class="c1"># kargs:   {}</span>
-<span class="c1"># result:  15</span>
-<span class="c1"># 15</span>
-</pre>
-     </div>
-     <p>
-      上記のサンプルは sum 関数になにを与えるかをリッチに出力させています。
-面白いのは関数 sum はキーワード引数を受け取らないのに呼び出し時にそれを与えても問題が発生していないところかと思います。
-     </p>
-     <h3>
-      再帰関数
-     </h3>
-     <p>
-      再帰関数は自分自身を呼び出す関数です。
-for や while 文でループ処理をしますが、再帰関数も似たように「同じ処理を何度も繰り返す」場面で使われます。
-たとえば配列から一番大きな要素を取得する処理は以下のように書けます。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">get_max</span><span class="p">(</span><span class="n">list_</span><span class="p">,</span> <span class="n">max_</span><span class="p">):</span>
-  <span class="c1"># リスト長が0なら最大値を返す</span>
-  <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">max_</span>
-
-  <span class="c1"># リストから値を取り出し最大値の更新</span>
-  <span class="n">value</span> <span class="o">=</span> <span class="n">list_</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">value</span> <span class="o">&gt;</span> <span class="n">max_</span><span class="p">):</span>
-    <span class="n">max_</span> <span class="o">=</span> <span class="n">value</span>
-
-  <span class="c1"># 次のリストの要素をチェック。</span>
-  <span class="k">return</span> <span class="n">get_max</span><span class="p">(</span><span class="n">list_</span><span class="p">,</span> <span class="n">max_</span><span class="p">)</span>
-
-<span class="n">list_</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
-<span class="n">max_</span> <span class="o">=</span> <span class="n">get_max</span><span class="p">(</span><span class="n">list_</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">max_</span><span class="p">)</span>
-<span class="c1"># 10</span>
-</pre>
-     </div>
-     <p>
-      コメントを読んでもらうと何をやっているか分かるかと思いますが、
-ようするにリストから1つの要素を取り出して、
-それが現在の最大値より大きければ最大値を更新する作業を繰り返し実行しています。
-関数が同じ関数をどんどん呼んでいき、深くまで戻っていくようなイメージです。
-最終的に探索し終えたら、最大値を return 文で返し、深くもぐった関数呼び出しを今度は上に戻っていき、
-最初の get_max 関数の呼び出しもとに値を返します。
+      実際のプログラムでは処理をマルチスレッド(複数の処理を別々のタイムラインで実行)などとすることもありますが、
+この「入力 -&gt; 処理 -&gt; 入力 -&gt; ……」という処理の流れは非常に重要なので覚えておいてください。
+バッチ処理以外のGUI(ボタンなどが押される -&gt; なんらかのアクション)や、
+サーバ(ネットワーク越しにクライアントの要求を受け取る -&gt; アクション)のプログラミングも基本的にはこの流れとなり、
+このような処理方式を「イベントドリブン」と呼びます。
      </p>
      <p>
-      はっきり言うとこのコードは悪い再帰関数です。
-再帰関数としては分かりやすいのでとりあげたのですが、同じことを for 文で実現した以下のコードのほうがはるかに分かりやすいです。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="n">list_</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
-
-<span class="n">max_</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">list_</span><span class="p">:</span>
- <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">max_</span><span class="p">:</span>
-   <span class="n">max_</span> <span class="o">=</span> <span class="n">i</span>
-
-<span class="k">print</span><span class="p">(</span><span class="n">max_</span><span class="p">)</span>
-<span class="c1"># 10</span>
-</pre>
-     </div>
-     <p>
-      このコードがどういう処理をしているかについてはあえて説明する必要はないと思います。
-     </p>
-     <p>
-      実はこの再帰関数なのですが、ループ文にはない特徴があります。
-それは繰り返しではなく「木構造の呼び出し」に向いているということです。
-本書の冒頭で説明した「あるディレクトリ配下を書き出す」という再帰の例を思い出して下さい。
-それは以下のようなコードでした。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-
-<span class="k">def</span> <span class="nf">list_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">indent_level</span><span class="p">):</span>
-  <span class="c1"># ディレクトリ名を表示</span>
-  <span class="k">print</span><span class="p">(</span><span class="s1">'{}[{}]'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">' '</span><span class="o">*</span><span class="n">indent_level</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
-
-  <span class="c1"># ディレクトリ内のファイルとディレクトリを全てループで確認</span>
-  <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">file_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)):</span> <span class="k">continue</span>
-    <span class="n">abs_filepath</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="n">file_name</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">abs_filepath</span><span class="p">)):</span>
-      <span class="c1"># ディレクトリだったので、そのディレクトリをチェックする</span>
-      <span class="n">list_file</span><span class="p">(</span><span class="n">abs_filepath</span><span class="p">,</span> <span class="n">indent_level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>      
-    <span class="k">else</span><span class="p">:</span>
-      <span class="c1"># ファイルだったので、ファイル名を表示</span>
-      <span class="k">print</span><span class="p">(</span><span class="s1">'{}- {}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">' '</span> <span class="o">*</span> <span class="n">indent_level</span><span class="p">,</span> <span class="n">file_name</span><span class="p">))</span>
-
-<span class="n">list_file</span><span class="p">(</span><span class="s1">'/python'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</pre>
-     </div>
-     <p>
-      先程の最大値を得る再帰関数と同様に関数 list_file 内で関数 list_file を呼び出しています。
-ただ、両者の大きな違いは list_file 内での list_file 関数の呼び出しは必ずしも1回ではなく、
-状況に応じて任意の数に変わるということです。
-そして呼び出された毎の各関数はそれぞれ状態を維持し続けています。
-     </p>
-     <p>
-      たとえば以下のディレクトリ構造に対してこのプログラムを走らせると、
-以下のような呼び出しかたをします。
-     </p>
-     <p>
-      <img alt="image" class="img-responsive" src="./0110_image/01.png"/>
-     </p>
-     <p>
-      そして出力は以下のようなものとなります。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">[/python]</span>
- <span class="k">[/python/a]</span>
- <span class="na">- aa</span>
-  <span class="k">[/python/a/ab]</span>
-  <span class="na">- aba</span>
-<span class="na">- b</span>
-<span class="na">- c</span>
- <span class="k">[/python/d]</span>
- <span class="na">- da</span>
- <span class="na">- db</span>
-</pre>
-     </div>
-     <p>
-      着目してほしいのはループと違って同じ関数を呼び出した時点で、その関数の仕事が終了していないという点です。
-たとえばディレクトリ /python に対して関数が呼ばれた際に、
-その子要素のディレクトリ a に対して関数を呼び出したあとも、ファイルb,c を表示したり、
-さらに別のディレクトリ d を呼び出したりしています。
-これは各関数の呼び出しがそれぞれに状態を持っているため簡単に実現できます。
-一方、同じことをループ文でやろうとすると
-「3周目の処理がおわって2週目の処理を継続」ということを実現するのに一苦労します。
-     </p>
-     <p>
-      単純にグルグル回す場合はループを使い、
-複雑な木構造のような処理をしないといけない場合は再帰関数を使うというのが一般的な使い分けとなります。
-それほど利用する機会は多くないとは思いますが、覚えておいて下さい。
+      このイベントドリブン型のプログラミングは、
+ある程度プログラムが書けるようになると頻繁に使うロジックになるはずです。
+ただ実際には、利用するフレームワーク(自分のプログラムを呼び出す親分プログラムみたいなもの)などに隠蔽されていたりしているので、
+あまり意識しないことが多いかもしれません。
      </p>
      <!-- GENERATED HTML END -->
      <nav>

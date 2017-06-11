@@ -73,6 +73,7 @@ class Md2Html_v0_1:
         self.pdf_output = None
         self.pdf_css = []
         self.pdf_dpi = None
+        self.pdf_image_size_dict = {}
         self.pdf_markdowns = []
 
         # VAL
@@ -106,16 +107,13 @@ class Md2Html_v0_1:
         # CONVERT
         if self.TYPE_HTML in output_types:
             self.convert_html()
-
-        '''
         if self.TYPE_PRINT in output_types:
             self.convert_print()
+        if self.TYPE_PDF_ALL in output_types:
+            self.convert_pdf_all()
         if self.TYPE_PDF in output_types:
             self.convert_pdf()
-        if self.type_PDF_ALL in output_types:
-            self.convert_pdf()
         self.copy_other_files()
-        '''
         logging.info('CONVERSION FINISHED WITHOUT PROBLEMS!!')
 
 
@@ -397,7 +395,7 @@ class Md2Html_v0_1:
                 # html
                 if self.TYPE_HTML in output_types:
                     fname = config.get(markdown_section, 'html')
-                    d['html'] = path.join(self.dir_template, fname)
+                    d['html'] = path.join(self.dir_output, fname)
 
                     if config.has_option(markdown_section, 'html_template'):
                         fname = config.get(markdown_section, 'html_template')
@@ -406,7 +404,7 @@ class Md2Html_v0_1:
                 # print
                 if self.TYPE_PRINT in output_types:
                     fname = config.get(markdown_section, 'print')
-                    d['print'] = path.join(self.dir_template, fname)
+                    d['print'] = path.join(self.dir_output, fname)
 
                     if config.has_option(markdown_section, 'print_template'):
                         fname = config.get(markdown_section, 'print_template')
@@ -415,7 +413,7 @@ class Md2Html_v0_1:
                 # pdf
                 if self.TYPE_PDF in output_types:
                     fname = config.get(markdown_section, 'pdf')
-                    d['pdf'] = path.join(self.dir_template, fname)
+                    d['pdf'] = path.join(self.dir_output, fname)
 
                     if config.has_option(markdown_section, 'pdf_template'):
                         fname = config.get(markdown_section, 'pdf_template')
@@ -451,11 +449,13 @@ class Md2Html_v0_1:
                 logging.info('load [pdf] section : output type does not have pdf and pdf_all. skip')
                 return
 
+            # output
             output = config.get('pdf', 'output')
             if not path.isabs(output):
                 output = path.join(self.dir_output, output)
             self.pdf_output = output
 
+            # css
             css_str = config.get('pdf', 'css')
             css_files = []
             for css in css_str.split(','):
@@ -464,9 +464,11 @@ class Md2Html_v0_1:
                 css_files.append(css)
             self.pdf_css = css_files
 
+            # dpi
             dpi = config.get('pdf', 'dpi')
             self.pdf_dpi = int(dpi)
 
+            # markdowns
             markdowns_str = config.get('pdf', 'markdowns')
             markdowns = []
             for markdown in markdowns_str.split(','):
@@ -474,6 +476,20 @@ class Md2Html_v0_1:
                 markdown_path = path.join(self.dir_markdown, markdown)
                 markdowns.append((markdown, markdown_path))
             self.pdf_markdowns = markdowns
+
+            # image
+            image_size_file = config.get('pdf', 'image_size')
+            image_size_path = path.join(self.dir_pdf, image_size_file)
+            config_text = self.get_config_text(image_size_path)
+            config = self.get_config(config_text)
+            for section in config.sections():
+                d = {}
+                for option in config.options(section):
+                    value = config.get(section, option)
+                    d[option] = value
+                self.pdf_image_size_dict[section] = d
+
+            print(self.pdf_image_size_dict)
 
         except Exception as e:
             logging.critical('    {}'.format(e))
@@ -531,7 +547,7 @@ class Md2Html_v0_1:
             logging.info('    template : exist')
 
             # PDF Directory
-            if (self.TYPE_PDF in output_types) or (self.type_PDF_ALL in output_types):
+            if (self.TYPE_PDF in output_types) or (self.TYPE_PDF_ALL in output_types):
                 dir_pdf = self.dir_pdf
                 if not path.isdir(dir_pdf):
                     logging.warning('    pdf : not exist')
@@ -648,6 +664,12 @@ class Md2Html_v0_1:
                     logging.warning('        {} : not exist.'.format(css))
                     raise
                 logging.info('        {} : exist'.format(css))
+
+            for (file_name, file_path) in self.pdf_markdowns:
+                if not path.isfile(file_path):
+                    logging.warning('        {} : not exist.'.format(file_path))
+                    raise
+                logging.info('        {} : exist'.format(file_path))
 
         except Exception as e:
             logging.critical('    {}'.format(e))
@@ -784,7 +806,7 @@ class Md2Html_v0_1:
                 path_markdown = d['markdown']
                 path_html = d['pdf']
 
-                path_template = self.conv_template
+                path_template = self.conv_template_pdf
                 if 'pdf_template' in d:
                     path_template = d['pdf_template']
 
@@ -847,7 +869,7 @@ class Md2Html_v0_1:
                 # markdown html
                 text_markdown = self.read_file(path_markdown)
                 html = self.convert_markdown_to_html(text_markdown)
-                if self.bootstrap:
+                if self.bootstrap_pdf_all:
                     html = self.modify_html_bootstrap(html)
                 logging.debug(('        convert markdown to content html : success'))
 
@@ -861,13 +883,13 @@ class Md2Html_v0_1:
 
                 # change URL to local
                 basedir = path.dirname(path_markdown)
-                html = self.modify_html_url_localize(html, basedir)
+                html = self.modify_pdf_html(html, basedir, markdown)
                 logging.debug(('        change image url to local : success'))
 
                 html_sum = '{}\n\n<!-- page -->\n\n{}'.format(html_sum, html)
 
             # include html_sum to template
-            path_template = self.conv_template
+            path_template = self.conv_template_pdf_all
             html_template = self.get_template_html(path_template)
             html_pdf = self.modify_html_include_markdown_html(html_sum, html_template)
             logging.debug(('        include content html to template html : success'))
@@ -886,6 +908,7 @@ class Md2Html_v0_1:
 
 
     def copy_other_files(self):
+        logging.info('copy other files : start')
         try:
             dir_markdown = self.dir_markdown
             dir_output = self.dir_output
@@ -916,8 +939,10 @@ class Md2Html_v0_1:
 
         except Exception as e:
             logging.critical(e)
-            logging.critical('Copy files fail')
+            logging.critical('copy other files : fail')
             exit(1)
+
+        logging.info('copy other files : success')
 
 
     ######################
@@ -951,6 +976,7 @@ class Md2Html_v0_1:
         # IMAGE
         tags = soup.find_all('img')
         for tag in tags:
+            # add img-responsive
             if tag.has_attr('class'):
                 attr_list = tag['class']
                 if 'img-responsive' not in attr_list:
@@ -958,6 +984,17 @@ class Md2Html_v0_1:
                     tag['class'] = attr_list
             else:
                 tag['class'] = 'img-responsive'
+
+            # add blog-img
+            parent_tag = tag.parent
+            if parent_tag.name == 'p':
+                if parent_tag.has_attr('class'):
+                    attr_list = parent_tag['class']
+                    if 'blog-img' not in attr_list:
+                        attr_list.append('blog-img')
+                        parent_tag['class'] = attr_list
+                else:
+                    parent_tag['class'] = 'blog-img'
 
         return soup.prettify(soup.original_encoding)
 
@@ -1027,24 +1064,45 @@ class Md2Html_v0_1:
     def convert_html_to_pdf(self, html, pdf_path):
         options = {
             'page-size': 'A4',
-            'margin-top': '0.1in',
-            'margin-right': '0.1in',
-            'margin-bottom': '0.1in',
-            'margin-left': '0.1in',
+            'margin-top': '0.5in',
+            'margin-right': '0.5in',
+            'margin-bottom': '0.5in',
+            'margin-left': '0.5in',
             'encoding': "UTF-8",
             'no-outline': None,
-            'dpi':self.pdf_dpi
+            'page-width':'800px',
+            'minimum-font-size':30,
+            'dpi':str(self.pdf_dpi)
         }
         css = self.pdf_css
         pdfkit.from_string(html, pdf_path, options=options, css=css)
 
 
-    def modify_html_url_localize(self, html, basedir):
+    def modify_pdf_html(self, html, basedir, markdown):
 
         def get_abspath(relative_path):
             p1 = path.join(basedir, relative_path)
             abs_path = path.abspath(p1)
             return abs_path
+
+        def align_center(tag):
+            parent_tag = tag.parent
+            if parent_tag.name == 'p':
+                if parent_tag.has_attr('align'):
+                    attr_list = parent_tag['align']
+                    if 'center' not in attr_list:
+                        attr_list.append('center')
+                        parent_tag['align'] = attr_list
+                else:
+                    parent_tag['align'] = 'center'
+
+        def set_width(tag, abspath):
+            fname = path.basename(abspath)
+            if markdown in self.pdf_image_size_dict:
+                d = self.pdf_image_size_dict[markdown]
+                if fname in d:
+                    width = d[fname]
+                    tag['width'] = width
 
         soup = bs4.BeautifulSoup(html, 'html.parser')
 
@@ -1054,6 +1112,8 @@ class Md2Html_v0_1:
             if tag.has_attr('src'):
                 abspath = get_abspath(tag['src'])
                 tag['src'] = abspath
+                align_center(tag)
+                set_width(tag, abspath)
 
         return soup.prettify(soup.original_encoding)
 

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="Sample Description" name="description"/>
+  <link href="./assets/favicon.ico" rel="icon"/>
+  <title>
+   Python入門
+  </title>
+  <link href="./assets/css/codehilite.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <!-- GENERATED HTML START -->
+  <h2>
+   プログラミングとはそもそもなにか
+  </h2>
+  <p>
+   機械は人間の言葉をそのまま理解することはできません。
+0,1のバイナリで書かれた命令をメモリに読み込み、CPUがそれを実行することで機械は人間の命令を実現します。
+PCのディスプレイに"Hello"と表示させるという命令も、つきつめると0,1  で構成される機械が理解できる命令になります。
+ただ、「画面に Hello と出力することを機械が理解できるように0、1で命令して、実行させろ」といわれても、
+どういう0,1 の羅列を書けばいいか分からずに途方にくれてしまいます。
+0,1 には規則性があるため理論上は0,1 で命令を書くことはできるはずですが、誰もそんなことはやりたくありません。
+  </p>
+  <p>
+   プログラミングはこの「機械が理解できるように0,1で命令を与える」という難しい作業を人間がより簡単に行うための方法です。
+ざっくりいってしまうと、人間と機械の両方にとってわかりやすい「中間言語」で人間は機械が解釈できる命令を書き、機械はそれを0,1に変換して実行するという流れです。
+このプロセスが「プログラミング」と呼ばれ、その人と機械の間の中間言語が「プログラミング言語」となります。
+以下にこの概念を示す図を記載します。
+  </p>
+  <p class="blog-img">
+   <img alt="image" class="img-responsive" src="./0015_image/01.png"/>
+  </p>
+  <p>
+   図の真ん中に位置する「C、Java、Python」がプログラミング言語です。これら以外にも多くの言語があります。図にあるように人間が「機械にHelloと言わせたい」と思ったらプログラミング言語で「Hello と出力しろ」と命令を書きます。上記図の「print(“Hello”)」がその命令です。機械はその「print(“Hello”)」は解釈できるので、命令されたように動きます。
+  </p>
+  <p>
+   "Hello"を表示するために「0,1 の規則性を勉強して、0,1を延々と羅列して命令を書く」のと「プログラミング言語で print("Hello")と書く」 ことを比べたら、どう考えても後者のほうがずっと簡単で効率的です。そのためプログラミング言語を使います。
+  </p>
+  <p>
+   ※広義では0、1で命令を羅列することもプログラミングといえます。ただ、今ではあまり一般的ではないと考えています。
+  </p>
+  <h3>
+   なぜ Python を学ぶのか
+  </h3>
+  <p>
+   プログラミングを実現する手法や言語はさまざまです。どのプログラミング言語であっても自分がやりたいことはおおよそ実現可能です。
+ただ、重要なのはプログラミング言語にはそれぞれ得意な分野があるということです。
+つまり、プログラムで実現したいことにより、適切な言語は変わるということです。
+今回学ぶPythonは、そのようなプログラミング言語のひとつであり、他の言語よりも汎用的(なんにでも使える)であり簡単です。
+先程、プログラミング言語は人間と機械の中間にあると説明しましたが、他の言語よりも人間よりだということです。
+そのためプログラミング未経験者にとって Python はかなりいい言語だと考えられています。
+例えば、有名な MIT (マサチューセッツ工科大学)などでも Python を大学の最初のプログラミング授業で扱っていたりします。
+  </p>
+  <p>
+   Python は汎用的であり簡単だと言いましたが、それは具体的にはどういうことでしょうか。
+まずは論より証拠を見せたほうがはやいと思いますので、「ディレクトリ(フォルダ)の階層を書き出すプログラムを作る」ということを複数の言語で行い、それを比較してみます。
+同じ内容を複数の言語で書けば、それぞれの言語の特徴がよく分かります。
+  </p>
+  <p>
+   プログラムを書くにあたっては、まず「それをどう実現するか」について理解する必要があるため、「ディレクトリ(フォルダ)の階層を書き出す」方法について考えます。実現方法はいろいろありますが、今回は以下のルールに従って動かすことで実現させます。
+  </p>
+  <ol>
+   <li>
+    ディレクトリの中身を順に見ていく
+   </li>
+   <li>
+    それがファイルであればそのままファイル名を表示。ディレクトリであれば、インデント(字下げ)してディレクトリ名を [ ] 付きで表示し1.に戻る
+   </li>
+   <li>
+    ディレクトリ内のファイルをすべてチェックしたら終えたら終了
+   </li>
+  </ol>
+  <p>
+   たとえば、以下のようなディレクトリ構造があるとしましょう。四角で囲われているのがディレクトリで、Python ディレクトリが起点となっています。
+  </p>
+  <p class="blog-img">
+   <img alt="image" class="img-responsive" src="./0015_image/02.png"/>
+  </p>
+  <p>
+   プログラムでこれを表示させると次のようになります。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="k">[/python]</span>
+ <span class="k">[/python/a]</span>
+ <span class="na">- aa</span>
+  <span class="k">[/python/a/ab]</span>
+  <span class="na">- aba</span>
+<span class="na">- b</span>
+<span class="na">- c</span>
+ <span class="k">[/python/d]</span>
+ <span class="na">- da</span>
+ <span class="na">- db</span>
+</pre>
+  </div>
+  <p>
+   上記のルールにしたがって、この構造のディレクトリを表示させた際のプログラムの動きを具体的に書きくだすと、以下のようになります。
+  </p>
+  <ol>
+   <li>
+    pythonディレクトリの中を確認
+   </li>
+   <li>
+    aはディレクトリなのでインデントしてディレクトリを表示
+   </li>
+   <li>
+    aディレクトリの中を確認
+   </li>
+   <li>
+    aaはファイルなので表示
+   </li>
+   <li>
+    abはディレクトリなので、更にインデントしてディレクトリ名を表示
+   </li>
+   <li>
+    abディレクトリの中を確認
+   </li>
+   <li>
+    abaはファイルなので表示
+   </li>
+   <li>
+    abディレクトリの中身を確認し終えたので、aディレクトリの確認の続きに戻る
+   </li>
+   <li>
+    aディレクトリの中身を確認し終えたので、pythonディレクトリの中の確認の続きに戻る
+   </li>
+   <li>
+    bはファイルなので表示
+   </li>
+   <li>
+    以下省略
+   </li>
+  </ol>
+  <p>
+   ルールに従って規則的に動いていることがわかります。この自分で書いた「プログラムの挙動のルール」をアルゴリズムと呼びます。
+  </p>
+  <p>
+   では、実際にこれを実現するプログラムの例を、いくつかの有名な言語で記載していきます。各言語について知らない方も多いと思うので、プログラムが実際に何をしているかということよりも、ぼーっと眺めることで、各プログラミング言語の違いについていろいろと思いを馳せていただけたらよいと思います。なお、比較を簡単にするために、必ずしも教科書的な書き方をしていないので注意して下さい。
+  </p>
+  <h4>
+   Pythonの例
+  </h4>
+  <p>
+   まずPythonのプログラムを以下に記載します。 日本語のコメントを除けば全部で約15行となっています。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">def</span> <span class="nf">list_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">indent_level</span><span class="p">):</span>
+  <span class="c1"># ディレクトリ名を表示</span>
+  <span class="k">print</span><span class="p">(</span><span class="s1">'{}[{}]'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">' '</span><span class="o">*</span><span class="n">indent_level</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
+
+  <span class="c1"># ディレクトリ内のファイルとディレクトリを全てループで確認</span>
+  <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">file_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)):</span> <span class="k">continue</span>
+    <span class="n">abs_filepath</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="n">file_name</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">abs_filepath</span><span class="p">)):</span>
+      <span class="c1"># ディレクトリだったので、そのディレクトリをチェックする</span>
+      <span class="n">list_file</span><span class="p">(</span><span class="n">abs_filepath</span><span class="p">,</span> <span class="n">indent_level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>      
+    <span class="k">else</span><span class="p">:</span>
+      <span class="c1"># ファイルだったので、ファイル名を表示</span>
+      <span class="k">print</span><span class="p">(</span><span class="s1">'{}- {}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">' '</span> <span class="o">*</span> <span class="n">indent_level</span><span class="p">,</span> <span class="n">file_name</span><span class="p">))</span>
+
+<span class="n">list_file</span><span class="p">(</span><span class="s1">'/python'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre>
+  </div>
+  <p>
+   コード中にある「#」以降がプログラムのコメントであり、どのような処理をしているかメモしています。
+  </p>
+  <h4>
+   Javaの例
+  </h4>
+  <p>
+   Javaで同じことをするプログラムを書くと、以下のようになります。Pythonだと15行程度だったプログラムが、およそ30行になっています。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+
+<span class="c1">// クラス定義</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+
+  <span class="c1">// エントリーポイント(プログラムの起点)</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+    <span class="n">Main</span> <span class="n">m</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Main</span><span class="o">();</span>
+    <span class="n">m</span><span class="o">.</span><span class="na">listFile</span><span class="o">(</span><span class="s">"/python"</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="c1">// インデントのためのユーティリティ関数</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">printIndent</span><span class="o">(</span><span class="kt">int</span> <span class="n">indentLevel</span><span class="o">){</span>
+    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">indentLevel</span><span class="o">;</span> <span class="n">i</span><span class="o">++){</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"  "</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">listFile</span><span class="o">(</span><span class="n">String</span> <span class="n">dirPath</span><span class="o">,</span> <span class="kt">int</span> <span class="n">indentLevel</span><span class="o">){</span>
+    <span class="c1">// ディレクトリ名を表示</span>
+    <span class="n">printIndent</span><span class="o">(</span><span class="n">indentLevel</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"[%s]\n"</span><span class="o">,</span> <span class="n">dirPath</span><span class="o">);</span>
+
+    <span class="n">File</span> <span class="n">dir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">dirPath</span><span class="o">);</span>
+    <span class="n">File</span> <span class="n">files</span><span class="o">[]</span> <span class="o">=</span> <span class="n">dir</span><span class="o">.</span><span class="na">listFiles</span><span class="o">();</span>
+    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">files</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++){</span>
+      <span class="c1">// ディレクトリ内のファイルとディレクトリを全て確認</span>
+      <span class="k">if</span><span class="o">(</span><span class="n">files</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getName</span><span class="o">().</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"."</span><span class="o">))</span> <span class="k">continue</span><span class="o">;</span>
+
+      <span class="k">if</span><span class="o">(</span><span class="n">files</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">isDirectory</span><span class="o">()){</span>
+        <span class="c1">// ディレクトリだったので、そのディレクトリをチェックする</span>
+        <span class="n">listFile</span><span class="o">(</span><span class="n">files</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getAbsolutePath</span><span class="o">(),</span> <span class="n">indentLevel</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+      <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+        <span class="c1">// ファイルだったので、ファイル名を表示</span>
+        <span class="n">printIndent</span><span class="o">(</span><span class="n">indentLevel</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"- %s\n"</span><span class="o">,</span> <span class="n">files</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">getName</span><span class="o">());</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre>
+  </div>
+  <p>
+   "public void listFile(String dirPath, int indentLevel){"というのが真ん中にありますが、これがディレクトリを走査するアルゴリズムです。Pythonと若干異なりますが、やっていることはほとんど同じです。
+プログラムに詳しい人が見ると、増えたのはJavaによる言語の制約(Classの宣言が必要なことなど)や、文字列処理あたりにあることがわかります。メインの処理である"public void listFile" の下にある処理は、Pythonとさほど変わっていません。同じことを実現するにしても Python のほうがずっと簡単に見えます。
+  </p>
+  <p>
+   プログラムの実行方法に関しても、Pythonのほうが Java よりも簡単です。Python であればこのプログラムファイルを「python プログラム名」というコマンドで呼び出すだけですが、Javaは「コンパイル」と呼ばれる作業で上記のテキストで書かれたプログラムを0、1のバイナリにしてあげて、それをコマンドで指定して実行するという方式になります。
+  </p>
+  <h4>
+   C言語の例
+  </h4>
+  <p>
+   最後にC言語のプログラムです。これは約50行となっています。どうです、もう読むのが面倒くさくなってきたのではないですか。書くのはもっと面倒でした(笑)。面倒なだけではなく、CはPythonやJavaと違い、プログラムが「実行するOS」に強く依存するという問題があります。下記のコードはMacで書いたものなので、Windowsでは動かないのではないでしょうか。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;dirent.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/stat.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">printIndent</span><span class="p">(</span><span class="kt">int</span> <span class="n">indentLevel</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">listFile</span><span class="p">(</span><span class="kt">char</span> <span class="n">path</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">indentLevel</span><span class="p">);</span>
+
+<span class="c1">// エントリーポイント(プログラムの起点)</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="n">listFile</span><span class="p">(</span><span class="s">"/python"</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// インデントのためのユーティリティ関数</span>
+<span class="kt">void</span> <span class="nf">printIndent</span><span class="p">(</span><span class="kt">int</span> <span class="n">indentLevel</span><span class="p">){</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">indentLevel</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"  "</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">listFile</span><span class="p">(</span><span class="kt">char</span> <span class="n">dirPath</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">indentLevel</span><span class="p">){</span>
+  <span class="kt">DIR</span> <span class="o">*</span><span class="n">dir</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">dirent</span> <span class="o">*</span><span class="n">dp</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">stat</span> <span class="n">stat_buf</span><span class="p">;</span>
+
+  <span class="n">printIndent</span><span class="p">(</span><span class="n">indentLevel</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">"[%s]</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">dirPath</span><span class="p">);</span>  <span class="c1">// ディレクトリ名を表示</span>
+
+  <span class="n">dir</span> <span class="o">=</span> <span class="n">opendir</span><span class="p">(</span><span class="n">dirPath</span><span class="p">);</span>
+  <span class="c1">// ディレクトリ内のファイルとディレクトリを全て確認</span>
+  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nb">NULL</span> <span class="o">!=</span> <span class="p">(</span><span class="n">dp</span><span class="o">=</span><span class="n">readdir</span><span class="p">(</span><span class="n">dir</span><span class="p">));</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">fileName</span> <span class="o">=</span> <span class="n">dp</span><span class="o">-&gt;</span><span class="n">d_name</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="sc">'.'</span> <span class="o">==</span> <span class="n">fileName</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">continue</span><span class="p">;</span>
+
+    <span class="kt">char</span> <span class="n">cp</span><span class="p">[</span><span class="mi">512</span><span class="p">];</span>
+    <span class="n">strcpy</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">dirPath</span><span class="p">);</span>
+    <span class="n">strcat</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="s">"/"</span><span class="p">);</span>
+    <span class="n">strcat</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">fileName</span><span class="p">);</span>
+    <span class="n">stat</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">stat_buf</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">S_ISDIR</span><span class="p">(</span><span class="n">stat_buf</span><span class="p">.</span><span class="n">st_mode</span><span class="p">)){</span>
+      <span class="c1">// ディレクトリだったので、そのディレクトリをチェックする</span>
+      <span class="n">listFile</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">indentLevel</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>  
+    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+      <span class="c1">// ファイルだったので、ファイル名を表示</span>
+      <span class="n">printIndent</span><span class="p">(</span><span class="n">indentLevel</span><span class="p">);</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">"- %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">fileName</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="n">closedir</span><span class="p">(</span><span class="n">dir</span><span class="p">);</span>
+<span class="p">}</span>
+</pre>
+  </div>
+  <p>
+   "void listFile(char dirPath[], int indentLevel){" の下にあるプログラムがディレクトリを走査するプログラムです。
+先に提示したPythonやJavaと同じアルゴリズムですが、ずいぶんと長くなっています。
+  </p>
+  <h4>
+   言語の比較
+  </h4>
+  <p>
+   いくつかのプログラミング言語で同一の処理を書きましたが、ここで知ってほしいことは各プログラミング言語の詳細というよりも「Aという処理を、Pythonだと2行で実現できるのに、Cだと5行必要」というような具合で、言語ごとにプログラムを書く労力が大きく違うということです。処理を書けば書くほどプログラムの文量がどんどん増えていくので、今回の例では Pythonと C 言語の3倍以上のコード行数が必要となってしまっています。
+  </p>
+  <p>
+   また、Cをわかる人が見ればすぐに見抜かれてしまいますが、上記は非常に問題の多いコードです。たとえばディレクトリが深くなったり、ファイル名が長かったりすると一気に破綻してしまいます。本来であれば、そのあたりも考慮したコードを書かなければいけないはずです。ディレクトリ構造を書き出すという処理をさせるのであれば、あまりC言語は使いたくないという感想を持っていただけたのではないでしょうか。
+  </p>
+  <p>
+   最後に、Python、Java、Cの特徴を比較した図を記載します。
+  </p>
+  <p class="blog-img">
+   <img alt="image" class="img-responsive" src="./0015_image/03.png"/>
+  </p>
+  <p>
+   PythonはC言語やJavaに比べると、同じ処理を短いプログラムで実現することができます。
+短いということをいいかえると、PythonはCやJavaより「簡単」な言語であるともいえます。
+私の個人的な意見なのですが、初心者がまず学ぶべきことは、プログラミング言語の仕様詳細よりも、そのプログラミング作業を行う際の考え方や思想だと思います。
+複雑な処理を実現したいときに「処理を小さい単位に分解して、どのようなステップで実現するか順序立てて考える」ことが必ず必要となります。
+それを学ぶのであれば、Cのように余計な作法に振り回されて本質に注力できないプログラミング言語よりも、
+Pythonのような簡単な言語で「プログラミングの本質」に着目するほうがよいと思われます。
+そのため私は、プログラミング初心者にはPythonからはじめることを推奨しています。
+  </p>
+  <p>
+   余談ですが、Pythonは簡単なだけではなく、OpenStackをはじめとした多くの大規模なソフトウェアプロジェクトで採用されていたり、
+GoogleやCiscoといったメジャーなIT企業でも積極的に利用されていたりします。
+「エキスパートたちがわざわざ選ぶのだから間違いない」と安直に考えることもできます。
+  </p>
+  <!-- GENERATED HTML END -->
+ </body>
+</html>

@@ -54,138 +54,287 @@
     <div class="col-sm-8 blog-main">
      <!-- GENERATED HTML START -->
      <h2>
-      タプル
+      リスト再入門
      </h2>
      <p>
-      リストという型がなぜ存在するのか覚えていますか。
-ひとつの型のなかに任意の数の複数のデータを格納できると便利だからでした。
-たとえば「生徒たちの成績を格納する」といった目的で利用されます。
-タプルもリストと似ていて、ひとつの型のなかに複数のデータを格納します。
-ただ、その目的は異なっていて、「決まった数の複数のデータがひとつの意味を持つもの」にタプルは使われます。
+      文字列と同じく、リストもオブジェクトです。
+そのため、まずは以前扱わなかったメソッドを使う処理を紹介します。
      </p>
      <p>
-      例をあげて説明しましょう。
-お店の会員情報というものをデータで表現することを考えてみます。
-例えば 'taro, 1986, tokyo' といった具合で単純に文字列としてすべてを含めてしまってもいいのですが、
-以下のような複数の要素を持つデータとして表現したほうがプログラムで使いやすそうです。
-     </p>
-     <ul>
-      <li>
-       氏名
-      </li>
-      <li>
-       生年月日
-      </li>
-      <li>
-       住所
-      </li>
-     </ul>
-     <p>
-      テキスト処理で文字列の中から生年月日を抜き出したりするよりも、
-「Aさんの住所 -&gt; 東京都…」というようにぱっと取り出せる方が便利です。
-これはちょうど先ほど説明したオブジェクト指向におけるメソッドがないクラスのようなものです。
-     </p>
-     <p>
-      タプルは上記のような複数のデータをひとつにまとめるための型です。
-Python のリストは様々な種類のデータを格納することができるため、
-同じことをリストでも実現できます。
-ただ、リストは「可変長(長さが変わる)」なので、
-複数のデータが合わさってはじめて意味を持つ場合の利用は本来の用途ではなく、
-それよりも同じデータをいくつも格納する用途で使われます。
-     </p>
-     <p>
-      以下にリストとタプルの違いを図にまとめます。
-     </p>
-     <p>
-      <img alt="image" class="img-responsive" src="./0070_image/01.jpg"/>
-     </p>
-     <p>
-      タプルがどういうものかわかっていただけたと思うので、具体的にどのように使うのか説明しましょう。
-タプルの作成はタプルの要素となる値を () で囲むことで作成できます。
-type関数は型を確認するために利用する関数です。
+      リストにデータを追加する方法です。
+追加するといっても「リスト末尾への追加」と「リストの途中への追加」でやりかたが異なります。
+末尾(一番最後)への追加は append メソッドを使い、間に追加するには insert を使います。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'taro'</span><span class="p">,</span><span class="s1">'1986'</span><span class="p">,</span><span class="s1">'tokyo'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-<span class="c1"># &lt;class 'tuple'&gt;</span>
-</pre>
-     </div>
-     <p>
-      上記は先ほどの会員情報のタプルです。
-その要素への参照はリストに似ています。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'taro'</span><span class="p">,</span><span class="s1">'1986'</span><span class="p">,</span><span class="s1">'tokyo'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="c1"># 'taro'</span>
-<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-<span class="c1"># 3</span>
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>   <span class="c1"># 末尾への追加</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># [1, 2, 3, 4]</span>
 
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-<span class="c1"># taro</span>
-<span class="c1"># 1986</span>
-<span class="c1"># tokyo</span>
+<span class="n">a</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>   <span class="c1"># 1番目の要素に10を追加</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># [1, 10, 2, 3, 4]</span>
 </pre>
      </div>
      <p>
-      ただし、リストと異なり一度作成されたオブジェクトは変更することはできません。
+      追加とくれば削除です。
+削除にはremoveメソッドを使います。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'taro'</span><span class="p">,</span><span class="s1">'1986'</span><span class="p">,</span><span class="s1">'tokyo'</span><span class="p">)</span>
-<span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">,</span> <span class="s1">'d'</span><span class="p">]</span>
+<span class="n">a</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">'b'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># ['a', 'c', 'd']</span>
+
+<span class="n">a</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="c1"># Traceback (most recent call last):</span>
-<span class="c1">#  ...</span>
-<span class="c1"># TypeError: 'tuple' object does not support item assignment</span>
+<span class="c1">#   ...</span>
+<span class="c1"># ValueError: list.remove(x): x not in list</span>
 </pre>
      </div>
      <p>
-      少しトリッキーな見た目ですが、タプル内の要素を一気に取得することもできます。
+      remove メソッドはリストの中にある要素自体を指定してそれを消します。
+存在しない要素を指定するとエラーになりますので、
+含まれるかどうか分からない場合は in 演算子で存在を確認したあとで remove して下さい。
+del 演算子を使った要素の削除もできますが、
+こちらは remove メソッドとは異なり消す要素を「インデックス」で指定します。
+何番目の要素を消すか番号で指定するということです。
+これはスライスやリスト末尾からの指定などもできます。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'taro'</span><span class="p">,</span><span class="s1">'1986'</span><span class="p">,</span><span class="s1">'tokyo'</span><span class="p">)</span>
-<span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">a</span>
-<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>   <span class="c1"># taro</span>
-<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>   <span class="c1"># 1986</span>
-<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>   <span class="c1"># tokyo</span>
-</pre>
-     </div>
-     <p>
-      タプルはC言語でいう「構造体」やJavaでいう「クラスのメンバ関数」の簡易版として使うのが主な用途です。
-ただし、構造体やメンバ関数はそれぞれ「変数名」を持っているのに対して、
-タプルは「何番目にある要素か」ということを基準にしてデータを管理します。
-     </p>
-     <p>
-      最後にタプルの便利な使い方を紹介します。あまり機会は多くないのですが、
-関数の返り値を2つ返したい場合がときどき発生します。
-一つひとつ別の関数に分けて値を取得するようにすることもできますが、
-たとえばfor文での探索のようなプログラムだと計算コストが高いため、
-無駄に2周するのは避けたほうがよいです。
-そのようなときにタプルをreturnで使うと便利です。
-たとえば、リストの要素の最小値と最大値を取得する関数だと、返り値は2つ返したいところです。
-そのような場合は以下のようにすれば大丈夫です。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="k">def</span> <span class="nf">get_min_max</span><span class="p">(</span><span class="n">list_</span><span class="p">):</span>
-  <span class="n">min_</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-  <span class="n">max_</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">list_</span><span class="p">:</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">min_</span><span class="p">):</span> <span class="n">min_</span> <span class="o">=</span> <span class="n">i</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">max_</span> <span class="o">&lt;</span> <span class="n">i</span><span class="p">):</span> <span class="n">max_</span> <span class="o">=</span> <span class="n">i</span>
-  <span class="k">return</span> <span class="p">(</span><span class="n">min_</span><span class="p">,</span> <span class="n">max_</span><span class="p">)</span>
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="k">del</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># [1, 2, 4, 5]</span>
 
-<span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">]</span>
-<span class="p">(</span><span class="n">min_</span><span class="p">,</span> <span class="n">max_</span><span class="p">)</span> <span class="o">=</span> <span class="n">get_min_max</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">'min: {}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_</span><span class="p">))</span>
-<span class="c1"># 1</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">'max: {}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">max_</span><span class="p">))</span>
-<span class="c1"># 10</span>
+<span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="k">del</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># [1, 4, 5]</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="k">del</span> <span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># [1, 2, 3, 4]</span>
 </pre>
      </div>
      <p>
-      返り値をタプルにした際は、タプルの構造に気をつけて利用してください。
-たとえ関数の返り値のタプルの形式が変更されたにもかかわらず、それを利用する側が変更されなければエラーとなります。
-複雑な形式をやりとりしたいのであれば、続編で扱うクラスなどにしてしまうほうがよいです。
+      次に pop メソッドです。
+これは del 演算子に似ているのですが、消すだけではなく同時に値を取り出します。
+引数にインデックス番号(先頭が0)を渡せばそれに対応する要素を取得してリストから消します。
+引数を与えない場合はリスト末尾の要素を取り出します。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># [1, 2, 3, 5]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="c1"># 4</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># [1, 2, 3]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="c1"># 5</span>
+</pre>
+     </div>
+     <p>
+      様々なプログラミング言語でリストを使ってキューやスタックと呼ばれるデータ構造を実現することがよくあります。
+キュー及びスタックは複数のデータを管理するためのデータ構造です。
+キューは別名FIFO (First In First Out) とも呼ばれており、
+最初にいれたデータを最初に取り出すというデータ構造です。
+一方、スタックは LIFO(Last In First Out) と呼ばれており、
+その名前が示すように最後にいれたデータを最初に取り出すというデータ構造です。
+以下に両者がどのようなものか示す図を記載します。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0065_image/01.png"/>
+     </p>
+     <p>
+      キュー及びスタックに1,2,3 というデータが入っているとします。
+キューにデータ4をいれると1,2,3,4 というデータを持ちます。
+そこからデータをとりだすと先頭(最初にいれたデータ)にある 1 を取り出し、2,3,4 となります。
+一方、スタックは最後にいれたデータを最初に取り出します。
+そのため、4をいれられて 1,2,3,4 となっているデータから取り出されるのは4となります。
+リストへの追加には既に利用した append メソッドを利用し、データの取り出しには pop メソッドを使います。
+     </p>
+     <p>
+      以下に list を使ったキューの実現方法を記載します。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">queue</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
+<span class="c1"># [1, 2, 3, 4]</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># 1</span>
+<span class="k">print</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
+<span class="c1"># [2, 3, 4]</span>
+</pre>
+     </div>
+     <p>
+      append でリストの最後にデータを追加し、pop(0) でリストの最初のデータを取り出しています。
+そして次にスタックです。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">stack</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
+<span class="c1"># [1, 2, 3, 4]</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># 4</span>
+<span class="k">print</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
+<span class="c1">#[1, 2, 3]</span>
+</pre>
+     </div>
+     <p>
+      スタックからデータを取り出すということはつまり、リストの最後の要素を取り出すということです。
+そのため、引数なしの pop メソッドでリストの最後の要素を取得します。
+     </p>
+     <p>
+      次はリストとリストの結合です。これにはプラス演算子を使う方法と extend メソッドがあります。
+append を使うと、append されたリスト自体がメソッドを呼び出したリストの最後の要素になるので結合はされません。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+<span class="c1"># [1, 2, 3, 4, 5, 6, 7, 8]</span>
+
+<span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># [1, 2, 3, 4, 5, 6, 7, 8]</span>
+</pre>
+     </div>
+     <p>
+      プラス演算子とextend メソッドは一見すると同じに見えますが、
+もとのデータがどうなるかという点でかなり違います。
+まずプラス演算子ですが、結合されているリストa,bはそのまま残り、
+両者が結合された新しいリストが作られています。
+一方、extend メソッドを使うと呼び出し元のリスト a の後ろに指定されたリストb が結合されます。
+リストb 自体は変更が加わりませんが、リスト a はもとのデータではなくなっています。
+     </p>
+     <p>
+      他にはリストの順序を反転するreverse メソッドや、
+中身の順序をソートする sort メソッドあたりも利用されます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">a</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># [5, 4, 3, 2, 1]</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">b</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="c1"># [1, 2, 3, 4, 5]</span>
+</pre>
+     </div>
+     <p>
+      リストのコピーや初期化は以下のように行います。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># [1, 2, 3, 4, 5, 6]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="c1"># [1, 2, 3, 4, 5]</span>
+
+<span class="n">a</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># []</span>
+</pre>
+     </div>
+     <p>
+      先にお伝えしたようにリストを格納する変数を別の変数に代入したとしても、
+それはコピーではなく同じオブジェクトを共有するだけです。
+つまり片方の変数の値を操作すると、もう片側の変数の値も変わっているということです。
+上記のようにコピーを行った場合は別々のオブジェクトとなるため片側の操作がもう片側に影響をあたえることはありません。
+     </p>
+     <h3>
+      リストの仕組みと配列との違い
+     </h3>
+     <p>
+      ここではCやJavaの「配列」とPythonのリストの比較を通して、Python のリストがどのようなものか説明します。
+Python では配列相当のものがないので必ずしも学ぶ必要はないかと思いますが、
+この違いはプログラミング一般において重要なため、C や Java を学ばれたことがないかたも一読していただくといいと思います。
+     </p>
+     <p>
+      生徒の点数を扱うことを題材にして配列とリストを比較してみます。
+まず簡単に両者のイメージ図を以下に記載します。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0065_image/02.jpg"/>
+     </p>
+     <p>
+      左側のCやJavaの配列は「メモリ」上に連番でデータを格納するスペースを用意するのに対して、
+右側の「リスト」はバラバラの複数のデータ間を順序を持って結びつけることで実現されています。
+     </p>
+     <p>
+      Pythonのリストは、CやJavaのVectorやListに相当する型です。
+Pythonのリストはまるで配列のように利用されますが、CやJava の配列とは大きく異なります。
+たとえば純粋な配列では、「要素(配列やリストの中にあるデータ)」の間に新しいデータを挟み込むことはできません。
+そのため、配列に入っている要素を詰め替えるなどしてデータを追加します。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0065_image/03.jpg"/>
+     </p>
+     <p>
+      一方、リストはN-1番目の要素とN番目の要素の間に新しいデータを挟み込むことができます。
+配列ではメモリ上に要素を連番で格納するためのスペースを用意するのに対し、
+リストは以下の図のようにバラバラに用意された要素間を順に結びつけることで実現されているためです。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0065_image/04.jpg"/>
+     </p>
+     <p>
+      Javaの配列のコードを確認してみます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="kt">int</span> <span class="n">a</span><span class="o">[]</span> <span class="o">=</span> <span class="o">{</span><span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">};</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">a</span><span class="o">[</span><span class="mi">1</span><span class="o">]);</span>      <span class="c1">// 2番目の要素の値を取得 -&gt; 1</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>  <span class="c1">// a の配列長を取得 -&gt; 3</span>
+<span class="n">a</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+<span class="n">a</span><span class="o">[</span><span class="mi">3</span><span class="o">]</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>  <span class="c1">// Error</span>
+</pre>
+     </div>
+     <p>
+      1行目では要素数3のint型の配列の変数を宣言し、それに代入しています。
+先の章でお伝えしたように、Javaの変数には型があるのでした。
+a[x]とすると配列aのx番目の要素にアクセスできます。
+そして、a.lengthとすることで配列長が取得できます。
+     </p>
+     <p>
+      4行目では配列の2番目の要素に値を代入しています。
+ただ、5行目では配列長3の4番目の要素に値を代入しようとしているのでエラーとなってしまいます。
+     </p>
+     <p>
+      次にPythonのリストを使ってみます。Pythonの変数には型がないので、
+特に型を指定していない変数aに[0, 1, 2]という3要素のリストをそのまま代入しています。
+2行目ではリストの中身を確認しています。そして3行目では配列長を取得しています。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="c1"># 2番目の要素の値を取得 -&gt; 1</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>   
+<span class="c1"># a の配列長を取得 -&gt; 3</span>
+
+<span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>   
+<span class="c1"># 4</span>
+</pre>
+     </div>
+     <p>
+      異なるのは5行目です。
+配列は配列長を超えて要素を代入することができませんが、リストはリスト長を伸ばすことができます。
+Pythonではリストをまるで配列のように使いますが、両者はあくまでも別物という認識を持っておく必要があります。
      </p>
      <!-- GENERATED HTML END -->
      <nav>

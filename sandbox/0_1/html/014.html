@@ -54,173 +54,138 @@
     <div class="col-sm-8 blog-main">
      <!-- GENERATED HTML START -->
      <h2>
-      セット
+      タプル
      </h2>
      <p>
-      次は「セット」です。セットを一言で説明すると、「集合」という概念を実現するための型です。
-たとえば、ある空の集合にAを追加すると、その集合にはAがあります。
-さらにBを追加するとA、Bの2つが存在します。
-しかし、ここにさらにAを追加しても、「A、A、B」とはならずに「A、B」のままです。
-そして集合は「順序を持たない」ので「A、B」も、「B、A」も同じ意味を持ちます。
-セットの内部実装には非常に重要な概念があるのですが、とりあえず使い方を説明してしまいます。
+      リストという型がなぜ存在するのか覚えていますか。
+ひとつの型のなかに任意の数の複数のデータを格納できると便利だからでした。
+たとえば「生徒たちの成績を格納する」といった目的で利用されます。
+タプルもリストと似ていて、ひとつの型のなかに複数のデータを格納します。
+ただ、その目的は異なっていて、「決まった数の複数のデータがひとつの意味を持つもの」にタプルは使われます。
      </p>
      <p>
-      空のセットのオブジェクトを作るにはset() 関数を使います。
-空でない場合は{}に要素を並べることで作ることもできます。
-  もしくはリストのデータをset関数に渡すことで、中身のあるセットを作ることもできます。
+      例をあげて説明しましょう。
+お店の会員情報というものをデータで表現することを考えてみます。
+例えば 'taro, 1986, tokyo' といった具合で単純に文字列としてすべてを含めてしまってもいいのですが、
+以下のような複数の要素を持つデータとして表現したほうがプログラムで使いやすそうです。
+     </p>
+     <ul>
+      <li>
+       氏名
+      </li>
+      <li>
+       生年月日
+      </li>
+      <li>
+       住所
+      </li>
+     </ul>
+     <p>
+      テキスト処理で文字列の中から生年月日を抜き出したりするよりも、
+「Aさんの住所 -&gt; 東京都…」というようにぱっと取り出せる方が便利です。
+これはちょうど先ほど説明したオブジェクト指向におけるメソッドがないクラスのようなものです。
+     </p>
+     <p>
+      タプルは上記のような複数のデータをひとつにまとめるための型です。
+Python のリストは様々な種類のデータを格納することができるため、
+同じことをリストでも実現できます。
+ただ、リストは「可変長(長さが変わる)」なので、
+複数のデータが合わさってはじめて意味を持つ場合の利用は本来の用途ではなく、
+それよりも同じデータをいくつも格納する用途で使われます。
+     </p>
+     <p>
+      以下にリストとタプルの違いを図にまとめます。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0070_image/01.jpg"/>
+     </p>
+     <p>
+      タプルがどういうものかわかっていただけたと思うので、具体的にどのように使うのか説明しましょう。
+タプルの作成はタプルの要素となる値を () で囲むことで作成できます。
+type関数は型を確認するために利用する関数です。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="c1"># set()</span>
-
-<span class="n">b</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">}</span>
-<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-<span class="c1"># {1, 2, 3}</span>
-
-<span class="n">c</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
-<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-<span class="c1"># {1, 3, 5, 7}</span>
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'taro'</span><span class="p">,</span><span class="s1">'1986'</span><span class="p">,</span><span class="s1">'tokyo'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="c1"># &lt;class 'tuple'&gt;</span>
 </pre>
      </div>
      <p>
-      空のセットを作る際に注意して欲しいことは「変数 = {}」 としてしまうと、
-  セットではなく次に説明する「辞書型のオブジェクト」が作成されてしまうということです。
-     </p>
-     <p>
-      セットへの要素の追加にはadd、削除にはremoveメソッドを使います。
+      上記は先ほどの会員情報のタプルです。
+その要素への参照はリストに似ています。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span>
-<span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="c1"># {1, 2, 3, 4}</span>
-<span class="n">a</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="c1"># {1, 2, 3, 4}</span>
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'taro'</span><span class="p">,</span><span class="s1">'1986'</span><span class="p">,</span><span class="s1">'tokyo'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># 'taro'</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="c1"># 3</span>
 
-<span class="n">a</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="c1"># {2, 3, 4}</span>
-</pre>
-     </div>
-     <p>
-      リストのデータ追加のメソッド名を覚えていますか。addではなく、appendや insertでしたね。
-日本語で言うと同じ「追加」であっても、addだと「集合に加える」という感じで、
-appendだと「末尾に加える」という意味合いになります。
-順序を持たない set 型なので、add というメソッド名となっています。
-そして removeメソッドを使うと指定した値をセットから取り除きます。
-存在しない値を指定するとエラーになるので注意してください。
-     </p>
-     <p>
-      セットの使い方はリストに似ています。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="c1"># in, not in を使える</span>
-<span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">}</span>
-<span class="k">print</span><span class="p">(</span><span class="mi">1</span> <span class="ow">in</span> <span class="n">a</span><span class="p">)</span>
-<span class="c1"># True</span>
-<span class="k">print</span><span class="p">(</span><span class="mi">2</span> <span class="ow">in</span> <span class="n">a</span><span class="p">)</span>
-<span class="c1"># False</span>
-
-<span class="c1"># pop を使える(何が帰ってくるかは分からない)</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="c1"># {3, 5, 7}</span>
-<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-<span class="c1"># 1</span>
-
-<span class="c1"># for も使えるが順序は不明</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">}:</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
   <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-<span class="c1"># 1 3 5 7</span>
+<span class="c1"># taro</span>
+<span class="c1"># 1986</span>
+<span class="c1"># tokyo</span>
 </pre>
      </div>
      <p>
-      リストと若干異なるのはセットの結合です。
-先程説明したようにセットは重複した要素を持たないため、
-結合される2つのセットが同じものを持っていれば1つだけになります。
-プラス記号を使った結合はできません。
+      ただし、リストと異なり一度作成されたオブジェクトは変更することはできません。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">}</span>
-<span class="n">a</span><span class="o">.</span><span class="n">union</span><span class="p">({</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">})</span>
-<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="c1"># {1, 2, 3, 4, 5}</span>
-
-<span class="k">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="p">{</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">})</span>
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'taro'</span><span class="p">,</span><span class="s1">'1986'</span><span class="p">,</span><span class="s1">'tokyo'</span><span class="p">)</span>
+<span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="c1"># Traceback (most recent call last):</span>
-<span class="c1"># ...</span>
-<span class="c1"># TypeError: unsupported operand type(s) for +: 'set' and 'set'</span>
+<span class="c1">#  ...</span>
+<span class="c1"># TypeError: 'tuple' object does not support item assignment</span>
 </pre>
      </div>
      <p>
-      あまり利用場面は多くないかもしれませんが、集合特有の演算をすることもできます。
+      少しトリッキーな見た目ですが、タプル内の要素を一気に取得することもできます。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="c1"># 比較</span>
-<span class="k">print</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">}</span> <span class="o">&lt;</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">})</span>
-<span class="c1"># True</span>
-
-<span class="c1"># AND(両方含むもののみ)</span>
-<span class="k">print</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">}</span> <span class="o">&amp;</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">})</span>
-<span class="c1"># {3}</span>
-
-<span class="c1"># OR(結合)</span>
-<span class="k">print</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">}</span> <span class="o">|</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">})</span>
-<span class="c1"># {1, 2, 3, 4, 5}</span>
+      <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'taro'</span><span class="p">,</span><span class="s1">'1986'</span><span class="p">,</span><span class="s1">'tokyo'</span><span class="p">)</span>
+<span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">a</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>   <span class="c1"># taro</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>   <span class="c1"># 1986</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>   <span class="c1"># tokyo</span>
 </pre>
      </div>
      <p>
-      セットの使い方はわかっていただけたでしょうか。
-追加や削除、有無のチェックなどの機能を見ると、なんだかリストに似ているような気がしたかもしれませんが、
-両者の仕組みはまったく異なっています。
-     </p>
-     <h3>
-      ハッシュの仕組み
-     </h3>
-     <p>
-      セットで使われている重要なコンピュータ技術に、ハッシュ(Hash)と呼ばれているものがあります。
-集合はハッシュを使わずにでも実現できるでしょうが、
-PythonのセットはJavaでいうところのHashSetに近いです。
-このハッシュの概念図を以下に示します。
+      タプルはC言語でいう「構造体」やJavaでいう「クラスのメンバ関数」の簡易版として使うのが主な用途です。
+ただし、構造体やメンバ関数はそれぞれ「変数名」を持っているのに対して、
+タプルは「何番目にある要素か」ということを基準にしてデータを管理します。
      </p>
      <p>
-      <img alt="image" class="img-responsive" src="./0075_image/01.jpg"/>
+      最後にタプルの便利な使い方を紹介します。あまり機会は多くないのですが、
+関数の返り値を2つ返したい場合がときどき発生します。
+一つひとつ別の関数に分けて値を取得するようにすることもできますが、
+たとえばfor文での探索のようなプログラムだと計算コストが高いため、
+無駄に2周するのは避けたほうがよいです。
+そのようなときにタプルをreturnで使うと便利です。
+たとえば、リストの要素の最小値と最大値を取得する関数だと、返り値は2つ返したいところです。
+そのような場合は以下のようにすれば大丈夫です。
      </p>
+     <div class="codehilite">
+      <pre><span></span><span class="k">def</span> <span class="nf">get_min_max</span><span class="p">(</span><span class="n">list_</span><span class="p">):</span>
+  <span class="n">min_</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">max_</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">list_</span><span class="p">:</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">min_</span><span class="p">):</span> <span class="n">min_</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">max_</span> <span class="o">&lt;</span> <span class="n">i</span><span class="p">):</span> <span class="n">max_</span> <span class="o">=</span> <span class="n">i</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">min_</span><span class="p">,</span> <span class="n">max_</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">]</span>
+<span class="p">(</span><span class="n">min_</span><span class="p">,</span> <span class="n">max_</span><span class="p">)</span> <span class="o">=</span> <span class="n">get_min_max</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'min: {}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_</span><span class="p">))</span>
+<span class="c1"># 1</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'max: {}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">max_</span><span class="p">))</span>
+<span class="c1"># 10</span>
+</pre>
+     </div>
      <p>
-      ハッシュは「ハッシュ関数」と呼ばれるものに特定の値(キー)を与えて「ハッシュ値」を得ることで実現されています。
-ハッシュ値はある範囲のなかの数値(一般的には0からN)のどれかとなり、
-同じキーから生成されるハッシュ値は常に同じです。
-     </p>
-     <p>
-      上記の図でいうと、キーとして「John Smith」をハッシュ関数にかけるとハッシュ値「02」が得られています。
-同様に「Lisa Smith」をハッシュ関数にかけると「01」となります。
-そしてハッシュ値の範囲は00から15です。
-この性質を考慮したうえで「ある集合に要素Xはあるか」ということをどのようにして実現するか想像してください。
-     </p>
-     <p>
-      ハッシュを使う場合、たとえば「John Smith」を集合に加える際には、
-ハッシュ値「02」の場所に「John Smith」を格納します。
-そして「John Smith」が存在するかどうかのチェックはハッシュ値「02」の場所に「John Smith」がいるかどうか確認すればいいのです。
-一方、リストの探索であれば「先頭から末尾まで順に「John Smith」かどうかを確認していく」ことが必要です。
-リストのサイズが大きければこの探索コストは非常に大きくなります。
-「要素」の探索という面においてハッシュはリストに比べるとであるのに比べると随分スマートだと思いませんか。
-実際、ハッシュを使った要素の探索は非常に高速です。
-     </p>
-     <p>
-      ただ、ハッシュも使い方を間違えると効率が悪くなります。もう一度図を見てください。
-よく見ると「John Smith」と「Sandra Dee」は同じハッシュ値に割り当てられています。
-これはいわゆる「ハッシュの衝突」と呼ばれており、これが多発すると探索のスピードが遅くなります。
-なぜなら「Sandra Dee」の有無の確認をする際に「01」を見にいって、
-そこに「John Smith」やほかの要素がたくさん入っていると、
-「01」のなかで「リストの探索」のようにして全部をチェックしていかないといけないからです。
-     </p>
-     <p>
-      この問題を防ぐためにハッシュ値の範囲は十分な広さを持たせる必要があります。
-たとえば今回のように00から15などという範囲は狭すぎるので、これをもっと広げます。
-そうすると確率的には衝突は発生しにくくなります。
-ただ、通常はこんなことを気にしなくてもPythonがよしなに処理してくれるので大丈夫です。
+      返り値をタプルにした際は、タプルの構造に気をつけて利用してください。
+たとえ関数の返り値のタプルの形式が変更されたにもかかわらず、それを利用する側が変更されなければエラーとなります。
+複雑な形式をやりとりしたいのであれば、続編で扱うクラスなどにしてしまうほうがよいです。
      </p>
      <!-- GENERATED HTML END -->
      <nav>

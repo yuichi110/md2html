@@ -54,399 +54,226 @@
     <div class="col-sm-8 blog-main">
      <!-- GENERATED HTML START -->
      <h2>
-      プログラムへの入力
+      日本語の扱い
      </h2>
      <p>
-      WindowsやMacのGUIアプリケーションを使うときに、さまざまな入力を求められることはありませんか。
-書き出すファイル名の入力や、利用するサーバを一覧から選択するといった場合などです。
-このようにプログラムがユーザになんらかの入力を求めることは一般的です。
-本章では今までのようにテキストベースのプログラムで「ユーザーからプログラムへの入力」を扱う方法についてお話します。
+      そもそもPythonのプログラムファイルもプログラムが書かれたテキストファイルです。
+そのため、それがどの文字コードを利用しているかということを
+「プログラクラムを読み込むPython」に正しく認識させる必要があります。
+ブラウザやテキストエディタが文字化けしてしまうのと同じように、
+Python も文字コードが分からないと内部に書かれているプログラムを解釈できずに実行できません。
      </p>
      <p>
-      ユーザーからの入力の方法にはいくつかありますが、
-ここではプログラムの起動時に指定する「コマンドライン引数」と、
-プログラム中でユーザーに入力を求める「標準入力」、
-そして標準入力を使ったインタラクティブなプログラムの書き方についてお話します。
-     </p>
-     <p>
-      コマンドライン引数の使い方についてお話しする前に、それがなぜ必要なのか説明しておきます。
-まず以下のような「一人の生徒の成績表を表示するプログラム」のshow_score_sheet.pyがあるとします。
+      Python3 はUTF-8 をデフォルトの文字コードとしているため、
+UTF-8以外を使う場合は「この文字コードを使います」とファイルの先頭で宣言します。
+英数字のみで構成されるASCII も宣言は不要です。
+その宣言は以下のように行います。なお、本書執筆時点においてIDLEでの日本語の扱いは正直あまりよいとはいえません。
+もし日本語を使いたいのであればなんらかの高機能なテキストエディタを利用して記述し、
+適切な文字コードに設定されたプロンプトなり、ターミナルなりで実行してください。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="n">student</span> <span class="o">=</span> <span class="s1">'taro'</span>
-<span class="n">score_sheet</span> <span class="o">=</span> <span class="n">get_score_sheet</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>  <span class="c1"># get_score_sheetは実装済みとする</span>
-<span class="k">print</span><span class="p">(</span><span class="n">score_sheet</span><span class="p">)</span>
+      <pre><span></span><span class="c1"># coding: utf-8</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'hello python'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'あいうえお python'</span><span class="p">)</span>
 </pre>
      </div>
      <p>
-      上記の例では‘taro’の成績を取得しています。
-では、‘taro’の代わりに‘jiro’の成績を取得したいと思ったらどのようにすればよいと思いますか。
-成績取得をする関数に与える生徒名の‘taro’を‘jiro’にしてやればよいです。
+      上記の「utf-8」と書かれている場所が文字コードの宣言です。
+utf-8と宣言しているので、utf-8以外で書かれているとトラブルが発生します。
+ここを「shift-jis」や「euc-jp」などに変えると、その文字コードとして解釈されます。
+宣言の先頭が#から始まっていることから理解してもらえると思いますが、
+この行はコメントアウトされているのでPythonはプログラムとしては解釈しません。
+なお、先にも述べたように UTF-8 はデフォルトであるため、あえて宣言する必要はありません。
+     </p>
+     <p>
+      この UTF-8 で書かれたプログラムを実行すると以下のように表示されます。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="n">student</span> <span class="o">=</span> <span class="s1">'jiro'</span>  <span class="c1"># 生徒の名前を変更</span>
-<span class="n">score_sheet</span> <span class="o">=</span> <span class="n">get_score_sheet</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">score_sheet</span><span class="p">)</span>
+      <pre><span></span><span class="c">% python3 test.py</span>
+<span class="n">hello</span> <span class="n">python</span>
+あいうえお <span class="n">python</span>
 </pre>
      </div>
      <p>
-      ただ、40人の生徒の成績を表示したい場合、プログラムのファイルを40回開いて、
-その都度生徒の名前を変更してプログラムを動かすのは正直面倒くさいです。
-それにそもそも「プログラムを開いてそれを修正する」などということは、そのプログラムの開発者でなければできません。
-要するにプログラムファイルをいちいち書き変えるという対応での解決策はなしということです。
+      試しにファイルで利用される文字コードはUTF-8のままで、宣言をshift-jisに変更してみます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="c1"># coding: shift-jis</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">'hello python'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">'あいうえお python'</span><span class="p">)</span>
+</pre>
+     </div>
+     <p>
+      これを実行してみます。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="err">$</span> <span class="n">python3</span> <span class="n">test</span><span class="o">.</span><span class="n">py</span>
+  <span class="n">File</span> <span class="s2">"test.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">SyntaxError</span><span class="p">:</span> <span class="n">encoding</span> <span class="n">problem</span><span class="p">:</span> <span class="n">shift</span><span class="o">-</span><span class="n">jis</span>
+</pre>
+     </div>
+     <p>
+      エラーが出て、「shift-jis のエンコーディングの問題がある」と怒られてしまっています。
+このように文字コードAを文字コードBとして読み込もうとするとトラブルが発生してしまいます。
+トラブルはこのようなエラーであったり、場合によっては文字化けだったりします。
+     </p>
+     <p>
+      ではファイルの文字コードをShift-JISに変更して実行してみます。
+これでファイルの文字コードと冒頭の宣言の文字コードが一致します。
+     </p>
+     <div class="codehilite">
+      <pre><span></span><span class="err">$</span> <span class="n">python3</span> <span class="n">test</span><span class="o">.</span><span class="n">py</span>
+<span class="n">hello</span> <span class="n">python</span>
+<span class="err">あいうえお</span> <span class="n">python</span>
+</pre>
+     </div>
+     <p>
+      実は Python3はプログラムファイルの文字コードとその宣言の指定さえ間違えなければ、
+日本語などのマルチバイト文字をほとんど意識せずにアルファベットと同じ感覚で使えます。
+Python 2では文字列型の亜種である「Unicode文字列型」を使うことで日本語を扱っていたのに比べると随分と簡単になりました。
      </p>
      <h3>
-      コマンドライン引数
+      文字コードの変換
      </h3>
      <p>
-      解決方法はいろいろ考えられますが、最も一般的なものは、コマンドライン引数を利用することです。
-コマンドライン引数とは、Pythonコマンドでプログラムを起動する際に与えるパラメータのことです。
-たとえば以下のようなものになります。
+      先ほど見たように文字コードもバイト列で作られています。
+例えば UTF-8の文字列を Shift-Jis に変換するといった場合、このバイト列の処理が必要になります。
+実際は Python のライブラリ任せになるのでそれほど難しくありませんが、
+おおまかに以下の図のような文字列とバイト列の関係の認識を持ってもらうと分かりやすいです。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0100_image/01.png"/>
+     </p>
+     <p>
+      まず Python は文字列としてユニコード(UTF-8)を持ちます。
+一方、バイト列は単なる 0,1 の組み合わせですのでどのような文字コードでも持つことができます。
+先程説明した文字列の encode 及びバイト列の decode メソッドを、
+文字コードを引数として与えて呼び出して変換ができます。
+文字列から Shift-Jis の変換は簡単で、
+単に encode する際に引数に Shift-JIS を指定して Shift-JIS のバイト列に変換するだけです。
+Shift-JIS から EUC-JP への変換も、Shift-JIS を引数 shift-jis で decode し、
+ユニコードの文字列にし、それから引数 euc-jp で encode してあげれば EUC-JP のバイト列が得られます。
+上記変換のサンプルを以下に記載します。
      </p>
      <div class="codehilite">
-      <pre><span></span>python3 show_score_sheet.py taro
+      <pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'こんにちは'</span>
+
+<span class="n">unicode_bytes</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">unicode_bytes</span><span class="p">)</span>
+<span class="c1"># b'\xe3\x81\x93\xe3\x82\x93\xe3\x81\xab\xe3\x81\xa1\xe3\x81\xaf'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">unicode_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+<span class="c1"># こんにちは</span>
+
+<span class="n">sjis_bytes</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'sjis'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sjis_bytes</span><span class="p">)</span>
+<span class="c1"># b'\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sjis_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'sjis'</span><span class="p">))</span>
+<span class="c1"># こんにちは</span>
+
+<span class="n">eucjp_bytes</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'euc-jp'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">eucjp_bytes</span><span class="p">)</span>
+<span class="c1"># b'\xa4\xb3\xa4\xf3\xa4\xcb\xa4\xc1\xa4\xcf'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">eucjp_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'euc-jp'</span><span class="p">))</span>
+<span class="c1"># こんにちは</span>
 </pre>
      </div>
      <p>
-      注目して欲しいのは3番目のキーワードのtaroです。
-今まではPythonプログラムを実行するときは“python ファイル名”だけでしたが、そこにtaroが追加されています。
-このtaroという与えられたキーワードを、Pythonのプログラムが内部で利用することで、
-生徒の名前をプログラム中に直接書き込まなくても指定した生徒の成績を取得できるようになります。
-今回は生徒名ですが、プログラムによってはファイル名であったり接続するサーバ名であったり、いろいろな利用方法があります。
-     </p>
-     <p>
-      コマンドライン引数の使い方は以下の図のようになります。
-     </p>
-     <p>
-      <img alt="image" class="img-responsive" src="./0105_image/01.jpg"/>
-     </p>
-     <p>
-      直感的に動きをつかんでもらえればよいのですが、起動時に与えたコマンドライン引数を、
-プログラム中のsys.argvでアクセスしています。
-図の細かい説明をするより、実際にコマンドライン引数を利用するプログラムを見たほうが早そうなので、以下に記載します。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="c1"># sysモジュールをimport</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-
-<span class="c1"># sys.argvにコマンドライン引数が「リスト」で格納されている</span>
-<span class="k">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
-</pre>
-     </div>
-     <p>
-      これを実行すると以下のようになります。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="c">% python3 test.py taro</span>
-<span class="p">[</span><span class="s">'test.py'</span><span class="p">,</span> <span class="s">'taro'</span><span class="p">]</span>
-<span class="mi">2</span>
-
-<span class="c">% python3 test.py taro jiro</span>
-<span class="p">[</span><span class="s">'test.py'</span><span class="p">,</span> <span class="s">'taro'</span><span class="p">,</span> <span class="s">'jiro'</span><span class="p">]</span>
-<span class="mi">3</span>
-</pre>
-     </div>
-     <p>
-      sys.argvをprintしているのでわかると思いますが、これは「リスト」です。
-そのリストの中の最初の要素は必ずPythonの実行プログラムとなります。
-今回は同じディレクトリのプログラムを相対パスで呼び出したのでファイル名だけですが、
-絶対パスなどで呼び出すと要素も絶対パスとなります。
-     </p>
-     <p>
-      2番目以降の要素はコマンドライン引数に与えられた入力値と対応します。
-上記例を見てもらうとわかりますが、引数のn番目がsys.argvのn＋1番目の要素になっています。
-sys.argvはリストですので、その長さはlen()関数で取得できます。
-     </p>
-     <p>
-      このコマンドライン引数を先ほどの生徒の成績を取得するプログラムに組むこむのはそれほど難しくありません。
-     </p>
-     <div class="codehilite">
-      <pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-
-<span class="c1"># 誤った入力値の場合はメッセージとともにプログラム中断</span>
-<span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">'usage: student.py student_name'</span><span class="p">)</span>
-    <span class="nb">exit</span><span class="p">()</span>
-
-<span class="c1"># sys.argvよりもわかりやすい変数名に代入して使う</span>
-<span class="n">student</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">score_sheet</span> <span class="o">=</span> <span class="n">get_score_sheet</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">score_sheet</span><span class="p">)</span>
-</pre>
-     </div>
-     <p>
-      コマンドライン引数の長さを調べて、2未満であれば使い方を表示して終了するようにしています。
-無言で終了するのも何が原因なのかプログラムの利用者にわからないのでやめたほうがよいです。
-コマンドライン引数に指定された内容は、プログラムの途中で都度チェックするよりも、
-このように最初に調べてしまって問題があれば終了するとしたほうがきれいにコードを書けるかもしれません。
-必要になった場所でチェックをするという実装だと、プログラムのコアとなるロジックに余計なものが食い込み、
-汚くわかりにくいコードになりがちなので気をつけてください。
-     </p>
-     <p>
-      その後はコマンドライン引数の値を「わかりやすい名前の変数」に格納しています。
-sys.argvの何番目という表現を延々とプログラム中で使い続けるとわかりにくく、
-なおかつ引数の順番を変えたときなどの修正が面倒になるため避けたほうがいいです。
-それ以降のコードは先ほどとまったく一緒ですので解説は割愛します。
-     </p>
-     <p>
-      なお、UnixやLinuxコマンドの「オプション(-v や --help など)」相当のことを実装したいのであれば、
-sys.argvを使って根性で作りこむよりも専用のパッケージ「argparse」などを利用したほうがよいかと思います。
+      文字列はユニコードであり、エンコードを指定してバイト列を書き出すことで様々な文字コードを表現できる。
+それらをエンコードの指定をして読み込むことでPython のユニコード文字列に変換することができる。
+この流れは日本語以外にもあてはまりますので覚えておいて下さい。
      </p>
      <h3>
-      標準入力
+      日本語ファイルの読み書き
      </h3>
      <p>
-      ユーザーがプログラムに入力を与えるのはコマンドライン引数だけではありません。
-標準入力も用います。先ほどの生徒の成績を取得するプログラムを例に、標準入力がどのようなものか説明します。
+      ファイルの入出力にはcodecsパッケージのopen関数を使うのが簡単です。
+これを使って文字コードを指定してファイルをオープンすると、
+通常のファイル入出力の手順と大差なくマルチバイト文字を扱えます。
+具体的には read をすると文字コードを意識してファイルのテキストを読み込んでユニコードの文字列を返し、
+write でユニコードの文字列を書き出すとそれが指定された文字コードでファイルに書かれます。
+以下の図にこの流れを記載します。
+     </p>
+     <p class="blog-img">
+      <img alt="image" class="img-responsive" src="./0100_image/01.png"/>
      </p>
      <p>
-      コマンドライン引数はプログラムの「起動時」に入力値を指定しますが、
-標準入力はプログラムの「起動後」に入力値を与えるものです。
-さっそくですが、生徒の成績表示プログラムを標準入力のものに書き換えてみます。
+      上記の「ファイル名」は読み書きするファイル名を相対パスなり絶対パスなりで指定し、
+「モード」は通常の open 関数と同じで r,w,rw,aなどを指定します。
+そして最後の「文字コード」で読み書きするファイルのエンコードを指定します。
+この open 関数のみ文字コードを意識する必要がありますが、
+それ以外の read や write は今までのファイルの読み書きと同じです。
+Shift-Jis として読み込みを行えば、read をすれば Shift-Jis としてファイルの中身を読み込んで、
+それをユニコードの文字列として返します。書き出しも同様です。
+     </p>
+     <p>
+      実際にコードで確認してみます。
+文字コードutf8 で書かれた以下のファイル utf8.txt を作成してください。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">'please input student name.'</span><span class="p">)</span>
-<span class="c1"># 標準入力</span>
-<span class="n">student</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">'your input is: '</span> <span class="o">+</span> <span class="n">student</span><span class="p">)</span>
+      <pre><span></span>あいうえお
+abcde
+かきくけこ
 </pre>
      </div>
      <p>
-      1～2行目が変更されています。1行目は入力を促すテキストを出しているだけなのでたいしたことはないのですが、
-重要なのは2行目です。これは以下のように動いています。
-     </p>
-     <ol>
-      <li>
-       input()関数が実行される
-      </li>
-      <li>
-       pythonはユーザーからのキーボード入力を待つ
-      </li>
-      <li>
-       ユーザーがキーボードでテキストを入力し、Enter(Return)を打つ
-      </li>
-      <li>
-       pythonがユーザーからの入力を読み取り、input()関数がそれを文字列として返す
-      </li>
-      <li>
-       変数 studentが返された文字列を格納
-      </li>
-     </ol>
-     <p>
-      長々と書きましたが、要するにinput()を書いた場所で「ユーザー入力」が求められて、
-ユーザーが入力した値がinput()から返されるということです。図にまとめると以下のようになります。
-     </p>
-     <p>
-      <img alt="image" class="img-responsive" src="./0105_image/01.jpg"/>
-     </p>
-     <p>
-      上記プログラムを実行すると次のようになります。
+      このファイルを読み込み処理するコードは以下となります。
      </p>
      <div class="codehilite">
-      <pre><span></span>python test.py
-please input student name.
-taro
-your input is: taro
+      <pre><span></span><span class="kn">import</span> <span class="nn">codecs</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'utf8.txt'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre>
      </div>
      <p>
-      なお、この標準入力を読み取る関数ですが python2 の頃は別名で raw_input() 関数でした。
-間違えないように注意をしてください。
-     </p>
-     <p>
-      ほかにはsysモジュールのreadline関数も同じ目的で利用できます。
-詳しくは書きませんが、以下のように使うことができます。
+      先程説明したようにcodecs.open関数の第一引数でファイル名を指定し、
+第二引数でオープンのモード(今回はread)を選択、そして第三の引数でファイルの文字コードを指定しています。
+それ以外は通常のファイル読み込みと同じです。
+これを出力してみます。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">sys</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">line</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-<span class="n">hello</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-<span class="n">hello</span>
-
-<span class="o">&gt;&gt;&gt;</span> <span class="n">line</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
-<span class="n">hello</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-<span class="n">hello</span>
-<span class="o">&gt;&gt;&gt;</span>
+      <pre><span></span>$ python3 test.py
+あいうえお
+abcde
+かきくけこ
 </pre>
      </div>
      <p>
-      ほとんどinput()と同じですが、着目して欲しいのは改行コード“Enter(Return)”も取得されているということです。
-上記サンプルを見ると、前者のreadline()は改行コードを含んでいますが、
-後者のinput()は省かれています。
-そのため、readline()を使う場合、必要であれば“文字列.strip()”などとして行末の改行コードを削ってください。
-     </p>
-     <p>
-      なお、かなりの小ネタですが、input()などの標準入力を挟むことで、
-指示があるまでプログラムをわざと中断させておくという使い方もあります。
-たとえばデモプログラムを実行する際に、デモとデモの間にinput()を入れておくと、
-ひとつめのデモが終わったあとに、すぐに2つめに入らず標準入力で待ちに入ることができます。
-意外と便利な使い方です。
-     </p>
-     <p>
-      さて、ちょっと余談です。コマンドライン引数と標準入力の2つのユーザー入力方法を示しましたが、
-利用するとしたらどちらが優れているでしょうか。
-これは個人の好みによるとは思いますが、どちらでもよい場合、
-私は「Unixのコマンドの思想に沿っている」という点からコマンドライン引数を支持します。
-ここではUnixとしていますが、この思想は、
-LinuxはおろかWindowsであってもCUI(テキストのコンソール)を使う限りあてはまる大事な考え方です。
-当然、Pythonで作成したプログラムも基本はテキストベースなので当てはまります。
-Unixの思想にはいろいろあるのですが、「入力」に関しては以下が当てはまるでしょう。
-     </p>
-     <ul>
-      <li>
-       一つひとつのコマンド(プログラム)が小さい範囲で完璧に仕事をこなすべき
-      </li>
-      <li>
-       大きなプログラムになんでもやらせるのは基本的に間違い
-      </li>
-      <li>
-       小さいプログラムを組み合わせることで大きな仕事を実現する
-      </li>
-     </ul>
-     <p>
-      ここで重要となるのは「小さいプログラムを組み合わせる」ことです。
-組み合わせる際に「あるプログラムから別のプログラムを呼び出す」ということをよくするのですが、
-この場合、標準入力よりもコマンドライン引数のほうが圧倒的に簡単に使えます。
-標準入力を使ってしまうと、プログラムが別のプログラムを「インタラクティブ(この出力がされたら、
-これを入力するといった具合)」に制御する必要があります。
-人間がプログラムとインタラクティブに対話するのは簡単ですが、
-プログラムにそれをやらせるのは結構苦労することが多いです。
-一方、コマンドライン引数だと、
-プログラムを呼び出す際にパラメータを与えるだけで簡単に期待どおりの使い方をすることが可能です。
-なので私は、コマンドライン引数のほうを好んで使っています。
-     </p>
-     <p>
-      ただ、標準入力が有効な場面というのも存在します。たとえば以下の場合です。
-     </p>
-     <ul>
-      <li>
-       ユーザーがインタラクティブに操作するプログラムを組む場合
-      </li>
-      <li>
-       コマンドの履歴を残したくない場合(例えばパスワード入力など)
-      </li>
-     </ul>
-     <p>
-      適切なものは時と場合によりますので、どちらが最適なのかよく考えて利用してください。
-なお、パスワード入力に関してはgetpassというモジュールもありますので、
-パスワード入力を求める場合は、それを使ってもよいでしょう。
-     </p>
-     <h3>
-      インタラクティブなプログラムの作成
-     </h3>
-     <p>
-      今までのプログラムは「ユーザーがプログラムを起動したら処理を実行し、それが終われば終了」というものでした。
-ただ、なかにはこれにそぐわないプログラムもあります。
-たとえばGUIのアプリケーションを想像してください。
-だいたいはボタンを押したりテキスト入力をしたりして使い続けて、
-必要がなくなった時点でウィンドウを閉じるなどして終了します。
-これは「インタラクティブなプログラム」と呼ばれており、以下の処理を繰り返すことで実現されています。
-     </p>
-     <ol>
-      <li>
-       ユーザーからの入力をアプリケーションが待つ
-      </li>
-      <li>
-       ユーザーからの入力に応じてアプリケーションがなんらかの処理を行う
-      </li>
-      <li>
-       処理が終わると1に戻る
-      </li>
-     </ol>
-     <p>
-      これと同じことは、CLIのコンソールでもできます。その一番簡単な仕組みは以下の図のようなものとなります。
-     </p>
-     <p>
-      <img alt="image" class="img-responsive" src="./0105_image/01.jpg"/>
-     </p>
-     <p>
-      これも実例を用いて説明したほうがはやそうなので、簡単なサンプルプログラムを使います。
-以下のサンプルでは「あるプログラムの設定ファイルを書き出すプログラム」を作成します。
-設定ファイルは以下のようなものとします。
+      変数 line に格納されているファイルから読み込まれたデータは通常の文字列型です。
+読み込んだあとは文字コードを気にする必要は一切ありません。
+次に書き込みをしてみます。このutf8のファイルをShift-JISで書きだしてみます。
      </p>
      <div class="codehilite">
-      <pre><span></span>username = taro
-password = my_password
-server = 10.0.0.1
+      <pre><span></span><span class="kn">import</span> <span class="nn">codecs</span>
+<span class="n">fin</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'utf8.txt'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="n">fout</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'sjis.txt'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="s1">'sjis'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fin</span><span class="p">:</span>
+  <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="n">fin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre>
      </div>
      <p>
-      プログラムの流れは以下のようなものとなります。
+      ファイルのオープン時にオープンモードをwにすることで書き込みファイルとして開いています。
+オープンしたファイルに対してUnicode文字列をwriteしてあげればファイルに文字列が追加されます。
      </p>
-     <ol>
-      <li>
-       最初に入力可能なオプションを示し、input()で待機
-      </li>
-      <li>
-       ユーザーが入力
-      </li>
-      <li>
-       ユーザー入力を読み取り、適切な入力であればそれを設定。不適切であればエラー表示
-      </li>
-      <li>
-       exitと入力されれば終了し、内容をファイルに書き出す(終了条件)
-      </li>
-     </ol>
      <p>
-      これをプログラムにすると以下のようなものとなります。
+      結果を確認してみます。ファイルのエンコーディングの判定をしてみます。
      </p>
      <div class="codehilite">
-      <pre><span></span><span class="n">username</span> <span class="o">=</span> <span class="s1">''</span>
-<span class="n">password</span> <span class="o">=</span> <span class="s1">''</span>
-<span class="n">server</span> <span class="o">=</span> <span class="s1">''</span>
-
-<span class="k">while</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>  <span class="c1"># 無限ループ</span>
-  <span class="k">print</span><span class="p">(</span><span class="s1">'''please input option and its value.</span>
-<span class="s1">u USER_NAME</span>
-<span class="s1">p PASSWORD</span>
-<span class="s1">s SERVER_IP</span>
-<span class="s1">exit'''</span><span class="p">)</span>
-
-  <span class="n">line</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>  <span class="c1"># ユーザーからの入力を取得</span>
-
-  <span class="k">if</span><span class="p">(</span><span class="n">line</span> <span class="o">==</span> <span class="s1">'exit'</span><span class="p">):</span> <span class="c1"># 無限ループから離脱する条件</span>
-    <span class="k">break</span>
-
-  <span class="n">words</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="c1"># ユーザーからの入力内容をチェック</span>
-  <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">'Error'</span><span class="p">)</span>
-    <span class="k">continue</span>
-
-  <span class="k">if</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'u'</span><span class="p">):</span>    <span class="c1"># 入力内容に応じた処理</span>
-    <span class="n">username</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-  <span class="k">elif</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'p'</span><span class="p">):</span>
-    <span class="n">password</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-  <span class="k">elif</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'s'</span><span class="p">):</span>
-    <span class="n">server</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-  <span class="k">else</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">'Error'</span><span class="p">)</span>
-<span class="c1"># ループ終わり</span>
-
-<span class="k">print</span><span class="p">(</span><span class="s1">'username = '</span> <span class="o">+</span> <span class="n">username</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">'password = '</span> <span class="o">+</span> <span class="n">password</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">'server = '</span> <span class="o">+</span> <span class="n">server</span><span class="p">)</span>
+      <pre><span></span>$ nkf --guess utf8.txt
+UTF-8 <span class="o">(</span>LF<span class="o">)</span>
+$ nkf --guess sjis.txt
+Shift_JIS <span class="o">(</span>LF<span class="o">)</span>
 </pre>
      </div>
      <p>
-      今回は書き出す代わりにprint出力させています。
-先に提示した処理手順と完全に同じではありませんが、
-ユーザーが入力した内容に応じて処理を行うということを繰り返します。
-     </p>
-     <p>
-      実際のプログラムでは処理をマルチスレッド(複数の処理を別々のタイムラインで実行)などとすることもありますが、
-この「入力 -&gt; 処理 -&gt; 入力 -&gt; ……」という処理の流れは非常に重要なので覚えておいてください。
-バッチ処理以外のGUI(ボタンなどが押される -&gt; なんらかのアクション)や、
-サーバ(ネットワーク越しにクライアントの要求を受け取る -&gt; アクション)のプログラミングも基本的にはこの流れとなり、
-このような処理方式を「イベントドリブン」と呼びます。
-     </p>
-     <p>
-      このイベントドリブン型のプログラミングは、
-ある程度プログラムが書けるようになると頻繁に使うロジックになるはずです。
-ただ実際には、利用するフレームワーク(自分のプログラムを呼び出す親分プログラムみたいなもの)などに隠蔽されていたりしているので、
-あまり意識しないことが多いかもしれません。
+      書き込みファイルsjis.txtの文字コードがShift-Jisと判定されています。
+UTF8のファイルを読み取り、それを解釈、Shift-Jisとして書き込むという動作がうまく動いています。
+なお上記の nkf コマンドはインストールをしないと使えないので注意してください。
      </p>
      <!-- GENERATED HTML END -->
      <nav>

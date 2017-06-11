@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="Sample Description" name="description"/>
+  <link href="./assets/favicon.ico" rel="icon"/>
+  <title>
+   Python入門
+  </title>
+  <link href="./assets/css/codehilite.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <!-- GENERATED HTML START -->
+  <h2>
+   None 型
+  </h2>
+  <p>
+   None 型は「値がない」ということを表明する特別な型です。
+たとえば返り値がない関数の結果を取得しようとしたら、以下のように None 型が取得できます。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="k">print</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">)</span>
+<span class="c1"># hello</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># None</span>
+</pre>
+  </div>
+  <p>
+   None は C 言語や Java の null に相当するもので、
+たまに関数やメソッドから期待されるオブジェクトの代わりに返されることがあります。
+少し高度になるのですが、たとえばある関数内の複雑な処理(例えばネットワークやデータベースへの接続など)に失敗した際に、
+「Noneを返す」もしくは「例外を発生させる」とことで処理が失敗したことを示すことができます。
+None を返す実装の場合、返り値がNone であれば失敗したことがわかり、そうでなければ成功したということが分かります。
+None か否かの判定には is 演算子を使うことが推奨されています。
+理由が高度になるため説明は割愛しますが、== 演算子での判定は推奨されません。
+  </p>
+  <div class="codehilite">
+   <pre><span></span><span class="n">return_value</span> <span class="o">=</span> <span class="err">関数</span><span class="p">()</span>
+
+<span class="k">if</span><span class="p">(</span><span class="n">return_value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+  <span class="err">失敗した際の処理</span>
+<span class="k">else</span><span class="p">:</span>
+  <span class="err">成功した際の処理</span>
+</pre>
+  </div>
+  <!-- GENERATED HTML END -->
+ </body>
+</html>
