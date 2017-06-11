@@ -1123,7 +1123,7 @@ class Md2Html_v0_1:
 ###########
 
 def run():
-    Md2Html_v0_1('html.conf').run()
+    Md2Html_v0_1('setting.conf').run()
 
 def test():
     pass
